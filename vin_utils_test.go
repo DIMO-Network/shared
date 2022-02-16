@@ -38,3 +38,11 @@ func TestVIN_Year(t *testing.T) {
 		})
 	}
 }
+
+func TestVIN_String(t *testing.T) {
+	vs := "WBAEW53494PG11352"
+	v := VIN(vs)
+	if v.String() != vs {
+		t.Errorf("did not get expected vin strin")
+	}
+}
