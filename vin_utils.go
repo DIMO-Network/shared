@@ -1,5 +1,8 @@
 package shared
 
+// VINs are not allowed to contain I, O, or Q.
+// In the year digit we additionally disallow U, Z, and 0.
+// https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_(VIN_codes)/Model_year
 var years = map[byte]int{
 	'R': 1994,
 	'S': 1995,
