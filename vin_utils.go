@@ -46,3 +46,16 @@ func (v VIN) Year() int {
 func (v VIN) String() string {
 	return string(v)
 }
+
+var teslaModelByDigit = map[byte]string{
+	'R': "Roadster",
+	'S': "Model S",
+	'X': "Model X",
+	'Y': "Model Y",
+	'3': "Model 3",
+}
+
+func (v VIN) TeslaModel() string {
+	// Maybe some error handling?
+	return teslaModelByDigit[v[3]]
+}
