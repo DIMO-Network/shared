@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/DIMO-Network/shared/grpc/devices";
+
+package devices;
+
+service IntegrationService {
+    rpc ListIntegrations(google.protobuf.Empty) returns (Integration) {}
+}
+
+message Integration {
+    string id = 1;
+    string vendor = 2;
+}
