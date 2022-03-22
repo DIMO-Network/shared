@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = "github.com/DIMO-Network/shared/grpc/devices";
+
+package devices;
+
+service UserDeviceService {
+	rpc GetUserDevice(GetUserDeviceRequest) returns (UserDevice);
+}
+
+message GetUserDeviceRequest {
+	string id = 1;
+}
+
+message UserDevice {
+	string id = 1;
+	string user_id = 2;
+	string device_definition_id = 3;
+	string vin_identifier = 4;
+}
