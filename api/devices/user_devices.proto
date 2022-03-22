@@ -16,5 +16,5 @@ message UserDevice {
 	string id = 1;
 	string user_id = 2;
 	string device_definition_id = 3;
-	string vin_identifier = 4;
+	optional string vin_identifier = 4;
 }
