@@ -43,7 +43,7 @@ func loadFromYaml[S any](yamlFile []byte) (S, error) {
 // settings must be passed in as a pointer
 func loadFromEnvVars[S any](settings S) error {
 	if reflect.ValueOf(settings).Kind() != reflect.Ptr {
-		return errors.New("settings must be passed in as a pointer, eg. &varname")
+		return errors.New("-")
 	}
 	valueOfConfig := reflect.ValueOf(settings).Elem()
 	typeOfT := valueOfConfig.Type()
