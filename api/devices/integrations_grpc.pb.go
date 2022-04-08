@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.4
-// source: grpc/devices/integrations.proto
+// source: api/devices/integrations.proto
 
 package devices
 
@@ -102,5 +102,5 @@ var IntegrationService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "grpc/devices/integrations.proto",
+	Metadata: "api/devices/integrations.proto",
 }
