@@ -6,6 +6,7 @@ package devices;
 
 service UserDeviceService {
 	rpc GetUserDevice(GetUserDeviceRequest) returns (UserDevice);
+	rpc ListUserDevicesForUser(ListUserDevicesForUserRequest) returns (ListUserDevicesForUserResponse);
 }
 
 message GetUserDeviceRequest {
@@ -17,4 +18,12 @@ message UserDevice {
 	string user_id = 2;
 	string device_definition_id = 3;
 	string vin_identifier = 4;
+}
+
+message ListUserDevicesForUserRequest {
+	string user_id = 1;
+}
+
+message ListUserDevicesForUserResponse {
+	repeated UserDevice user_devices = 1;
 }

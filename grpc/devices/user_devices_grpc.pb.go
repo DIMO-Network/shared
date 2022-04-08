@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserDeviceServiceClient interface {
 	GetUserDevice(ctx context.Context, in *GetUserDeviceRequest, opts ...grpc.CallOption) (*UserDevice, error)
+	ListUserDevicesForUser(ctx context.Context, in *ListUserDevicesForUserRequest, opts ...grpc.CallOption) (*ListUserDevicesForUserResponse, error)
 }
 
 type userDeviceServiceClient struct {
@@ -42,11 +43,21 @@ func (c *userDeviceServiceClient) GetUserDevice(ctx context.Context, in *GetUser
 	return out, nil
 }
 
+func (c *userDeviceServiceClient) ListUserDevicesForUser(ctx context.Context, in *ListUserDevicesForUserRequest, opts ...grpc.CallOption) (*ListUserDevicesForUserResponse, error) {
+	out := new(ListUserDevicesForUserResponse)
+	err := c.cc.Invoke(ctx, "/devices.UserDeviceService/ListUserDevicesForUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserDeviceServiceServer is the server API for UserDeviceService service.
 // All implementations must embed UnimplementedUserDeviceServiceServer
 // for forward compatibility
 type UserDeviceServiceServer interface {
 	GetUserDevice(context.Context, *GetUserDeviceRequest) (*UserDevice, error)
+	ListUserDevicesForUser(context.Context, *ListUserDevicesForUserRequest) (*ListUserDevicesForUserResponse, error)
 	mustEmbedUnimplementedUserDeviceServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedUserDeviceServiceServer struct {
 
 func (UnimplementedUserDeviceServiceServer) GetUserDevice(context.Context, *GetUserDeviceRequest) (*UserDevice, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserDevice not implemented")
+}
+func (UnimplementedUserDeviceServiceServer) ListUserDevicesForUser(context.Context, *ListUserDevicesForUserRequest) (*ListUserDevicesForUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUserDevicesForUser not implemented")
 }
 func (UnimplementedUserDeviceServiceServer) mustEmbedUnimplementedUserDeviceServiceServer() {}
 
@@ -88,6 +102,24 @@ func _UserDeviceService_GetUserDevice_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserDeviceService_ListUserDevicesForUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUserDevicesForUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServiceServer).ListUserDevicesForUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/devices.UserDeviceService/ListUserDevicesForUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServiceServer).ListUserDevicesForUser(ctx, req.(*ListUserDevicesForUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserDeviceService_ServiceDesc is the grpc.ServiceDesc for UserDeviceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var UserDeviceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserDevice",
 			Handler:    _UserDeviceService_GetUserDevice_Handler,
+		},
+		{
+			MethodName: "ListUserDevicesForUser",
+			Handler:    _UserDeviceService_ListUserDevicesForUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
