@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IntegrationServiceClient interface {
-	ListIntegrations(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Integration, error)
+	ListIntegrations(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListIntegrationsResponse, error)
 }
 
 type integrationServiceClient struct {
@@ -34,8 +34,8 @@ func NewIntegrationServiceClient(cc grpc.ClientConnInterface) IntegrationService
 	return &integrationServiceClient{cc}
 }
 
-func (c *integrationServiceClient) ListIntegrations(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Integration, error) {
-	out := new(Integration)
+func (c *integrationServiceClient) ListIntegrations(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListIntegrationsResponse, error) {
+	out := new(ListIntegrationsResponse)
 	err := c.cc.Invoke(ctx, "/devices.IntegrationService/ListIntegrations", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (c *integrationServiceClient) ListIntegrations(ctx context.Context, in *emp
 // All implementations must embed UnimplementedIntegrationServiceServer
 // for forward compatibility
 type IntegrationServiceServer interface {
-	ListIntegrations(context.Context, *emptypb.Empty) (*Integration, error)
+	ListIntegrations(context.Context, *emptypb.Empty) (*ListIntegrationsResponse, error)
 	mustEmbedUnimplementedIntegrationServiceServer()
 }
 
@@ -55,7 +55,7 @@ type IntegrationServiceServer interface {
 type UnimplementedIntegrationServiceServer struct {
 }
 
-func (UnimplementedIntegrationServiceServer) ListIntegrations(context.Context, *emptypb.Empty) (*Integration, error) {
+func (UnimplementedIntegrationServiceServer) ListIntegrations(context.Context, *emptypb.Empty) (*ListIntegrationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListIntegrations not implemented")
 }
 func (UnimplementedIntegrationServiceServer) mustEmbedUnimplementedIntegrationServiceServer() {}

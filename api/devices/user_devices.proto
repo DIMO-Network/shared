@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/DIMO-Network/shared/grpc/devices";
+option go_package = "github.com/DIMO-Network/shared/api/devices";
 
 package devices;
 
