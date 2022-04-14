@@ -23,6 +23,9 @@ type httpClientWrapper struct {
 }
 
 func NewHTTPClientWrapper(baseURL, torProxyURL string, timeoutSeconds time.Duration, headers map[string]string, addJSONHeaders bool) (HTTPClientWrapper, error) {
+	if headers == nil {
+		headers = map[string]string{}
+	}
 	if addJSONHeaders {
 		headers["Accept"] = "application/json"
 		headers["Content-Type"] = "application/json"
@@ -54,10 +57,8 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 		return nil, err
 	}
 
-	if len(h.headers) > 0 {
-		for hk, hv := range h.headers {
-			req.Header.Set(hk, hv)
-		}
+	for hk, hv := range h.headers {
+		req.Header.Set(hk, hv)
 	}
 	res := new(http.Response)
 
@@ -71,8 +72,8 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 				return errors.Wrapf(err, "error reading failed request body")
 			}
 			errResp := errors.Errorf("received non success status code %d with body: %s", res.StatusCode, string(body))
-			if res.StatusCode == 400 || res.StatusCode == 401 {
-				// unrecoverable since probably bad payload
+			if res.StatusCode == 400 || res.StatusCode == 401 || res.StatusCode == 404 {
+				// unrecoverable since probably bad payload or n
 				return retry.Unrecoverable(errResp)
 			}
 			return errResp
