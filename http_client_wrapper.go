@@ -78,7 +78,7 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 			}
 			return errResp
 		}
-		return nil
+		return err
 	}, retry.Attempts(5), retry.Delay(500*time.Millisecond), retry.MaxDelay(9*time.Second))
 
 	return res, err
