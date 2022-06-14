@@ -5,9 +5,9 @@ import (
 	"encoding/base64"
 	"strings"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
-	"github.com/aws/aws-sdk-go/aws"
 )
 
 // Cipher is an interface for something that can encrypt and decrypt strings.
