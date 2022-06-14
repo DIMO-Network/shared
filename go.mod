@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/avast/retry-go/v4 v4.0.3
 	github.com/aws/aws-sdk-go v1.43.42
+	github.com/aws/aws-sdk-go-v2/service/kms v1.17.3
 	github.com/jarcoal/httpmock v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
@@ -14,9 +15,12 @@ require (
 )
 
 require (
+	github.com/aws/aws-sdk-go-v2 v1.16.5 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.12 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.6 // indirect
+	github.com/aws/smithy-go v1.11.3 // indirect
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect

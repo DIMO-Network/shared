@@ -1,11 +1,13 @@
 package shared
 
 import (
+	"context"
 	"encoding/base64"
 	"strings"
 
+	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/kms"
 )
 
 // Cipher is an interface for something that can encrypt and decrypt strings.
@@ -18,16 +20,17 @@ type Cipher interface {
 // TODO(elffjs): Give this a proper constructor.
 // TODO(elffjs): Figure out key rotation in a couple of weeks.
 type KMSCipher struct {
-	Client *kms.KMS
+	Client *kms.Client
 	KeyID  string
 }
 
 func (e *KMSCipher) Encrypt(s string) (string, error) {
 	out, err := e.Client.Encrypt(
+		context.Background(), // TODO(elffjs): Proper context.
 		&kms.EncryptInput{
 			KeyId:               aws.String(e.KeyID),
 			Plaintext:           []byte(s),
-			EncryptionAlgorithm: aws.String(kms.EncryptionAlgorithmSpecSymmetricDefault),
+			EncryptionAlgorithm: types.EncryptionAlgorithmSpecSymmetricDefault,
 		},
 	)
 	if err != nil {
@@ -41,11 +44,14 @@ func (e *KMSCipher) Decrypt(s string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	out, err := e.Client.Decrypt(&kms.DecryptInput{
-		CiphertextBlob:      b,
-		KeyId:               aws.String(e.KeyID),
-		EncryptionAlgorithm: aws.String(kms.EncryptionAlgorithmSpecSymmetricDefault),
-	})
+	out, err := e.Client.Decrypt(
+		context.Background(), // TODO(elffjs): Proper context.
+		&kms.DecryptInput{
+			CiphertextBlob:      b,
+			KeyId:               aws.String(e.KeyID),
+			EncryptionAlgorithm: types.EncryptionAlgorithmSpecSymmetricDefault,
+		},
+	)
 	if err != nil {
 		return "", err
 	}
