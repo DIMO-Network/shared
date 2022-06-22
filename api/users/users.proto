@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "github.com/DIMO-Network/shared/api/users";
+
+package users;
+
+service UserService {
+	rpc GetUser(GetUserRequest) returns (User);
+}
+
+message GetUserRequest {
+	string id = 1;
+}
+
+message User {
+	string id = 1;
+	optional string ethereum_address = 2;
+}
