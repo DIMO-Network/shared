@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/DIMO-Network/shared/api/rewards";
+
+package users;
+
+service RewardsService {
+	rpc GetTotalPoints(google.protobuf.Empty) returns (GetTotalPointsResponse);
+}
+
+message GetTotalPointsResponse {
+    int64 totalPoints = 1;
+}

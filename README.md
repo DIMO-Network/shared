@@ -11,7 +11,7 @@ we want settings to come from environment variables (we use kubernetes). Support
 
 ## gRPC library
 
-We should probably put these in the repositories of the services that own them, but we are putting this off for now. To make changes to the current suite for the device API, run
+We should probably put these in the repositories of the services that own them, but we are putting this off for now. To make changes to the current suite for, e.g., the devices API, run
 
 ```
 protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative api/devices/*.proto
