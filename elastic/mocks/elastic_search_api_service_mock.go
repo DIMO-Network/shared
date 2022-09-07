@@ -7,35 +7,35 @@ package mocks
 import (
 	reflect "reflect"
 
-	elastic "github.com/DIMO-Network/device-definitions-api/pkg/elastic"
+	elastic "github.com/DIMO-Network/shared/elastic"
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockElasticSearchService is a mock of ElasticSearchService interface.
-type MockElasticSearchService struct {
+// MockAppSearchService is a mock of AppSearchService interface.
+type MockAppSearchService struct {
 	ctrl     *gomock.Controller
-	recorder *MockElasticSearchServiceMockRecorder
+	recorder *MockAppSearchServiceMockRecorder
 }
 
-// MockElasticSearchServiceMockRecorder is the mock recorder for MockElasticSearchService.
-type MockElasticSearchServiceMockRecorder struct {
-	mock *MockElasticSearchService
+// MockAppSearchServiceMockRecorder is the mock recorder for MockAppSearchService.
+type MockAppSearchServiceMockRecorder struct {
+	mock *MockAppSearchService
 }
 
-// NewMockElasticSearchService creates a new mock instance.
-func NewMockElasticSearchService(ctrl *gomock.Controller) *MockElasticSearchService {
-	mock := &MockElasticSearchService{ctrl: ctrl}
-	mock.recorder = &MockElasticSearchServiceMockRecorder{mock}
+// NewMockAppSearchService creates a new mock instance.
+func NewMockAppSearchService(ctrl *gomock.Controller) *MockAppSearchService {
+	mock := &MockAppSearchService{ctrl: ctrl}
+	mock.recorder = &MockAppSearchServiceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockElasticSearchService) EXPECT() *MockElasticSearchServiceMockRecorder {
+func (m *MockAppSearchService) EXPECT() *MockAppSearchServiceMockRecorder {
 	return m.recorder
 }
 
 // AddSourceEngineToMetaEngine mocks base method.
-func (m *MockElasticSearchService) AddSourceEngineToMetaEngine(sourceName, metaName string) (*elastic.EngineDetail, error) {
+func (m *MockAppSearchService) AddSourceEngineToMetaEngine(sourceName, metaName string) (*elastic.EngineDetail, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddSourceEngineToMetaEngine", sourceName, metaName)
 	ret0, _ := ret[0].(*elastic.EngineDetail)
@@ -44,13 +44,13 @@ func (m *MockElasticSearchService) AddSourceEngineToMetaEngine(sourceName, metaN
 }
 
 // AddSourceEngineToMetaEngine indicates an expected call of AddSourceEngineToMetaEngine.
-func (mr *MockElasticSearchServiceMockRecorder) AddSourceEngineToMetaEngine(sourceName, metaName interface{}) *gomock.Call {
+func (mr *MockAppSearchServiceMockRecorder) AddSourceEngineToMetaEngine(sourceName, metaName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddSourceEngineToMetaEngine", reflect.TypeOf((*MockElasticSearchService)(nil).AddSourceEngineToMetaEngine), sourceName, metaName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddSourceEngineToMetaEngine", reflect.TypeOf((*MockAppSearchService)(nil).AddSourceEngineToMetaEngine), sourceName, metaName)
 }
 
 // CreateDocuments mocks base method.
-func (m *MockElasticSearchService) CreateDocuments(docs []elastic.DeviceDefinitionSearchDoc, engineName string) ([]elastic.CreateDocsResp, error) {
+func (m *MockAppSearchService) CreateDocuments(docs []any, engineName string) ([]elastic.CreateDocsResp, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDocuments", docs, engineName)
 	ret0, _ := ret[0].([]elastic.CreateDocsResp)
@@ -59,13 +59,13 @@ func (m *MockElasticSearchService) CreateDocuments(docs []elastic.DeviceDefiniti
 }
 
 // CreateDocuments indicates an expected call of CreateDocuments.
-func (mr *MockElasticSearchServiceMockRecorder) CreateDocuments(docs, engineName interface{}) *gomock.Call {
+func (mr *MockAppSearchServiceMockRecorder) CreateDocuments(docs, engineName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDocuments", reflect.TypeOf((*MockElasticSearchService)(nil).CreateDocuments), docs, engineName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDocuments", reflect.TypeOf((*MockAppSearchService)(nil).CreateDocuments), docs, engineName)
 }
 
 // CreateDocumentsBatched mocks base method.
-func (m *MockElasticSearchService) CreateDocumentsBatched(docs []elastic.DeviceDefinitionSearchDoc, engineName string) error {
+func (m *MockAppSearchService) CreateDocumentsBatched(docs []any, engineName string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDocumentsBatched", docs, engineName)
 	ret0, _ := ret[0].(error)
@@ -73,13 +73,13 @@ func (m *MockElasticSearchService) CreateDocumentsBatched(docs []elastic.DeviceD
 }
 
 // CreateDocumentsBatched indicates an expected call of CreateDocumentsBatched.
-func (mr *MockElasticSearchServiceMockRecorder) CreateDocumentsBatched(docs, engineName interface{}) *gomock.Call {
+func (mr *MockAppSearchServiceMockRecorder) CreateDocumentsBatched(docs, engineName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDocumentsBatched", reflect.TypeOf((*MockElasticSearchService)(nil).CreateDocumentsBatched), docs, engineName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDocumentsBatched", reflect.TypeOf((*MockAppSearchService)(nil).CreateDocumentsBatched), docs, engineName)
 }
 
 // CreateEngine mocks base method.
-func (m *MockElasticSearchService) CreateEngine(name string, metaSource *string) (*elastic.EngineDetail, error) {
+func (m *MockAppSearchService) CreateEngine(name string, metaSource *string) (*elastic.EngineDetail, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateEngine", name, metaSource)
 	ret0, _ := ret[0].(*elastic.EngineDetail)
@@ -88,13 +88,13 @@ func (m *MockElasticSearchService) CreateEngine(name string, metaSource *string)
 }
 
 // CreateEngine indicates an expected call of CreateEngine.
-func (mr *MockElasticSearchServiceMockRecorder) CreateEngine(name, metaSource interface{}) *gomock.Call {
+func (mr *MockAppSearchServiceMockRecorder) CreateEngine(name, metaSource interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEngine", reflect.TypeOf((*MockElasticSearchService)(nil).CreateEngine), name, metaSource)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEngine", reflect.TypeOf((*MockAppSearchService)(nil).CreateEngine), name, metaSource)
 }
 
 // DeleteEngine mocks base method.
-func (m *MockElasticSearchService) DeleteEngine(name string) error {
+func (m *MockAppSearchService) DeleteEngine(name string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteEngine", name)
 	ret0, _ := ret[0].(error)
@@ -102,13 +102,13 @@ func (m *MockElasticSearchService) DeleteEngine(name string) error {
 }
 
 // DeleteEngine indicates an expected call of DeleteEngine.
-func (mr *MockElasticSearchServiceMockRecorder) DeleteEngine(name interface{}) *gomock.Call {
+func (mr *MockAppSearchServiceMockRecorder) DeleteEngine(name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteEngine", reflect.TypeOf((*MockElasticSearchService)(nil).DeleteEngine), name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteEngine", reflect.TypeOf((*MockAppSearchService)(nil).DeleteEngine), name)
 }
 
 // GetEngines mocks base method.
-func (m *MockElasticSearchService) GetEngines() (*elastic.GetEnginesResp, error) {
+func (m *MockAppSearchService) GetEngines() (*elastic.GetEnginesResp, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetEngines")
 	ret0, _ := ret[0].(*elastic.GetEnginesResp)
@@ -117,13 +117,13 @@ func (m *MockElasticSearchService) GetEngines() (*elastic.GetEnginesResp, error)
 }
 
 // GetEngines indicates an expected call of GetEngines.
-func (mr *MockElasticSearchServiceMockRecorder) GetEngines() *gomock.Call {
+func (mr *MockAppSearchServiceMockRecorder) GetEngines() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEngines", reflect.TypeOf((*MockElasticSearchService)(nil).GetEngines))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEngines", reflect.TypeOf((*MockAppSearchService)(nil).GetEngines))
 }
 
 // GetMetaEngineName mocks base method.
-func (m *MockElasticSearchService) GetMetaEngineName() string {
+func (m *MockAppSearchService) GetMetaEngineName() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetMetaEngineName")
 	ret0, _ := ret[0].(string)
@@ -131,27 +131,13 @@ func (m *MockElasticSearchService) GetMetaEngineName() string {
 }
 
 // GetMetaEngineName indicates an expected call of GetMetaEngineName.
-func (mr *MockElasticSearchServiceMockRecorder) GetMetaEngineName() *gomock.Call {
+func (mr *MockAppSearchServiceMockRecorder) GetMetaEngineName() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetaEngineName", reflect.TypeOf((*MockElasticSearchService)(nil).GetMetaEngineName))
-}
-
-// LoadDeviceDefinitions mocks base method.
-func (m *MockElasticSearchService) LoadDeviceDefinitions() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LoadDeviceDefinitions")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// LoadDeviceDefinitions indicates an expected call of LoadDeviceDefinitions.
-func (mr *MockElasticSearchServiceMockRecorder) LoadDeviceDefinitions() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadDeviceDefinitions", reflect.TypeOf((*MockElasticSearchService)(nil).LoadDeviceDefinitions))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetaEngineName", reflect.TypeOf((*MockAppSearchService)(nil).GetMetaEngineName))
 }
 
 // RemoveSourceEngine mocks base method.
-func (m *MockElasticSearchService) RemoveSourceEngine(sourceName, metaName string) (*elastic.EngineDetail, error) {
+func (m *MockAppSearchService) RemoveSourceEngine(sourceName, metaName string) (*elastic.EngineDetail, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RemoveSourceEngine", sourceName, metaName)
 	ret0, _ := ret[0].(*elastic.EngineDetail)
@@ -160,21 +146,7 @@ func (m *MockElasticSearchService) RemoveSourceEngine(sourceName, metaName strin
 }
 
 // RemoveSourceEngine indicates an expected call of RemoveSourceEngine.
-func (mr *MockElasticSearchServiceMockRecorder) RemoveSourceEngine(sourceName, metaName interface{}) *gomock.Call {
+func (mr *MockAppSearchServiceMockRecorder) RemoveSourceEngine(sourceName, metaName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveSourceEngine", reflect.TypeOf((*MockElasticSearchService)(nil).RemoveSourceEngine), sourceName, metaName)
-}
-
-// UpdateSearchSettingsForDeviceDefs mocks base method.
-func (m *MockElasticSearchService) UpdateSearchSettingsForDeviceDefs(engineName string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateSearchSettingsForDeviceDefs", engineName)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateSearchSettingsForDeviceDefs indicates an expected call of UpdateSearchSettingsForDeviceDefs.
-func (mr *MockElasticSearchServiceMockRecorder) UpdateSearchSettingsForDeviceDefs(engineName interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSearchSettingsForDeviceDefs", reflect.TypeOf((*MockElasticSearchService)(nil).UpdateSearchSettingsForDeviceDefs), engineName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveSourceEngine", reflect.TypeOf((*MockAppSearchService)(nil).RemoveSourceEngine), sourceName, metaName)
 }
