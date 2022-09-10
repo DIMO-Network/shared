@@ -22,9 +22,9 @@ type CacheService interface {
 
 // NewRedisCacheService establishes connection to Redis and creates client. db is the 0-16 db instance to use from redis.
 // tls is whether redis server uses tls - false if eg. running in docker but may be true if in production. url is the redis server url.
-func NewRedisCacheService(enableTLS, clustered bool, url, password string, db int) CacheService {
+func NewRedisCacheService(clustered bool, redisSettings Settings) CacheService {
 	var tlsConfig *tls.Config
-	if enableTLS {
+	if redisSettings.TLS {
 		tlsConfig = new(tls.Config)
 	}
 
@@ -32,19 +32,19 @@ func NewRedisCacheService(enableTLS, clustered bool, url, password string, db in
 	// handle redis cluster in prod
 	if clustered {
 		cc := redis.NewClusterClient(&redis.ClusterOptions{
-			Addrs:     []string{url},
-			Password:  password,
+			Addrs:     []string{redisSettings.URL},
+			Password:  redisSettings.Password,
 			TLSConfig: tlsConfig,
 		})
 		// cluster client does not have setting for DB, so must set it manually.
-		cc.Do(context.Background(), fmt.Sprintf("SELECT %d", db))
+		cc.Do(context.Background(), fmt.Sprintf("SELECT %d", redisSettings.DB))
 		r = cc
 	} else {
 		c := redis.NewClient(&redis.Options{
-			Addr:      url,
-			Password:  password,
+			Addr:      redisSettings.URL,
+			Password:  redisSettings.Password,
 			TLSConfig: tlsConfig,
-			DB:        db,
+			DB:        redisSettings.DB,
 		})
 		r = c
 	}

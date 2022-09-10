@@ -22,7 +22,7 @@ REDIS:
 	assert.Equal(t, 3000, settings.Port)
 	assert.Equal(t, "mydb.aws.net", settings.DbConnectString)
 	assert.Equal(t, "dev", settings.Env)
-	assert.Equal(t, "redis.bobby", settings.Redis.RedisUrl)
+	assert.Equal(t, "redis.bobby", settings.Redis.RedisURL)
 }
 
 func Test_loadFromEnvVars(t *testing.T) {
@@ -42,7 +42,7 @@ func Test_loadFromEnvVars(t *testing.T) {
 	assert.Equal(t, "test", settings.Env)
 	assert.Equal(t, 5000, settings.Port)
 	assert.Equal(t, "mydb.aws.net", settings.DbConnectString)
-	assert.Equal(t, "redis.bobby", settings.Redis.RedisUrl)
+	assert.Equal(t, "redis.bobby", settings.Redis.RedisURL)
 }
 
 func Test_loadFromEnvVars_errIfNotPointer(t *testing.T) {
@@ -73,5 +73,5 @@ type TestSettings struct {
 }
 
 type RedisSubProp struct {
-	RedisUrl string `yaml:"REDIS_URL"`
+	RedisURL string `yaml:"REDIS_URL"`
 }
