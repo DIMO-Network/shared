@@ -43,7 +43,7 @@ func loadFromYaml[S any](yamlFile []byte) (S, error) {
 // settings must be passed in as a pointer
 func loadFromEnvVars[S any](settings S) error {
 	if reflect.ValueOf(settings).Kind() != reflect.Ptr {
-		return errors.New("-")
+		return errors.New("settings must be passed in as a pointer")
 	}
 	valueOfConfig := reflect.ValueOf(settings).Elem()
 	typeOfT := valueOfConfig.Type()
@@ -53,23 +53,40 @@ func loadFromEnvVars[S any](settings S) error {
 		field := valueOfConfig.Field(i)
 		fieldYamlName := typeOfT.Field(i).Tag.Get("yaml")
 
-		// check if env var with same field yaml name exists, if so, set the value from the env var
-		if env, exists := os.LookupEnv(fieldYamlName); exists {
-			var val interface{}
-			switch field.Kind() {
-			case reflect.String:
-				val = env
-			case reflect.Bool:
-				val, err = strconv.ParseBool(env)
-			case reflect.Int:
-				val, err = strconv.Atoi(env)
-			case reflect.Int64:
-				val, err = strconv.ParseInt(env, 10, 64)
+		if field.Kind() == reflect.Struct {
+			// iterate through the fields - like above, prepend fieldYamlName
+			for i := 0; i < field.NumField(); i++ {
+				subField := field.Field(i)
+				subFieldYamlName := fieldYamlName + "_" + field.Type().Field(i).Tag.Get("yaml")
+				err = matchEnvVarToField(subFieldYamlName, subField)
 			}
-			// now set the field with the val
-			if val != nil {
-				field.Set(reflect.ValueOf(val))
-			}
+		} else {
+			err = matchEnvVarToField(fieldYamlName, field)
+		}
+	}
+	return err
+}
+
+// matchEnvVarToField updates the field with the corresponding env variable value.
+// check if env var with same field yaml name exists, if so, set the value from the env var
+func matchEnvVarToField(envVarName string, field reflect.Value) error { // otherwise need to pass in field.Kind() and return any for the value.
+	var err error
+	// check if env var with same field yaml name exists, if so, set the value from the env var
+	if env, exists := os.LookupEnv(envVarName); exists {
+		var val any
+		switch field.Kind() {
+		case reflect.String:
+			val = env
+		case reflect.Bool:
+			val, err = strconv.ParseBool(env)
+		case reflect.Int:
+			val, err = strconv.Atoi(env)
+		case reflect.Int64:
+			val, err = strconv.ParseInt(env, 10, 64)
+		}
+		// now set the field with the val
+		if val != nil {
+			field.Set(reflect.ValueOf(val))
 		}
 	}
 	return err

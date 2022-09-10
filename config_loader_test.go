@@ -2,6 +2,7 @@ package shared
 
 import (
 	"os"
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -12,6 +13,8 @@ func Test_loadFromYaml(t *testing.T) {
 PORT: 3000
 DB_CONNECT_STRING: mydb.aws.net
 ENV: dev
+REDIS:
+  REDIS_URL: redis.bobby
 `
 	settings, err := loadFromYaml[TestSettings]([]byte(data))
 	assert.NoError(t, err, "no error expected")
@@ -19,6 +22,7 @@ ENV: dev
 	assert.Equal(t, 3000, settings.Port)
 	assert.Equal(t, "mydb.aws.net", settings.DbConnectString)
 	assert.Equal(t, "dev", settings.Env)
+	assert.Equal(t, "redis.bobby", settings.Redis.RedisUrl)
 }
 
 func Test_loadFromEnvVars(t *testing.T) {
@@ -30,6 +34,7 @@ func Test_loadFromEnvVars(t *testing.T) {
 	// these will now override the above
 	os.Setenv("ENV", "test")
 	os.Setenv("PORT", "5000")
+	os.Setenv("REDIS_REDIS_URL", "redis.bobby")
 
 	err := loadFromEnvVars(&settings) // b/c of type inference we don't need to specify the type
 	assert.NoError(t, err)
@@ -37,6 +42,7 @@ func Test_loadFromEnvVars(t *testing.T) {
 	assert.Equal(t, "test", settings.Env)
 	assert.Equal(t, 5000, settings.Port)
 	assert.Equal(t, "mydb.aws.net", settings.DbConnectString)
+	assert.Equal(t, "redis.bobby", settings.Redis.RedisUrl)
 }
 
 func Test_loadFromEnvVars_errIfNotPointer(t *testing.T) {
@@ -45,8 +51,27 @@ func Test_loadFromEnvVars_errIfNotPointer(t *testing.T) {
 	assert.Error(t, err, "expected error if settings not a pointer")
 }
 
+func Test_matchEnvVarToField(t *testing.T) {
+	settings := &TestSettings{}
+	os.Setenv("PORT", "5000")
+
+	valueOfConfig := reflect.ValueOf(settings).Elem()
+	field := valueOfConfig.Field(0)
+
+	err := matchEnvVarToField("PORT", field)
+	assert.NoError(t, err)
+
+	assert.Equal(t, int64(5000), field.Int())
+	assert.Equal(t, 5000, settings.Port)
+}
+
 type TestSettings struct {
-	Port            int    `yaml:"PORT"`
-	DbConnectString string `yaml:"DB_CONNECT_STRING"`
-	Env             string `yaml:"ENV"`
+	Port            int          `yaml:"PORT"`
+	DbConnectString string       `yaml:"DB_CONNECT_STRING"`
+	Env             string       `yaml:"ENV"`
+	Redis           RedisSubProp `yaml:"REDIS"`
+}
+
+type RedisSubProp struct {
+	RedisUrl string `yaml:"REDIS_URL"`
 }
