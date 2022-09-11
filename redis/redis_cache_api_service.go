@@ -12,7 +12,7 @@ import (
 
 // CacheService combines methods of redis client and redis clustered client to have one impl that works for both, reduced to only what we use
 type CacheService interface {
-	Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd
+	Set(ctx context.Context, key string, value any, expiration time.Duration) *redis.StatusCmd
 	Get(ctx context.Context, key string) *redis.StringCmd
 	FlushAll(ctx context.Context) *redis.StatusCmd
 	Del(ctx context.Context, keys ...string) *redis.IntCmd
@@ -42,10 +42,49 @@ func NewRedisCacheService(clustered bool, redisSettings Settings) CacheService {
 			Addr:      redisSettings.URL,
 			Password:  redisSettings.Password,
 			TLSConfig: tlsConfig,
-			DB:        redisSettings.DB,
 		})
 		r = c
 	}
 
-	return r
+	return &cacheService{redisClient: r, prefix: redisSettings.KeyPrefix}
+}
+
+// cacheService is a thing wrapper over the native client to prefix the keys b/c we use the same redis server cluster for
+// multiple different services due to clusters not supporting DB number.
+type cacheService struct {
+	redisClient CacheService
+	prefix      string
+}
+
+func (cs *cacheService) Set(ctx context.Context, key string, value any, expiration time.Duration) *redis.StatusCmd {
+	return cs.redisClient.Set(ctx, cs.keyBuilder(key), value, expiration)
+}
+
+func (cs *cacheService) Get(ctx context.Context, key string) *redis.StringCmd {
+	return cs.redisClient.Get(ctx, cs.keyBuilder(key))
+}
+
+func (cs *cacheService) FlushAll(ctx context.Context) *redis.StatusCmd {
+	return cs.redisClient.FlushAll(ctx)
+}
+
+func (cs *cacheService) Del(ctx context.Context, keys ...string) *redis.IntCmd {
+	newKeys := make([]string, len(keys))
+	for i, key := range keys {
+		newKeys[i] = cs.keyBuilder(key)
+	}
+
+	return cs.redisClient.Del(ctx, newKeys...)
+}
+
+func (cs *cacheService) Close() error {
+	return cs.redisClient.Close()
+}
+
+// keyBuilder builds key prefixed by setting prefix. if empty just returns key
+func (cs *cacheService) keyBuilder(key string) string {
+	if len(cs.prefix) > 0 {
+		return cs.prefix + "_" + key
+	}
+	return key
 }

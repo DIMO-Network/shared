@@ -13,31 +13,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockRedisCacheService is a mock of RedisCacheService interface.
-type MockRedisCacheService struct {
+// MockCacheService is a mock of CacheService interface.
+type MockCacheService struct {
 	ctrl     *gomock.Controller
-	recorder *MockRedisCacheServiceMockRecorder
+	recorder *MockCacheServiceMockRecorder
 }
 
-// MockRedisCacheServiceMockRecorder is the mock recorder for MockRedisCacheService.
-type MockRedisCacheServiceMockRecorder struct {
-	mock *MockRedisCacheService
+// MockCacheServiceMockRecorder is the mock recorder for MockCacheService.
+type MockCacheServiceMockRecorder struct {
+	mock *MockCacheService
 }
 
-// NewMockRedisCacheService creates a new mock instance.
-func NewMockRedisCacheService(ctrl *gomock.Controller) *MockRedisCacheService {
-	mock := &MockRedisCacheService{ctrl: ctrl}
-	mock.recorder = &MockRedisCacheServiceMockRecorder{mock}
+// NewMockCacheService creates a new mock instance.
+func NewMockCacheService(ctrl *gomock.Controller) *MockCacheService {
+	mock := &MockCacheService{ctrl: ctrl}
+	mock.recorder = &MockCacheServiceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockRedisCacheService) EXPECT() *MockRedisCacheServiceMockRecorder {
+func (m *MockCacheService) EXPECT() *MockCacheServiceMockRecorder {
 	return m.recorder
 }
 
 // Close mocks base method.
-func (m *MockRedisCacheService) Close() error {
+func (m *MockCacheService) Close() error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Close")
 	ret0, _ := ret[0].(error)
@@ -45,13 +45,13 @@ func (m *MockRedisCacheService) Close() error {
 }
 
 // Close indicates an expected call of Close.
-func (mr *MockRedisCacheServiceMockRecorder) Close() *gomock.Call {
+func (mr *MockCacheServiceMockRecorder) Close() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockRedisCacheService)(nil).Close))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockCacheService)(nil).Close))
 }
 
 // Del mocks base method.
-func (m *MockRedisCacheService) Del(ctx context.Context, keys ...string) *redis.IntCmd {
+func (m *MockCacheService) Del(ctx context.Context, keys ...string) *redis.IntCmd {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx}
 	for _, a := range keys {
@@ -63,14 +63,14 @@ func (m *MockRedisCacheService) Del(ctx context.Context, keys ...string) *redis.
 }
 
 // Del indicates an expected call of Del.
-func (mr *MockRedisCacheServiceMockRecorder) Del(ctx interface{}, keys ...interface{}) *gomock.Call {
+func (mr *MockCacheServiceMockRecorder) Del(ctx interface{}, keys ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx}, keys...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Del", reflect.TypeOf((*MockRedisCacheService)(nil).Del), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Del", reflect.TypeOf((*MockCacheService)(nil).Del), varargs...)
 }
 
 // FlushAll mocks base method.
-func (m *MockRedisCacheService) FlushAll(ctx context.Context) *redis.StatusCmd {
+func (m *MockCacheService) FlushAll(ctx context.Context) *redis.StatusCmd {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FlushAll", ctx)
 	ret0, _ := ret[0].(*redis.StatusCmd)
@@ -78,13 +78,13 @@ func (m *MockRedisCacheService) FlushAll(ctx context.Context) *redis.StatusCmd {
 }
 
 // FlushAll indicates an expected call of FlushAll.
-func (mr *MockRedisCacheServiceMockRecorder) FlushAll(ctx interface{}) *gomock.Call {
+func (mr *MockCacheServiceMockRecorder) FlushAll(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FlushAll", reflect.TypeOf((*MockRedisCacheService)(nil).FlushAll), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FlushAll", reflect.TypeOf((*MockCacheService)(nil).FlushAll), ctx)
 }
 
 // Get mocks base method.
-func (m *MockRedisCacheService) Get(ctx context.Context, key string) *redis.StringCmd {
+func (m *MockCacheService) Get(ctx context.Context, key string) *redis.StringCmd {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", ctx, key)
 	ret0, _ := ret[0].(*redis.StringCmd)
@@ -92,13 +92,13 @@ func (m *MockRedisCacheService) Get(ctx context.Context, key string) *redis.Stri
 }
 
 // Get indicates an expected call of Get.
-func (mr *MockRedisCacheServiceMockRecorder) Get(ctx, key interface{}) *gomock.Call {
+func (mr *MockCacheServiceMockRecorder) Get(ctx, key interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockRedisCacheService)(nil).Get), ctx, key)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockCacheService)(nil).Get), ctx, key)
 }
 
 // Set mocks base method.
-func (m *MockRedisCacheService) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd {
+func (m *MockCacheService) Set(ctx context.Context, key string, value any, expiration time.Duration) *redis.StatusCmd {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Set", ctx, key, value, expiration)
 	ret0, _ := ret[0].(*redis.StatusCmd)
@@ -106,7 +106,7 @@ func (m *MockRedisCacheService) Set(ctx context.Context, key string, value inter
 }
 
 // Set indicates an expected call of Set.
-func (mr *MockRedisCacheServiceMockRecorder) Set(ctx, key, value, expiration interface{}) *gomock.Call {
+func (mr *MockCacheServiceMockRecorder) Set(ctx, key, value, expiration interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockRedisCacheService)(nil).Set), ctx, key, value, expiration)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockCacheService)(nil).Set), ctx, key, value, expiration)
 }

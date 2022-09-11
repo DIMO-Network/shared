@@ -7,6 +7,6 @@ type Settings struct {
 	Password string `yaml:"PASSWORD"`
 	// TLS enable tls
 	TLS bool `yaml:"TLS"`
-	// DB 0-16 db instance to use from redis
-	DB int `yaml:"DB"`
+	// KeyPrefix prepends this string to all keys. Makes it easier with many services sharing redis cluster. If empty no prefix.
+	KeyPrefix string `yaml:"KEY_PREFIX"`
 }
