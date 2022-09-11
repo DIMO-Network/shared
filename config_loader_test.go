@@ -13,7 +13,7 @@ PORT: 3000
 DB_CONNECT_STRING: mydb.aws.net
 ENV: dev
 REDIS:
-  REDIS_URL: redis.bobby
+  URL: redis.bobby
 `
 	settings, err := loadFromYaml[TestSettings]([]byte(data))
 	assert.NoError(t, err, "no error expected")

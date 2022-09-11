@@ -5,7 +5,6 @@ package redis
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -36,8 +35,7 @@ func NewRedisCacheService(clustered bool, redisSettings Settings) CacheService {
 			Password:  redisSettings.Password,
 			TLSConfig: tlsConfig,
 		})
-		// cluster client does not have setting for DB, so must set it manually.
-		cc.Do(context.Background(), fmt.Sprintf("SELECT %d", redisSettings.DB))
+		// cluster client does not have setting for DB b/c the SELECT command cannot be used, since Redis Cluster only supports database zero.
 		r = cc
 	} else {
 		c := redis.NewClient(&redis.Options{
