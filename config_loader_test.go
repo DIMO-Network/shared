@@ -1,7 +1,6 @@
 package shared
 
 import (
-	"os"
 	"reflect"
 	"testing"
 
@@ -22,7 +21,7 @@ REDIS:
 	assert.Equal(t, 3000, settings.Port)
 	assert.Equal(t, "mydb.aws.net", settings.DbConnectString)
 	assert.Equal(t, "dev", settings.Env)
-	assert.Equal(t, "redis.bobby", settings.Redis.RedisURL)
+	assert.Equal(t, "redis.bobby", settings.Redis.URL)
 }
 
 func Test_loadFromEnvVars(t *testing.T) {
@@ -32,9 +31,9 @@ func Test_loadFromEnvVars(t *testing.T) {
 		Env:             "dev",
 	}
 	// these will now override the above
-	os.Setenv("ENV", "test")
-	os.Setenv("PORT", "5000")
-	os.Setenv("REDIS_REDIS_URL", "redis.bobby")
+	t.Setenv("ENV", "test")
+	t.Setenv("PORT", "5000")
+	t.Setenv("REDIS_URL", "redis.bobby")
 
 	err := loadFromEnvVars(&settings) // b/c of type inference we don't need to specify the type
 	assert.NoError(t, err)
@@ -42,7 +41,7 @@ func Test_loadFromEnvVars(t *testing.T) {
 	assert.Equal(t, "test", settings.Env)
 	assert.Equal(t, 5000, settings.Port)
 	assert.Equal(t, "mydb.aws.net", settings.DbConnectString)
-	assert.Equal(t, "redis.bobby", settings.Redis.RedisURL)
+	assert.Equal(t, "redis.bobby", settings.Redis.URL)
 }
 
 func Test_loadFromEnvVars_errIfNotPointer(t *testing.T) {
@@ -53,7 +52,7 @@ func Test_loadFromEnvVars_errIfNotPointer(t *testing.T) {
 
 func Test_matchEnvVarToField(t *testing.T) {
 	settings := &TestSettings{}
-	os.Setenv("PORT", "5000")
+	t.Setenv("PORT", "5000")
 
 	valueOfConfig := reflect.ValueOf(settings).Elem()
 	field := valueOfConfig.Field(0)
@@ -73,5 +72,5 @@ type TestSettings struct {
 }
 
 type RedisSubProp struct {
-	RedisURL string `yaml:"REDIS_URL"`
+	URL string `yaml:"URL"`
 }
