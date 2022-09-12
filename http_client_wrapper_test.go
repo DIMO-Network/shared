@@ -1,10 +1,11 @@
 package shared
 
 import (
-	"github.com/jarcoal/httpmock"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
+
+	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_httpClientWrapper_ExecuteRequest_failsTooManyRetries(t *testing.T) {
@@ -74,4 +75,3 @@ func Test(t *testing.T) {
 		})
 	}
 }
-
