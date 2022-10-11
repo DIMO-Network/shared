@@ -16,6 +16,7 @@ message GetUserDeviceRequest {
 message UserDevice {
 	string id = 1;
 	string user_id = 2;
+	optional uint64 token_id = 3;
 }
 
 message ListUserDevicesForUserRequest {
