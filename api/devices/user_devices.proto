@@ -2,6 +2,8 @@ syntax = "proto3";
 
 option go_package = "github.com/DIMO-Network/shared/api/devices";
 
+import "google/protobuf/timestamp.proto";
+
 package devices;
 
 service UserDeviceService {
@@ -17,6 +19,7 @@ message UserDevice {
 	string id = 1;
 	string user_id = 2;
 	optional uint64 token_id = 3;
+	optional google.protobuf.Timestamp opted_in_at = 4;
 }
 
 message ListUserDevicesForUserRequest {
