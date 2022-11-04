@@ -22,13 +22,13 @@ type httpClientWrapper struct {
 	torProxyURL string
 }
 
-type HttpResponseError struct {
+type HTTPResponseError struct {
 	error
 	StatusCode int
 }
 
 func BuildResponseError(statusCode int, err error) error {
-	return HttpResponseError{StatusCode: statusCode, error: err}
+	return HTTPResponseError{StatusCode: statusCode, error: err}
 }
 
 func NewHTTPClientWrapper(baseURL, torProxyURL string, timeoutSeconds time.Duration, headers map[string]string, addJSONHeaders bool) (HTTPClientWrapper, error) {
@@ -97,7 +97,7 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 	if _, ok := err.(retry.Error); ok {
 		retryErrors := err.(retry.Error)
 		for _, e := range retryErrors {
-			if httpError, ok := e.(HttpResponseError); ok {
+			if httpError, ok := e.(HTTPResponseError); ok {
 				return res, httpError
 			}
 		}
