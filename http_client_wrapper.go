@@ -22,6 +22,15 @@ type httpClientWrapper struct {
 	torProxyURL string
 }
 
+type HttpResponseError struct {
+	error
+	StatusCode int
+}
+
+func BuildResponseError(statusCode int, err error) error {
+	return HttpResponseError{StatusCode: statusCode, error: err}
+}
+
 func NewHTTPClientWrapper(baseURL, torProxyURL string, timeoutSeconds time.Duration, headers map[string]string, addJSONHeaders bool) (HTTPClientWrapper, error) {
 	if headers == nil {
 		headers = map[string]string{}
@@ -71,15 +80,28 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 			if err != nil {
 				return errors.Wrapf(err, "error reading failed request body")
 			}
-			errResp := errors.Errorf("received non success status code %d with body: %s", res.StatusCode, string(body))
+			errResp := BuildResponseError(res.StatusCode, errors.Errorf("received non success status code %d with body: %s", res.StatusCode, string(body)))
 			if res.StatusCode == 400 || res.StatusCode == 401 || res.StatusCode == 404 {
 				// unrecoverable since probably bad payload or n
-				return retry.Unrecoverable(errResp)
+				return retry.Unrecoverable(BuildResponseError(res.StatusCode, errResp))
 			}
 			return errResp
 		}
 		return err
 	}, retry.Attempts(5), retry.Delay(500*time.Millisecond), retry.MaxDelay(9*time.Second))
+
+	if res == nil {
+		return nil, err
+	}
+
+	if _, ok := err.(retry.Error); ok {
+		retryErrors := err.(retry.Error)
+		for _, e := range retryErrors {
+			if httpError, ok := e.(HttpResponseError); ok {
+				return res, httpError
+			}
+		}
+	}
 
 	return res, err
 }
