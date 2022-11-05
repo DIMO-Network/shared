@@ -21,7 +21,8 @@ func Test_httpClientWrapper_ExecuteRequest_failsTooManyRetries(t *testing.T) {
 
 	assert.Equal(t, 5, c, "expected five retries")
 	assert.Error(t, err, "expected error")
-	//assert.Contains(t, myErr, "All attempts fail")
+	assert.ErrorIs(t, err, err.(HTTPResponseError), "expected HTTPResponseError")
+	assert.Equal(t, 409, err.(HTTPResponseError).StatusCode, "expected 409")
 	assert.Equal(t, 409, response.StatusCode)
 }
 

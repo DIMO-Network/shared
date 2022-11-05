@@ -94,8 +94,7 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 		return nil, err
 	}
 
-	if _, ok := err.(retry.Error); ok {
-		retryErrors := err.(retry.Error)
+	if retryErrors, ok := err.(retry.Error); ok {
 		for _, e := range retryErrors {
 			if httpError, ok := e.(HTTPResponseError); ok {
 				return res, httpError
