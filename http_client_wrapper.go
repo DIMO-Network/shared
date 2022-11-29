@@ -2,7 +2,7 @@ package shared
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"time"
@@ -31,7 +31,7 @@ func BuildResponseError(statusCode int, err error) error {
 	return HTTPResponseError{StatusCode: statusCode, error: err}
 }
 
-func NewHTTPClientWrapper(baseURL, torProxyURL string, timeoutSeconds time.Duration, headers map[string]string, addJSONHeaders bool) (HTTPClientWrapper, error) {
+func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool) (HTTPClientWrapper, error) {
 	if headers == nil {
 		headers = map[string]string{}
 	}
@@ -40,7 +40,7 @@ func NewHTTPClientWrapper(baseURL, torProxyURL string, timeoutSeconds time.Durat
 		headers["Content-Type"] = "application/json"
 	}
 	client := &http.Client{
-		Timeout: timeoutSeconds * time.Second,
+		Timeout: timeout,
 	}
 	if torProxyURL != "" {
 		proxyURL, err := url.Parse(torProxyURL)
@@ -69,21 +69,22 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 	for hk, hv := range h.headers {
 		req.Header.Set(hk, hv)
 	}
-	res := new(http.Response)
+
+	var res *http.Response
 
 	err = retry.Do(func() error {
 		res, err = h.httpClient.Do(req)
 		// handle error status codes
 		if err == nil && res != nil && res.StatusCode > 299 {
 			defer res.Body.Close() //nolint
-			body, err := ioutil.ReadAll(res.Body)
+			body, err := io.ReadAll(res.Body)
 			if err != nil {
 				return errors.Wrapf(err, "error reading failed request body")
 			}
 			errResp := BuildResponseError(res.StatusCode, errors.Errorf("received non success status code %d with body: %s", res.StatusCode, string(body)))
-			if res.StatusCode == 400 || res.StatusCode == 401 || res.StatusCode == 404 {
+			if code := res.StatusCode; 400 <= code && code < 500 {
 				// unrecoverable since probably bad payload or n
-				return retry.Unrecoverable(BuildResponseError(res.StatusCode, errResp))
+				return retry.Unrecoverable(BuildResponseError(code, errResp))
 			}
 			return errResp
 		}
