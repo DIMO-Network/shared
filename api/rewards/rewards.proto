@@ -9,7 +9,7 @@ package users;
 
 service RewardsService {
 	rpc GetTotalPoints(google.protobuf.Empty) returns (GetTotalPointsResponse);
-    rpc GetQualifiedDevices(GetQualifiedDevicesRequest) returns (GetQualifiedDevicesResponse);
+    rpc GetQualifiedDevices(GetQualifiedDevicesRequest) returns (stream GetQualifiedDevicesResponse);
 }
 
 message GetTotalPointsResponse {

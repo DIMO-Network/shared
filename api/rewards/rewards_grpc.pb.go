@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RewardsServiceClient interface {
 	GetTotalPoints(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetTotalPointsResponse, error)
-	GetQualifiedDevices(ctx context.Context, in *GetQualifiedDevicesRequest, opts ...grpc.CallOption) (*GetQualifiedDevicesResponse, error)
+	GetQualifiedDevices(ctx context.Context, in *GetQualifiedDevicesRequest, opts ...grpc.CallOption) (RewardsService_GetQualifiedDevicesClient, error)
 }
 
 type rewardsServiceClient struct {
@@ -44,13 +44,36 @@ func (c *rewardsServiceClient) GetTotalPoints(ctx context.Context, in *emptypb.E
 	return out, nil
 }
 
-func (c *rewardsServiceClient) GetQualifiedDevices(ctx context.Context, in *GetQualifiedDevicesRequest, opts ...grpc.CallOption) (*GetQualifiedDevicesResponse, error) {
-	out := new(GetQualifiedDevicesResponse)
-	err := c.cc.Invoke(ctx, "/users.RewardsService/GetQualifiedDevices", in, out, opts...)
+func (c *rewardsServiceClient) GetQualifiedDevices(ctx context.Context, in *GetQualifiedDevicesRequest, opts ...grpc.CallOption) (RewardsService_GetQualifiedDevicesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &RewardsService_ServiceDesc.Streams[0], "/users.RewardsService/GetQualifiedDevices", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &rewardsServiceGetQualifiedDevicesClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type RewardsService_GetQualifiedDevicesClient interface {
+	Recv() (*GetQualifiedDevicesResponse, error)
+	grpc.ClientStream
+}
+
+type rewardsServiceGetQualifiedDevicesClient struct {
+	grpc.ClientStream
+}
+
+func (x *rewardsServiceGetQualifiedDevicesClient) Recv() (*GetQualifiedDevicesResponse, error) {
+	m := new(GetQualifiedDevicesResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // RewardsServiceServer is the server API for RewardsService service.
@@ -58,7 +81,7 @@ func (c *rewardsServiceClient) GetQualifiedDevices(ctx context.Context, in *GetQ
 // for forward compatibility
 type RewardsServiceServer interface {
 	GetTotalPoints(context.Context, *emptypb.Empty) (*GetTotalPointsResponse, error)
-	GetQualifiedDevices(context.Context, *GetQualifiedDevicesRequest) (*GetQualifiedDevicesResponse, error)
+	GetQualifiedDevices(*GetQualifiedDevicesRequest, RewardsService_GetQualifiedDevicesServer) error
 	mustEmbedUnimplementedRewardsServiceServer()
 }
 
@@ -69,8 +92,8 @@ type UnimplementedRewardsServiceServer struct {
 func (UnimplementedRewardsServiceServer) GetTotalPoints(context.Context, *emptypb.Empty) (*GetTotalPointsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTotalPoints not implemented")
 }
-func (UnimplementedRewardsServiceServer) GetQualifiedDevices(context.Context, *GetQualifiedDevicesRequest) (*GetQualifiedDevicesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetQualifiedDevices not implemented")
+func (UnimplementedRewardsServiceServer) GetQualifiedDevices(*GetQualifiedDevicesRequest, RewardsService_GetQualifiedDevicesServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetQualifiedDevices not implemented")
 }
 func (UnimplementedRewardsServiceServer) mustEmbedUnimplementedRewardsServiceServer() {}
 
@@ -103,22 +126,25 @@ func _RewardsService_GetTotalPoints_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RewardsService_GetQualifiedDevices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetQualifiedDevicesRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _RewardsService_GetQualifiedDevices_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetQualifiedDevicesRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(RewardsServiceServer).GetQualifiedDevices(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/users.RewardsService/GetQualifiedDevices",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RewardsServiceServer).GetQualifiedDevices(ctx, req.(*GetQualifiedDevicesRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(RewardsServiceServer).GetQualifiedDevices(m, &rewardsServiceGetQualifiedDevicesServer{stream})
+}
+
+type RewardsService_GetQualifiedDevicesServer interface {
+	Send(*GetQualifiedDevicesResponse) error
+	grpc.ServerStream
+}
+
+type rewardsServiceGetQualifiedDevicesServer struct {
+	grpc.ServerStream
+}
+
+func (x *rewardsServiceGetQualifiedDevicesServer) Send(m *GetQualifiedDevicesResponse) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 // RewardsService_ServiceDesc is the grpc.ServiceDesc for RewardsService service.
@@ -132,11 +158,13 @@ var RewardsService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetTotalPoints",
 			Handler:    _RewardsService_GetTotalPoints_Handler,
 		},
+	},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "GetQualifiedDevices",
-			Handler:    _RewardsService_GetQualifiedDevices_Handler,
+			StreamName:    "GetQualifiedDevices",
+			Handler:       _RewardsService_GetQualifiedDevices_Handler,
+			ServerStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "api/rewards/rewards.proto",
 }
