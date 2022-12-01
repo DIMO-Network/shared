@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/DIMO-Network/shared/api/rewards";
 
@@ -8,8 +9,23 @@ package users;
 
 service RewardsService {
 	rpc GetTotalPoints(google.protobuf.Empty) returns (GetTotalPointsResponse);
+    rpc GetQualifiedDevices(GetQualifiedDevicesRequest) returns (GetQualifiedDevicesResponse);
 }
 
 message GetTotalPointsResponse {
     int64 totalPoints = 1;
+}
+
+message GetQualifiedDevicesRequest {
+    google.protobuf.Timestamp start = 1;
+    google.protobuf.Timestamp end = 2;
+}
+
+message GetQualifiedDevicesResponse {
+    repeated GetQualifiedDevicesDevice devices = 1;
+}
+
+message GetQualifiedDevicesDevice {
+    string id = 1;
+    repeated string integration_ids = 2;
 }
