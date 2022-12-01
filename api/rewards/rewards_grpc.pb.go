@@ -60,7 +60,7 @@ func (c *rewardsServiceClient) GetQualifiedDevices(ctx context.Context, in *GetQ
 }
 
 type RewardsService_GetQualifiedDevicesClient interface {
-	Recv() (*GetQualifiedDevicesResponse, error)
+	Recv() (*GetQualifiedDevicesDevice, error)
 	grpc.ClientStream
 }
 
@@ -68,8 +68,8 @@ type rewardsServiceGetQualifiedDevicesClient struct {
 	grpc.ClientStream
 }
 
-func (x *rewardsServiceGetQualifiedDevicesClient) Recv() (*GetQualifiedDevicesResponse, error) {
-	m := new(GetQualifiedDevicesResponse)
+func (x *rewardsServiceGetQualifiedDevicesClient) Recv() (*GetQualifiedDevicesDevice, error) {
+	m := new(GetQualifiedDevicesDevice)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -135,7 +135,7 @@ func _RewardsService_GetQualifiedDevices_Handler(srv interface{}, stream grpc.Se
 }
 
 type RewardsService_GetQualifiedDevicesServer interface {
-	Send(*GetQualifiedDevicesResponse) error
+	Send(*GetQualifiedDevicesDevice) error
 	grpc.ServerStream
 }
 
@@ -143,7 +143,7 @@ type rewardsServiceGetQualifiedDevicesServer struct {
 	grpc.ServerStream
 }
 
-func (x *rewardsServiceGetQualifiedDevicesServer) Send(m *GetQualifiedDevicesResponse) error {
+func (x *rewardsServiceGetQualifiedDevicesServer) Send(m *GetQualifiedDevicesDevice) error {
 	return x.ServerStream.SendMsg(m)
 }
 

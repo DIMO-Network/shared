@@ -9,7 +9,7 @@ package users;
 
 service RewardsService {
 	rpc GetTotalPoints(google.protobuf.Empty) returns (GetTotalPointsResponse);
-    rpc GetQualifiedDevices(GetQualifiedDevicesRequest) returns (stream GetQualifiedDevicesResponse);
+    rpc GetQualifiedDevices(GetQualifiedDevicesRequest) returns (stream GetQualifiedDevicesDevice);
 }
 
 message GetTotalPointsResponse {
@@ -19,10 +19,6 @@ message GetTotalPointsResponse {
 message GetQualifiedDevicesRequest {
     google.protobuf.Timestamp start = 1;
     google.protobuf.Timestamp end = 2;
-}
-
-message GetQualifiedDevicesResponse {
-    repeated GetQualifiedDevicesDevice devices = 1;
 }
 
 message GetQualifiedDevicesDevice {
