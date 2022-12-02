@@ -15,4 +15,5 @@ message GetUserRequest {
 message User {
 	string id = 1;
 	optional string ethereum_address = 2;
+	optional string email_address = 3;
 }
