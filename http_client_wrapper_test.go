@@ -14,7 +14,7 @@ func Test_httpClientWrapper_ExecuteRequest_failsTooManyRetries(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 	path := "/api/vehicle/v2/makes"
-	httpmock.RegisterResponder(http.MethodGet, baseURL+path, httpmock.NewStringResponder(409, "error: too many requests"))
+	httpmock.RegisterResponder(http.MethodGet, baseURL+path, httpmock.NewStringResponder(503, "error: too many requests"))
 	response, err := hcw.ExecuteRequest(path, "GET", nil)
 	countInfo := httpmock.GetCallCountInfo()
 	c := countInfo["GET "+baseURL+path]
@@ -22,8 +22,8 @@ func Test_httpClientWrapper_ExecuteRequest_failsTooManyRetries(t *testing.T) {
 	assert.Equal(t, 5, c, "expected five retries")
 	assert.Error(t, err, "expected error")
 	assert.ErrorIs(t, err, err.(HTTPResponseError), "expected HTTPResponseError")
-	assert.Equal(t, 409, err.(HTTPResponseError).StatusCode, "expected 409")
-	assert.Equal(t, 409, response.StatusCode)
+	assert.Equal(t, 503, err.(HTTPResponseError).StatusCode, "expected 409")
+	assert.Equal(t, 503, response.StatusCode)
 }
 
 func Test_httpClientWrapper_ExecuteRequest_doesNotRetryCertainStatusCodes(t *testing.T) {
