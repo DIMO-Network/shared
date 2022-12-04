@@ -5,7 +5,7 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/DIMO-Network/shared/api/rewards";
 
-package users;
+package rewards;
 
 service RewardsService {
 	rpc GetTotalPoints(google.protobuf.Empty) returns (GetTotalPointsResponse);

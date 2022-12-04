@@ -37,7 +37,7 @@ func NewRewardsServiceClient(cc grpc.ClientConnInterface) RewardsServiceClient {
 
 func (c *rewardsServiceClient) GetTotalPoints(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetTotalPointsResponse, error) {
 	out := new(GetTotalPointsResponse)
-	err := c.cc.Invoke(ctx, "/users.RewardsService/GetTotalPoints", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rewards.RewardsService/GetTotalPoints", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (c *rewardsServiceClient) GetTotalPoints(ctx context.Context, in *emptypb.E
 }
 
 func (c *rewardsServiceClient) GetQualifiedDevices(ctx context.Context, in *GetQualifiedDevicesRequest, opts ...grpc.CallOption) (RewardsService_GetQualifiedDevicesClient, error) {
-	stream, err := c.cc.NewStream(ctx, &RewardsService_ServiceDesc.Streams[0], "/users.RewardsService/GetQualifiedDevices", opts...)
+	stream, err := c.cc.NewStream(ctx, &RewardsService_ServiceDesc.Streams[0], "/rewards.RewardsService/GetQualifiedDevices", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +118,7 @@ func _RewardsService_GetTotalPoints_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RewardsService/GetTotalPoints",
+		FullMethod: "/rewards.RewardsService/GetTotalPoints",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RewardsServiceServer).GetTotalPoints(ctx, req.(*emptypb.Empty))
@@ -151,7 +151,7 @@ func (x *rewardsServiceGetQualifiedDevicesServer) Send(m *GetQualifiedDevicesDev
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var RewardsService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "users.RewardsService",
+	ServiceName: "rewards.RewardsService",
 	HandlerType: (*RewardsServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
