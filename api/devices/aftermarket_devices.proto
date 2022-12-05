@@ -13,7 +13,7 @@ message ListAftermarketDevicesForUserRequest {
 }
 
 message ListAftermarketDevicesForUserResponse {
-	repeated AftermarketDevice devices = 1;
+	repeated AftermarketDevice aftermarket_devices = 1;
 }
 
 message AftermarketDevice {
