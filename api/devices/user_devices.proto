@@ -21,6 +21,7 @@ message UserDevice {
 	optional uint64 token_id = 3;
 	optional google.protobuf.Timestamp opted_in_at = 4;
 	optional bytes owner_address = 5;
+	optional uint64 aftermarket_device_token_id = 6;
 }
 
 message ListUserDevicesForUserRequest {
