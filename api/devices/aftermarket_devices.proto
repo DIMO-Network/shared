@@ -5,14 +5,19 @@ option go_package = "github.com/DIMO-Network/shared/api/devices";
 package devices;
 
 service AftermarketDeviceService {
-	rpc GetDeviceBySerial(GetDeviceBySerialRequest) returns (AftermarketDevice);
+	rpc ListAftermarketDevicesForUser(ListAftermarketDevicesForUserRequest) returns (ListAftermarketDevicesForUserResponse);
 }
 
-message GetDeviceBySerialRequest {
-	string serial = 1;
+message ListAftermarketDevicesForUserRequest {
+	string user_id = 1;
+}
+
+message ListAftermarketDevicesForUserResponse {
+	repeated AftermarketDevice devices = 1;
 }
 
 message AftermarketDevice {
 	string serial = 1;
-	optional uint64 vehicle_token_id = 2;
+	optional string user_id = 2;
+	optional bytes owner_address = 3;
 }

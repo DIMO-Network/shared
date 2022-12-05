@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AftermarketDeviceServiceClient interface {
-	GetDeviceBySerial(ctx context.Context, in *GetDeviceBySerialRequest, opts ...grpc.CallOption) (*AftermarketDevice, error)
+	ListAftermarketDevicesForUser(ctx context.Context, in *ListAftermarketDevicesForUserRequest, opts ...grpc.CallOption) (*ListAftermarketDevicesForUserResponse, error)
 }
 
 type aftermarketDeviceServiceClient struct {
@@ -33,9 +33,9 @@ func NewAftermarketDeviceServiceClient(cc grpc.ClientConnInterface) AftermarketD
 	return &aftermarketDeviceServiceClient{cc}
 }
 
-func (c *aftermarketDeviceServiceClient) GetDeviceBySerial(ctx context.Context, in *GetDeviceBySerialRequest, opts ...grpc.CallOption) (*AftermarketDevice, error) {
-	out := new(AftermarketDevice)
-	err := c.cc.Invoke(ctx, "/devices.AftermarketDeviceService/GetDeviceBySerial", in, out, opts...)
+func (c *aftermarketDeviceServiceClient) ListAftermarketDevicesForUser(ctx context.Context, in *ListAftermarketDevicesForUserRequest, opts ...grpc.CallOption) (*ListAftermarketDevicesForUserResponse, error) {
+	out := new(ListAftermarketDevicesForUserResponse)
+	err := c.cc.Invoke(ctx, "/devices.AftermarketDeviceService/ListAftermarketDevicesForUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *aftermarketDeviceServiceClient) GetDeviceBySerial(ctx context.Context, 
 // All implementations must embed UnimplementedAftermarketDeviceServiceServer
 // for forward compatibility
 type AftermarketDeviceServiceServer interface {
-	GetDeviceBySerial(context.Context, *GetDeviceBySerialRequest) (*AftermarketDevice, error)
+	ListAftermarketDevicesForUser(context.Context, *ListAftermarketDevicesForUserRequest) (*ListAftermarketDevicesForUserResponse, error)
 	mustEmbedUnimplementedAftermarketDeviceServiceServer()
 }
 
@@ -54,8 +54,8 @@ type AftermarketDeviceServiceServer interface {
 type UnimplementedAftermarketDeviceServiceServer struct {
 }
 
-func (UnimplementedAftermarketDeviceServiceServer) GetDeviceBySerial(context.Context, *GetDeviceBySerialRequest) (*AftermarketDevice, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDeviceBySerial not implemented")
+func (UnimplementedAftermarketDeviceServiceServer) ListAftermarketDevicesForUser(context.Context, *ListAftermarketDevicesForUserRequest) (*ListAftermarketDevicesForUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAftermarketDevicesForUser not implemented")
 }
 func (UnimplementedAftermarketDeviceServiceServer) mustEmbedUnimplementedAftermarketDeviceServiceServer() {
 }
@@ -71,20 +71,20 @@ func RegisterAftermarketDeviceServiceServer(s grpc.ServiceRegistrar, srv Afterma
 	s.RegisterService(&AftermarketDeviceService_ServiceDesc, srv)
 }
 
-func _AftermarketDeviceService_GetDeviceBySerial_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetDeviceBySerialRequest)
+func _AftermarketDeviceService_ListAftermarketDevicesForUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAftermarketDevicesForUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AftermarketDeviceServiceServer).GetDeviceBySerial(ctx, in)
+		return srv.(AftermarketDeviceServiceServer).ListAftermarketDevicesForUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/devices.AftermarketDeviceService/GetDeviceBySerial",
+		FullMethod: "/devices.AftermarketDeviceService/ListAftermarketDevicesForUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AftermarketDeviceServiceServer).GetDeviceBySerial(ctx, req.(*GetDeviceBySerialRequest))
+		return srv.(AftermarketDeviceServiceServer).ListAftermarketDevicesForUser(ctx, req.(*ListAftermarketDevicesForUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -97,8 +97,8 @@ var AftermarketDeviceService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AftermarketDeviceServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetDeviceBySerial",
-			Handler:    _AftermarketDeviceService_GetDeviceBySerial_Handler,
+			MethodName: "ListAftermarketDevicesForUser",
+			Handler:    _AftermarketDeviceService_ListAftermarketDevicesForUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
