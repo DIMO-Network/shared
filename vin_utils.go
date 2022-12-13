@@ -4,17 +4,6 @@ package shared
 // In the year digit we additionally disallow U, Z, and 0.
 // https://en.wikibooks.org/wiki/Vehicle_Identification_Numbers_(VIN_codes)/Model_year
 var years = map[byte]int{
-	'R': 1994,
-	'S': 1995,
-	'T': 1996,
-	'V': 1997,
-	'W': 1998,
-	'X': 1999,
-	'Y': 2000,
-	'1': 2001,
-	'2': 2002,
-	'3': 2003,
-	'4': 2004,
 	'5': 2005,
 	'6': 2006,
 	'7': 2007,
@@ -34,6 +23,17 @@ var years = map[byte]int{
 	'M': 2021,
 	'N': 2022,
 	'P': 2023,
+	'R': 2024,
+	'S': 2025,
+	'T': 2026,
+	'V': 2027,
+	'W': 2028,
+	'X': 2029,
+	'Y': 2030,
+	'1': 2031,
+	'2': 2032,
+	'3': 2033,
+	'4': 2034,
 }
 
 type VIN string
