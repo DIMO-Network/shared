@@ -13,9 +13,9 @@ WORKDIR /vehicle_signal_specification
 RUN make install && pip install graphql-core==3.2.3 pytest && make all
 
 RUN mkdir /out && cp vss_rel_$(cat VERSION).* /out/
+RUN echo "vss_rel_$(cat VERSION).yaml" > /out/filename
 RUN mkdir /out/vss_schema_docs && cp vss_rel_$(cat VERSION).* /out/vss_schema_docs/
 RUN mkdir /out/data_schema_struct
-RUN echo "vss_rel_$(cat VERSION).yaml" > /out/filename
 
 WORKDIR /out/
 COPY . .
