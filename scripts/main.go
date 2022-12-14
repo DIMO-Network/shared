@@ -111,8 +111,15 @@ func main() {
 		}
 	}
 
-	output += "\n}}"
-	// output += fmt.Sprintf("\n} %s }", parentArray[len(parentArray)-1])
+	if parentArray != nil {
+		tag := makeJSONTag(parentArray[0])
+		output += fmt.Sprintf("\n} %s }", tag)
+		output += `
+		
+func NewVehicleStatus() DataSchemaStruct {
+	return DataSchemaStruct{}
+}`
+	}
 	f, err := os.Create("data_schema_struct.go")
 	if err != nil {
 		log.Fatal(err)
@@ -123,7 +130,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = exec.Command("go", "fmt", "dataSchema.go").Output()
+	_, err = exec.Command("go", "fmt", "data_schema_struct.go").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
