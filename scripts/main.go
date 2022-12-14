@@ -85,7 +85,6 @@ func main() {
 		prevLen = len(attrs)
 		switch abt.Type {
 		case "branch":
-
 			currentSubStruct = attrs[len(attrs)-1]
 			output += "\n// " + abt.Description
 			output += "\n" + currentSubStruct + " struct {" + "\n"
@@ -93,7 +92,8 @@ func main() {
 		case "attribute", "sensor", "actuator":
 			output += "\n// " + abt.Description + "\n"
 			output += currentSubStruct + " " + dataTypes[abt.DataType] + "\n"
-
+		default:
+			log.Println("unrecognized type: ", abt.Type)
 		}
 
 	}
