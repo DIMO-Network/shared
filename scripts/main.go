@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -67,8 +69,9 @@ func main() {
 	output := ""
 	currentSubStruct := ""
 	prevLen := 0
+	parentArray := []string{"Vehicle"}
 
-	output = "package shared\n\ntype dataSchema struct {\n"
+	output = "package shared\n\ntype DataSchemaStruct struct {\n"
 
 	for _, k := range orderedKeys {
 
@@ -77,30 +80,40 @@ func main() {
 		currentSubStruct = attrs[len(attrs)-1]
 
 		if len(attrs) < prevLen {
-			for i := 0; i < prevLen-len(attrs); i++ {
-				output += "}\n"
+			diff := prevLen - len(attrs)
+			for i := 0; i < diff; i++ {
+				tag := makeJSONTag(parentArray[len(parentArray)-(i+1)])
+				output += fmt.Sprintf("} %s \n", tag)
 			}
+			parentArray = parentArray[:len(parentArray)-diff]
+		}
+
+		if parentArray[len(parentArray)-1] != currentSubStruct && abt.Type == "branch" {
+			parentArray = append(parentArray, currentSubStruct)
 		}
 
 		prevLen = len(attrs)
 		switch abt.Type {
 		case "branch":
 			currentSubStruct = attrs[len(attrs)-1]
-			output += "\n// " + abt.Description
+			output += "// " + abt.Description
 			output += "\n" + currentSubStruct + " struct {" + "\n"
 
 		case "attribute", "sensor", "actuator":
-			output += "\n// " + abt.Description + "\n"
-			output += currentSubStruct + " " + dataTypes[abt.DataType] + "\n"
+			description := "// " + abt.Description + "\n"
+			varAndType := currentSubStruct + " " + dataTypes[abt.DataType]
+			tag := makeJSONTag(currentSubStruct)
+			output += description + varAndType + tag + "\n"
 		default:
-			log.Println("unrecognized type: ", abt.Type)
+			if abt.Type != "" {
+				log.Println("unrecognized type: ", abt)
+			}
 		}
-
 	}
 
 	output += "\n}}"
-
-	f, err := os.Create("dataSchema.go")
+	// output += fmt.Sprintf("\n} %s }", parentArray[len(parentArray)-1])
+	f, err := os.Create("data_schema_struct.go")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -114,5 +127,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
 
+func makeJSONTag(varName string) string {
+	return " `json:" + fmt.Sprintf(`"%s,omitempty"`, lowerCaseFirstLetter(varName)) + "` "
+}
+
+func lowerCaseFirstLetter(s string) string {
+	if len(s) < 2 {
+		return strings.ToLower(s)
+	}
+	bts := []byte(s)
+	lc := bytes.ToLower([]byte{bts[0]})
+	rest := bts[1:]
+	return string(bytes.Join([][]byte{lc, rest}, nil))
 }
