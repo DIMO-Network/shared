@@ -22,5 +22,5 @@ COPY . .
 
 RUN go mod tidy
 RUN go run main.go $(cat filename)
-RUN cp dataSchema.go /out/data_schema_struct/
+RUN cp data_schema_struct.go /out/data_schema_struct/
 RUN rm filename 
