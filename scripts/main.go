@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -14,7 +13,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type about struct {
+type fields struct {
 	Allowed     []string `yaml:"allowed"`
 	Comment     string   `yaml:"comment"`
 	DataType    string   `yaml:"datatype"`
@@ -26,28 +25,27 @@ type about struct {
 var dataTypes = map[string]string{
 	"boolean":  "bool",
 	"string":   "string",
-	"uint16":   "uint16",
-	"float":    "float64",
-	"int16":    "int16",
-	"double":   "float64",
-	"int32":    "int32",
-	"uint8":    "uint8",
 	"string[]": "[]string",
 	"uint8[]":  "[]uint8",
+	"uint8":    "uint8",
 	"int8":     "int8",
+	"uint16":   "uint16",
+	"int16":    "int16",
 	"uint32":   "uint32",
+	"int32":    "int32",
+	"float":    "float64",
+	"double":   "float64",
 }
 
 func main() {
 
-	arg := ""
-	if len(os.Args) > 1 {
-		arg = os.Args[1]
-	} else {
+	if len(os.Args) <= 1 {
 		log.Fatal(errors.New("yaml file required"))
 	}
 
-	result := make(map[string]about)
+	arg := os.Args[1]
+
+	result := make(map[string]fields)
 
 	yamlFile, err := ioutil.ReadFile(arg)
 	if err != nil {
@@ -66,16 +64,16 @@ func main() {
 
 	sort.Strings(orderedKeys)
 
-	output := ""
 	currentSubStruct := ""
 	prevLen := 0
 	parentArray := []string{"Vehicle"}
 
-	output = "package shared\n\nimport(\n\"github.com/clarketm/json\"\n)\n\ntype DataSchemaStruct struct {\n"
+	headers := "package shared\n\nimport(\n\"fmt\"\n\"github.com/clarketm/json\"\n)\n\n"
+	dataStruct := "type DataSchemaStruct struct {\n"
 
 	for _, k := range orderedKeys {
 
-		abt := result[k]
+		fields := result[k]
 		attrs := strings.Split(k, ".")
 		currentSubStruct = attrs[len(attrs)-1]
 
@@ -83,55 +81,68 @@ func main() {
 			diff := prevLen - len(attrs)
 			for i := 0; i < diff; i++ {
 				tag := makeJSONTag(parentArray[len(parentArray)-(i+1)])
-				output += fmt.Sprintf("} %s \n", tag)
+				dataStruct += fmt.Sprintf("} %s \n", tag)
 			}
 			parentArray = parentArray[:len(parentArray)-diff]
 		}
 
-		if parentArray[len(parentArray)-1] != currentSubStruct && abt.Type == "branch" {
+		if parentArray[len(parentArray)-1] != currentSubStruct && fields.Type == "branch" {
 			parentArray = append(parentArray, currentSubStruct)
 		}
 
 		prevLen = len(attrs)
-		switch abt.Type {
+		switch fields.Type {
 		case "branch":
 			currentSubStruct = attrs[len(attrs)-1]
-			output += "// " + abt.Description
-			output += "\n" + currentSubStruct + " struct {" + "\n"
+			dataStruct += "// " + fields.Description
+			dataStruct += "\n" + currentSubStruct + " struct {" + "\n"
 
 		case "attribute", "sensor", "actuator":
-			description := "// " + abt.Description + "\n"
-			varAndType := currentSubStruct + " " + dataTypes[abt.DataType]
+			description := "// " + fields.Description
+			varAndType := "\n" + currentSubStruct + " " + dataTypes[fields.DataType]
+			if len(fields.Allowed) != 0 {
+				description += fmt.Sprintf(" Must be one of [\"%s\"]", strings.Join(fields.Allowed, `", "`))
+			}
 			tag := makeJSONTag(currentSubStruct)
-			output += description + varAndType + tag + "\n"
+			dataStruct += description + varAndType + tag + "\n"
+
 		default:
-			if abt.Type != "" {
-				log.Println("unrecognized type: ", abt)
+			if fields.Type != "" {
+				log.Println("unrecognized type: ", fields)
 			}
 		}
 	}
 
 	if parentArray != nil {
 		tag := makeJSONTag(parentArray[0])
-		output += fmt.Sprintf("\n} %s }", tag)
-		output += `
-		
-func NewVehicleStatus() DataSchemaStruct {
-	return DataSchemaStruct{}
-}
-
-func (d DataSchemaStruct) Marshal() ([]byte, error) {
-	return json.Marshal(d)
-}
-
-`
+		dataStruct += fmt.Sprintf("\n} %s }", tag)
 	}
+
+	methods := `
+	func NewVehicleStatus() DataSchemaStruct {
+		return DataSchemaStruct{}
+	}
+
+	func (d DataSchemaStruct) Marshal() ([]byte, error) {
+		if valid, err := d.IsValid(); !valid {
+			return []byte{}, err
+		}
+
+		return json.Marshal(d)
+	}
+	`
+
 	f, err := os.Create("data_schema_struct.go")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
-	_, err = f.WriteString(output)
+
+	validChecks := validEnumCheck(orderedKeys, result)
+
+	finalOutput := headers + validChecks + dataStruct + methods
+
+	_, err = f.WriteString(finalOutput)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -140,18 +151,70 @@ func (d DataSchemaStruct) Marshal() ([]byte, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 }
 
 func makeJSONTag(varName string) string {
-	return " `json:" + fmt.Sprintf(`"%s,omitempty"`, lowerCaseFirstLetter(varName)) + "` "
+	return fmt.Sprintf(" `json:\"%s,omitempty\"`", lowerFirstLetter(varName))
 }
 
-func lowerCaseFirstLetter(s string) string {
-	if len(s) < 2 {
-		return strings.ToLower(s)
+func lowerFirstLetter(s string) string {
+	if s == "" {
+		return s
 	}
-	bts := []byte(s)
-	lc := bytes.ToLower([]byte{bts[0]})
-	rest := bts[1:]
-	return string(bytes.Join([][]byte{lc, rest}, nil))
+	return strings.ToLower(s[:1]) + s[1:]
+}
+
+func validEnumCheck(data []string, orderedKeys map[string]fields) string {
+	isvalidchecks := `
+	func contains(s []string, str string) bool {
+		for _, v := range s {
+			if v == str {
+				return true
+			}
+		}
+		return false
+	}
+	
+	func(d DataSchemaStruct) IsValid() (bool, error){
+		`
+
+	n := 0
+	for _, kvalidate := range data {
+		fields := orderedKeys[kvalidate]
+
+		if fields.Allowed != nil && !strings.HasSuffix(fields.DataType, "[]") {
+			if n == 0 {
+				isvalidchecks += "\nvalid := []string{"
+
+				for i, l := range fields.Allowed {
+					isvalidchecks += fmt.Sprintf("\"%s\"", l)
+					if i != len(fields.Allowed)-1 {
+						isvalidchecks += ","
+					}
+				}
+				isvalidchecks += ",\"\"}\n\n"
+
+				isvalidchecks += "val := d." + kvalidate
+			} else {
+				isvalidchecks += "\nvalid = []string{"
+
+				for i, l := range fields.Allowed {
+					isvalidchecks += fmt.Sprintf("\"%s\"", l)
+					if i != len(fields.Allowed)-1 {
+						isvalidchecks += ","
+					}
+				}
+				isvalidchecks += ",\"\"}\n\nval = d." + kvalidate
+			}
+			isvalidchecks += fmt.Sprintf("\nif !contains(valid, val) {\nreturn false, fmt.Errorf(\"invalid value at %s\", val)\n}\n ", kvalidate+": %v")
+
+			n++
+		}
+
+	}
+
+	isvalidchecks += "\nreturn true, nil}\n\n"
+
+	return isvalidchecks
 }
