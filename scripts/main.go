@@ -71,7 +71,7 @@ func main() {
 	prevLen := 0
 	parentArray := []string{"Vehicle"}
 
-	output = "package shared\n\ntype DataSchemaStruct struct {\n"
+	output = "package shared\n\nimport(\n\"github.com/clarketm/json\"\n)\n\ntype DataSchemaStruct struct {\n"
 
 	for _, k := range orderedKeys {
 
@@ -118,7 +118,13 @@ func main() {
 		
 func NewVehicleStatus() DataSchemaStruct {
 	return DataSchemaStruct{}
-}`
+}
+
+func (d DataSchemaStruct) Marshal() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+`
 	}
 	f, err := os.Create("data_schema_struct.go")
 	if err != nil {

@@ -1,5 +1,9 @@
 package shared
 
+import (
+	"github.com/clarketm/json"
+)
+
 type DataSchemaStruct struct {
 	// High-level vehicle data.
 	Vehicle struct {
@@ -2514,4 +2518,8 @@ type DataSchemaStruct struct {
 
 func NewVehicleStatus() DataSchemaStruct {
 	return DataSchemaStruct{}
+}
+
+func (d DataSchemaStruct) Marshal() ([]byte, error) {
+	return json.Marshal(d)
 }

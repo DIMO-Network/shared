@@ -6,6 +6,7 @@ require (
 	github.com/avast/retry-go/v4 v4.0.3
 	github.com/aws/aws-sdk-go-v2 v1.16.5
 	github.com/aws/aws-sdk-go-v2/service/kms v1.17.3
+	github.com/clarketm/json v1.17.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang/mock v1.6.0
 	github.com/jarcoal/httpmock v1.1.0
