@@ -1,8 +1,436 @@
 package shared
 
 import (
+	"fmt"
 	"github.com/clarketm/json"
 )
+
+func contains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+	return false
+}
+
+func (d DataSchemaStruct) IsValid() (bool, error) {
+
+	valid := []string{"SAE_0", "SAE_1", "SAE_2_DISENGAGING", "SAE_2", "SAE_3_DISENGAGING", "SAE_3", "SAE_4_DISENGAGING", "SAE_4", "SAE_5", ""}
+
+	val := d.Vehicle.ADAS.ActiveAutonomyLevel
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.ADAS.ActiveAutonomyLevel: %v", val)
+	}
+
+	valid = []string{"SAE_0", "SAE_1", "SAE_2", "SAE_3", "SAE_4", "SAE_5", ""}
+
+	val = d.Vehicle.ADAS.SupportedAutonomyLevel
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.ADAS.SupportedAutonomyLevel: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "ACTIVE", "ADAPTIVE", ""}
+
+	val = d.Vehicle.Body.Lights.Brake.IsActive
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Body.Lights.Brake.IsActive: %v", val)
+	}
+
+	valid = []string{"FRONT_LEFT", "FRONT_RIGHT", "MIDDLE_LEFT", "MIDDLE_RIGHT", "REAR_LEFT", "REAR_RIGHT", ""}
+
+	val = d.Vehicle.Body.RefuelPosition
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Body.RefuelPosition: %v", val)
+	}
+
+	valid = []string{"OFF", "SLOW", "MEDIUM", "FAST", "INTERVAL", "RAIN_SENSOR", ""}
+
+	val = d.Vehicle.Body.Windshield.Front.Wiping.Mode
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Body.Windshield.Front.Wiping.Mode: %v", val)
+	}
+
+	valid = []string{"STOP_HOLD", "WIPE", "PLANT_MODE", "EMERGENCY_STOP", ""}
+
+	val = d.Vehicle.Body.Windshield.Front.Wiping.System.Mode
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Body.Windshield.Front.Wiping.System.Mode: %v", val)
+	}
+
+	valid = []string{"OFF", "SLOW", "MEDIUM", "FAST", "INTERVAL", "RAIN_SENSOR", ""}
+
+	val = d.Vehicle.Body.Windshield.Rear.Wiping.Mode
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Body.Windshield.Rear.Wiping.Mode: %v", val)
+	}
+
+	valid = []string{"STOP_HOLD", "WIPE", "PLANT_MODE", "EMERGENCY_STOP", ""}
+
+	val = d.Vehicle.Body.Windshield.Rear.Wiping.System.Mode
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Body.Windshield.Rear.Wiping.System.Mode: %v", val)
+	}
+
+	valid = []string{"UNDEFINED", "CLOSED", "OPEN", "CLOSING", "OPENING", "STALLED", ""}
+
+	val = d.Vehicle.Cabin.Convertible.Status
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Convertible.Status: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", ""}
+
+	val = d.Vehicle.Cabin.Door.Row1.Left.Shade.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Door.Row1.Left.Shade.Switch: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", ""}
+
+	val = d.Vehicle.Cabin.Door.Row1.Left.Window.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Door.Row1.Left.Window.Switch: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", ""}
+
+	val = d.Vehicle.Cabin.Door.Row1.Right.Shade.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Door.Row1.Right.Shade.Switch: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", ""}
+
+	val = d.Vehicle.Cabin.Door.Row1.Right.Window.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Door.Row1.Right.Window.Switch: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", ""}
+
+	val = d.Vehicle.Cabin.Door.Row2.Left.Shade.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Door.Row2.Left.Shade.Switch: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", ""}
+
+	val = d.Vehicle.Cabin.Door.Row2.Left.Window.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Door.Row2.Left.Window.Switch: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", ""}
+
+	val = d.Vehicle.Cabin.Door.Row2.Right.Shade.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Door.Row2.Right.Shade.Switch: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", ""}
+
+	val = d.Vehicle.Cabin.Door.Row2.Right.Window.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Door.Row2.Right.Window.Switch: %v", val)
+	}
+
+	valid = []string{"UP", "MIDDLE", "DOWN", ""}
+
+	val = d.Vehicle.Cabin.HVAC.Station.Row1.Left.AirDistribution
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.HVAC.Station.Row1.Left.AirDistribution: %v", val)
+	}
+
+	valid = []string{"UP", "MIDDLE", "DOWN", ""}
+
+	val = d.Vehicle.Cabin.HVAC.Station.Row1.Right.AirDistribution
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.HVAC.Station.Row1.Right.AirDistribution: %v", val)
+	}
+
+	valid = []string{"UP", "MIDDLE", "DOWN", ""}
+
+	val = d.Vehicle.Cabin.HVAC.Station.Row2.Left.AirDistribution
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.HVAC.Station.Row2.Left.AirDistribution: %v", val)
+	}
+
+	valid = []string{"UP", "MIDDLE", "DOWN", ""}
+
+	val = d.Vehicle.Cabin.HVAC.Station.Row2.Right.AirDistribution
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.HVAC.Station.Row2.Right.AirDistribution: %v", val)
+	}
+
+	valid = []string{"UP", "MIDDLE", "DOWN", ""}
+
+	val = d.Vehicle.Cabin.HVAC.Station.Row3.Left.AirDistribution
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.HVAC.Station.Row3.Left.AirDistribution: %v", val)
+	}
+
+	valid = []string{"UP", "MIDDLE", "DOWN", ""}
+
+	val = d.Vehicle.Cabin.HVAC.Station.Row3.Right.AirDistribution
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.HVAC.Station.Row3.Right.AirDistribution: %v", val)
+	}
+
+	valid = []string{"UP", "MIDDLE", "DOWN", ""}
+
+	val = d.Vehicle.Cabin.HVAC.Station.Row4.Left.AirDistribution
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.HVAC.Station.Row4.Left.AirDistribution: %v", val)
+	}
+
+	valid = []string{"UP", "MIDDLE", "DOWN", ""}
+
+	val = d.Vehicle.Cabin.HVAC.Station.Row4.Right.AirDistribution
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.HVAC.Station.Row4.Right.AirDistribution: %v", val)
+	}
+
+	valid = []string{"YYYY_MM_DD", "DD_MM_YYYY", "MM_DD_YYYY", "YY_MM_DD", "DD_MM_YY", "MM_DD_YY", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.HMI.DateFormat
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.HMI.DateFormat: %v", val)
+	}
+
+	valid = []string{"DAY", "NIGHT", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.HMI.DayNightMode
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.HMI.DayNightMode: %v", val)
+	}
+
+	valid = []string{"MILES", "KILOMETERS", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.HMI.DistanceUnit
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.HMI.DistanceUnit: %v", val)
+	}
+
+	valid = []string{"MILES_PER_KILOWATT_HOUR", "KILOMETERS_PER_KILOWATT_HOUR", "KILOWATT_HOURS_PER_100_MILES", "KILOWATT_HOURS_PER_100_KILOMETERS", "WATT_HOURS_PER_MILE", "WATT_HOURS_PER_KILOMETER", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.HMI.EVEconomyUnits
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.HMI.EVEconomyUnits: %v", val)
+	}
+
+	valid = []string{"MPG_UK", "MPG_US", "MILES_PER_LITER", "KILOMETERS_PER_LITER", "LITERS_PER_100_KILOMETERS", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.HMI.FuelEconomyUnits
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.HMI.FuelEconomyUnits: %v", val)
+	}
+
+	valid = []string{"C", "F", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.HMI.TemperatureUnit
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.HMI.TemperatureUnit: %v", val)
+	}
+
+	valid = []string{"HR_12", "HR_24", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.HMI.TimeFormat
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.HMI.TimeFormat: %v", val)
+	}
+
+	valid = []string{"‘PSI’", "‘KPA’", "’BAR’", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.HMI.TirePressureUnit
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.HMI.TirePressureUnit: %v", val)
+	}
+
+	valid = []string{"UNKNOWN", "STOP", "PLAY", "FAST_FORWARD", "FAST_BACKWARD", "SKIP_FORWARD", "SKIP_BACKWARD", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.Media.Action
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.Media.Action: %v", val)
+	}
+
+	valid = []string{"UNKNOWN", "SIRIUS_XM", "AM", "FM", "DAB", "TV", "CD", "DVD", "AUX", "USB", "DISK", "BLUETOOTH", "INTERNET", "VOICE", "BEEP", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.Media.Played.Source
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.Media.Played.Source: %v", val)
+	}
+
+	valid = []string{"MUTED", "ALERT_ONLY", "UNMUTED", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.Navigation.Mute
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.Navigation.Mute: %v", val)
+	}
+
+	valid = []string{"NONE", "ACTIVE", "INACTIVE", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.SmartphoneProjection.Active
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.SmartphoneProjection.Active: %v", val)
+	}
+
+	valid = []string{"USB", "BLUETOOTH", "WIFI", ""}
+
+	val = d.Vehicle.Cabin.Infotainment.SmartphoneProjection.Source
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Infotainment.SmartphoneProjection.Source: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", ""}
+
+	val = d.Vehicle.Cabin.RearShade.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.RearShade.Switch: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", ""}
+
+	val = d.Vehicle.Cabin.Sunroof.Shade.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Sunroof.Shade.Switch: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", "TILT_UP", "TILT_DOWN", ""}
+
+	val = d.Vehicle.Cabin.Sunroof.Switch
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Cabin.Sunroof.Switch: %v", val)
+	}
+
+	valid = []string{"FRONT_LEFT", "FRONT_RIGHT", ""}
+
+	val = d.Vehicle.Chassis.SteeringWheel.Position
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Chassis.SteeringWheel.Position: %v", val)
+	}
+
+	valid = []string{"NONE", "TWO_D", "TWO_D_SATELLITE_BASED_AUGMENTATION", "TWO_D_GROUND_BASED_AUGMENTATION", "TWO_D_SATELLITE_AND_GROUND_BASED_AUGMENTATION", "THREE_D", "THREE_D_SATELLITE_BASED_AUGMENTATION", "THREE_D_GROUND_BASED_AUGMENTATION", "THREE_D_SATELLITE_AND_GROUND_BASED_AUGMENTATION", ""}
+
+	val = d.Vehicle.CurrentLocation.GNSSReceiver.FixType
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.CurrentLocation.GNSSReceiver.FixType: %v", val)
+	}
+
+	valid = []string{"UNDEFINED", "LOCK", "OFF", "ACC", "ON", "START", ""}
+
+	val = d.Vehicle.LowVoltageSystemState
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.LowVoltageSystemState: %v", val)
+	}
+
+	valid = []string{"SPARK", "COMPRESSION", ""}
+
+	val = d.Vehicle.OBD.DriveCycleStatus.IgnitionType
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.OBD.DriveCycleStatus.IgnitionType: %v", val)
+	}
+
+	valid = []string{"SPARK", "COMPRESSION", ""}
+
+	val = d.Vehicle.OBD.Status.IgnitionType
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.OBD.Status.IgnitionType: %v", val)
+	}
+
+	valid = []string{"UNKNOWN", "NATURAL", "SUPERCHARGER", "TURBOCHARGER", ""}
+
+	val = d.Vehicle.Powertrain.CombustionEngine.AspirationType
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.CombustionEngine.AspirationType: %v", val)
+	}
+
+	valid = []string{"UNKNOWN", "STRAIGHT", "V", "BOXER", "W", "ROTARY", "RADIAL", "SQUARE", "H", "U", "OPPOSED", "X", ""}
+
+	val = d.Vehicle.Powertrain.CombustionEngine.Configuration
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.CombustionEngine.Configuration: %v", val)
+	}
+
+	valid = []string{"CRITICALLY_LOW", "LOW", "NORMAL", "HIGH", "CRITICALLY_HIGH", ""}
+
+	val = d.Vehicle.Powertrain.CombustionEngine.EngineOilLevel
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.CombustionEngine.EngineOilLevel: %v", val)
+	}
+
+	valid = []string{"UNKNOWN", "NOT_APPLICABLE", "STOP_START", "BELT_ISG", "CIMG", "PHEV", ""}
+
+	val = d.Vehicle.Powertrain.FuelSystem.HybridType
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.FuelSystem.HybridType: %v", val)
+	}
+
+	valid = []string{"OPEN", "CLOSED", ""}
+
+	val = d.Vehicle.Powertrain.TractionBattery.Charging.ChargePortFlap
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.TractionBattery.Charging.ChargePortFlap: %v", val)
+	}
+
+	valid = []string{"MANUAL", "TIMER", "GRID", "PROFILE", ""}
+
+	val = d.Vehicle.Powertrain.TractionBattery.Charging.Mode
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.TractionBattery.Charging.Mode: %v", val)
+	}
+
+	valid = []string{"START", "STOP", ""}
+
+	val = d.Vehicle.Powertrain.TractionBattery.Charging.StartStopCharging
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.TractionBattery.Charging.StartStopCharging: %v", val)
+	}
+
+	valid = []string{"INACTIVE", "START_TIME", "END_TIME", ""}
+
+	val = d.Vehicle.Powertrain.TractionBattery.Charging.Timer.Mode
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.TractionBattery.Charging.Timer.Mode: %v", val)
+	}
+
+	valid = []string{"UNKNOWN", "FORWARD_WHEEL_DRIVE", "REAR_WHEEL_DRIVE", "ALL_WHEEL_DRIVE", ""}
+
+	val = d.Vehicle.Powertrain.Transmission.DriveType
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.Transmission.DriveType: %v", val)
+	}
+
+	valid = []string{"MANUAL", "AUTOMATIC", ""}
+
+	val = d.Vehicle.Powertrain.Transmission.GearChangeMode
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.Transmission.GearChangeMode: %v", val)
+	}
+
+	valid = []string{"NORMAL", "SPORT", "ECONOMY", "SNOW", "RAIN", ""}
+
+	val = d.Vehicle.Powertrain.Transmission.PerformanceMode
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.Transmission.PerformanceMode: %v", val)
+	}
+
+	valid = []string{"UNKNOWN", "SEQUENTIAL", "H", "AUTOMATIC", "DSG", "CVT", ""}
+
+	val = d.Vehicle.Powertrain.Transmission.Type
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.Transmission.Type: %v", val)
+	}
+
+	valid = []string{"COMBUSTION", "HYBRID", "ELECTRIC", ""}
+
+	val = d.Vehicle.Powertrain.Type
+	if !contains(valid, val) {
+		return false, fmt.Errorf("invalid value at Vehicle.Powertrain.Type: %v", val)
+	}
+
+	return true, nil
+}
 
 type DataSchemaStruct struct {
 	// High-level vehicle data.
@@ -18,7 +446,7 @@ type DataSchemaStruct struct {
 				// Indicates if ABS incurred an error condition. True = Error. False = No Error.
 				IsError bool `json:"isError,omitempty"`
 			} `json:"aBS,omitempty"`
-			// Indicates the currently active level of autonomy according to SAE J3016 taxonomy.
+			// Indicates the currently active level of autonomy according to SAE J3016 taxonomy. Must be one of ["SAE_0", "SAE_1", "SAE_2_DISENGAGING", "SAE_2", "SAE_3_DISENGAGING", "SAE_3", "SAE_4_DISENGAGING", "SAE_4", "SAE_5"]
 			ActiveAutonomyLevel string `json:"activeAutonomyLevel,omitempty"`
 			// Signals from Cruise Control system.
 			CruiseControl struct {
@@ -87,7 +515,7 @@ type DataSchemaStruct struct {
 				// Indicates if obstacle sensor system registered an obstacle.
 				IsWarning bool `json:"isWarning,omitempty"`
 			} `json:"obstacleDetection,omitempty"`
-			// Indicates the highest level of autonomy according to SAE J3016 taxonomy the vehicle is capable of.
+			// Indicates the highest level of autonomy according to SAE J3016 taxonomy the vehicle is capable of. Must be one of ["SAE_0", "SAE_1", "SAE_2", "SAE_3", "SAE_4", "SAE_5"]
 			SupportedAutonomyLevel string `json:"supportedAutonomyLevel,omitempty"`
 			// Traction Control System signals.
 			TCS struct {
@@ -161,7 +589,7 @@ type DataSchemaStruct struct {
 				} `json:"beam,omitempty"`
 				//
 				Brake struct {
-					// Indicates if break-light is active. INACTIVE means lights are off. ACTIVE means lights are on. ADAPTIVE means that break-light is indicating emergency-breaking.
+					// Indicates if break-light is active. INACTIVE means lights are off. ACTIVE means lights are on. ADAPTIVE means that break-light is indicating emergency-breaking. Must be one of ["INACTIVE", "ACTIVE", "ADAPTIVE"]
 					IsActive string `json:"isActive,omitempty"`
 					// Indicates if light is defect. True = Light is defect. False = Light has no defect.
 					IsDefect bool `json:"isDefect,omitempty"`
@@ -257,7 +685,7 @@ type DataSchemaStruct struct {
 			} `json:"raindetection,omitempty"`
 			// Rear spoiler position, 0% = Spoiler fully stowed. 100% = Spoiler fully exposed.
 			RearMainSpoilerPosition float64 `json:"rearMainSpoilerPosition,omitempty"`
-			// Location of the fuel cap or charge port.
+			// Location of the fuel cap or charge port. Must be one of ["FRONT_LEFT", "FRONT_RIGHT", "MIDDLE_LEFT", "MIDDLE_RIGHT", "REAR_LEFT", "REAR_RIGHT"]
 			RefuelPosition string `json:"refuelPosition,omitempty"`
 			// Trunk status.
 			Trunk struct {
@@ -295,7 +723,7 @@ type DataSchemaStruct struct {
 						Intensity uint8 `json:"intensity,omitempty"`
 						// Wiper wear status. True = Worn, Replacement recommended or required. False = Not Worn.
 						IsWipersWorn bool `json:"isWipersWorn,omitempty"`
-						// Wiper mode requested by user/driver. INTERVAL indicates intermittent wiping, with fixed time interval between each wipe. RAIN_SENSOR indicates intermittent wiping based on rain intensity.
+						// Wiper mode requested by user/driver. INTERVAL indicates intermittent wiping, with fixed time interval between each wipe. RAIN_SENSOR indicates intermittent wiping based on rain intensity. Must be one of ["OFF", "SLOW", "MEDIUM", "FAST", "INTERVAL", "RAIN_SENSOR"]
 						Mode string `json:"mode,omitempty"`
 						// Signals to control behavior of wipers in detail. By default VSS expects only one instance.
 						System struct {
@@ -317,7 +745,7 @@ type DataSchemaStruct struct {
 							IsWiperError bool `json:"isWiperError,omitempty"`
 							// Indicates wiper movement. True if wiper blades are moving. Change of direction shall be considered as IsWiping if wipers will continue to move directly after the change of direction.
 							IsWiping bool `json:"isWiping,omitempty"`
-							// Requested mode of wiper system. STOP_HOLD means that the wipers shall move to position given by TargetPosition and then hold the position. WIPE means that wipers shall move to the position given by TargetPosition and then hold the position if no new TargetPosition is requested. PLANT_MODE means that wiping is disabled. Exact behavior is vehicle specific. EMERGENCY_STOP means that wiping shall be immediately stopped without holding the position.
+							// Requested mode of wiper system. STOP_HOLD means that the wipers shall move to position given by TargetPosition and then hold the position. WIPE means that wipers shall move to the position given by TargetPosition and then hold the position if no new TargetPosition is requested. PLANT_MODE means that wiping is disabled. Exact behavior is vehicle specific. EMERGENCY_STOP means that wiping shall be immediately stopped without holding the position. Must be one of ["STOP_HOLD", "WIPE", "PLANT_MODE", "EMERGENCY_STOP"]
 							Mode string `json:"mode,omitempty"`
 							// Requested position of main wiper blade for the wiper system relative to reference position. Location of reference position (0 degrees) and direction of positive/negative degrees is vehicle specific. System behavior when receiving TargetPosition depends on Mode and IsEndingWipeCycle. Supported values are vehicle specific and might be dynamically corrected. If IsEndingWipeCycle=True then wipers will complete current movement before actuating new TargetPosition. If IsEndingWipeCycle=False then wipers will directly change destination if the TargetPosition is changed.
 							TargetPosition float64 `json:"targetPosition,omitempty"`
@@ -343,7 +771,7 @@ type DataSchemaStruct struct {
 						Intensity uint8 `json:"intensity,omitempty"`
 						// Wiper wear status. True = Worn, Replacement recommended or required. False = Not Worn.
 						IsWipersWorn bool `json:"isWipersWorn,omitempty"`
-						// Wiper mode requested by user/driver. INTERVAL indicates intermittent wiping, with fixed time interval between each wipe. RAIN_SENSOR indicates intermittent wiping based on rain intensity.
+						// Wiper mode requested by user/driver. INTERVAL indicates intermittent wiping, with fixed time interval between each wipe. RAIN_SENSOR indicates intermittent wiping based on rain intensity. Must be one of ["OFF", "SLOW", "MEDIUM", "FAST", "INTERVAL", "RAIN_SENSOR"]
 						Mode string `json:"mode,omitempty"`
 						// Signals to control behavior of wipers in detail. By default VSS expects only one instance.
 						System struct {
@@ -365,7 +793,7 @@ type DataSchemaStruct struct {
 							IsWiperError bool `json:"isWiperError,omitempty"`
 							// Indicates wiper movement. True if wiper blades are moving. Change of direction shall be considered as IsWiping if wipers will continue to move directly after the change of direction.
 							IsWiping bool `json:"isWiping,omitempty"`
-							// Requested mode of wiper system. STOP_HOLD means that the wipers shall move to position given by TargetPosition and then hold the position. WIPE means that wipers shall move to the position given by TargetPosition and then hold the position if no new TargetPosition is requested. PLANT_MODE means that wiping is disabled. Exact behavior is vehicle specific. EMERGENCY_STOP means that wiping shall be immediately stopped without holding the position.
+							// Requested mode of wiper system. STOP_HOLD means that the wipers shall move to position given by TargetPosition and then hold the position. WIPE means that wipers shall move to the position given by TargetPosition and then hold the position if no new TargetPosition is requested. PLANT_MODE means that wiping is disabled. Exact behavior is vehicle specific. EMERGENCY_STOP means that wiping shall be immediately stopped without holding the position. Must be one of ["STOP_HOLD", "WIPE", "PLANT_MODE", "EMERGENCY_STOP"]
 							Mode string `json:"mode,omitempty"`
 							// Requested position of main wiper blade for the wiper system relative to reference position. Location of reference position (0 degrees) and direction of positive/negative degrees is vehicle specific. System behavior when receiving TargetPosition depends on Mode and IsEndingWipeCycle. Supported values are vehicle specific and might be dynamically corrected. If IsEndingWipeCycle=True then wipers will complete current movement before actuating new TargetPosition. If IsEndingWipeCycle=False then wipers will directly change destination if the TargetPosition is changed.
 							TargetPosition float64 `json:"targetPosition,omitempty"`
@@ -380,7 +808,7 @@ type DataSchemaStruct struct {
 		Cabin struct {
 			// Convertible roof.
 			Convertible struct {
-				// Roof status on convertible vehicles.
+				// Roof status on convertible vehicles. Must be one of ["UNDEFINED", "CLOSED", "OPEN", "CLOSING", "OPENING", "STALLED"]
 				Status string `json:"status,omitempty"`
 			} `json:"convertible,omitempty"`
 			// All doors, including windows and switches.
@@ -399,7 +827,7 @@ type DataSchemaStruct struct {
 						Shade struct {
 							// Position of window blind. 0 = Fully retracted. 100 = Fully deployed.
 							Position uint8 `json:"position,omitempty"`
-							// Switch controlling sliding action such as window, sunroof, or blind.
+							// Switch controlling sliding action such as window, sunroof, or blind. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN"]
 							Switch string `json:"switch,omitempty"`
 						} `json:"shade,omitempty"`
 						// Door window status
@@ -410,7 +838,7 @@ type DataSchemaStruct struct {
 							IsOpen bool `json:"isOpen,omitempty"`
 							// Window position. 0 = Fully closed 100 = Fully opened.
 							Position uint8 `json:"position,omitempty"`
-							// Switch controlling sliding action such as window, sunroof, or blind.
+							// Switch controlling sliding action such as window, sunroof, or blind. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN"]
 							Switch string `json:"switch,omitempty"`
 						} `json:"window,omitempty"`
 					} `json:"left,omitempty"`
@@ -426,7 +854,7 @@ type DataSchemaStruct struct {
 						Shade struct {
 							// Position of window blind. 0 = Fully retracted. 100 = Fully deployed.
 							Position uint8 `json:"position,omitempty"`
-							// Switch controlling sliding action such as window, sunroof, or blind.
+							// Switch controlling sliding action such as window, sunroof, or blind. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN"]
 							Switch string `json:"switch,omitempty"`
 						} `json:"shade,omitempty"`
 						// Door window status
@@ -437,7 +865,7 @@ type DataSchemaStruct struct {
 							IsOpen bool `json:"isOpen,omitempty"`
 							// Window position. 0 = Fully closed 100 = Fully opened.
 							Position uint8 `json:"position,omitempty"`
-							// Switch controlling sliding action such as window, sunroof, or blind.
+							// Switch controlling sliding action such as window, sunroof, or blind. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN"]
 							Switch string `json:"switch,omitempty"`
 						} `json:"window,omitempty"`
 					} `json:"right,omitempty"`
@@ -456,7 +884,7 @@ type DataSchemaStruct struct {
 						Shade struct {
 							// Position of window blind. 0 = Fully retracted. 100 = Fully deployed.
 							Position uint8 `json:"position,omitempty"`
-							// Switch controlling sliding action such as window, sunroof, or blind.
+							// Switch controlling sliding action such as window, sunroof, or blind. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN"]
 							Switch string `json:"switch,omitempty"`
 						} `json:"shade,omitempty"`
 						// Door window status
@@ -467,7 +895,7 @@ type DataSchemaStruct struct {
 							IsOpen bool `json:"isOpen,omitempty"`
 							// Window position. 0 = Fully closed 100 = Fully opened.
 							Position uint8 `json:"position,omitempty"`
-							// Switch controlling sliding action such as window, sunroof, or blind.
+							// Switch controlling sliding action such as window, sunroof, or blind. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN"]
 							Switch string `json:"switch,omitempty"`
 						} `json:"window,omitempty"`
 					} `json:"left,omitempty"`
@@ -483,7 +911,7 @@ type DataSchemaStruct struct {
 						Shade struct {
 							// Position of window blind. 0 = Fully retracted. 100 = Fully deployed.
 							Position uint8 `json:"position,omitempty"`
-							// Switch controlling sliding action such as window, sunroof, or blind.
+							// Switch controlling sliding action such as window, sunroof, or blind. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN"]
 							Switch string `json:"switch,omitempty"`
 						} `json:"shade,omitempty"`
 						// Door window status
@@ -494,7 +922,7 @@ type DataSchemaStruct struct {
 							IsOpen bool `json:"isOpen,omitempty"`
 							// Window position. 0 = Fully closed 100 = Fully opened.
 							Position uint8 `json:"position,omitempty"`
-							// Switch controlling sliding action such as window, sunroof, or blind.
+							// Switch controlling sliding action such as window, sunroof, or blind. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN"]
 							Switch string `json:"switch,omitempty"`
 						} `json:"window,omitempty"`
 					} `json:"right,omitempty"`
@@ -522,7 +950,7 @@ type DataSchemaStruct struct {
 					Row1 struct {
 						// HVAC for single station in the vehicle
 						Left struct {
-							// Direction of airstream
+							// Direction of airstream Must be one of ["UP", "MIDDLE", "DOWN"]
 							AirDistribution string `json:"airDistribution,omitempty"`
 							// Fan Speed, 0 = off. 100 = max
 							FanSpeed uint8 `json:"fanSpeed,omitempty"`
@@ -531,7 +959,7 @@ type DataSchemaStruct struct {
 						} `json:"left,omitempty"`
 						// HVAC for single station in the vehicle
 						Right struct {
-							// Direction of airstream
+							// Direction of airstream Must be one of ["UP", "MIDDLE", "DOWN"]
 							AirDistribution string `json:"airDistribution,omitempty"`
 							// Fan Speed, 0 = off. 100 = max
 							FanSpeed uint8 `json:"fanSpeed,omitempty"`
@@ -543,7 +971,7 @@ type DataSchemaStruct struct {
 					Row2 struct {
 						// HVAC for single station in the vehicle
 						Left struct {
-							// Direction of airstream
+							// Direction of airstream Must be one of ["UP", "MIDDLE", "DOWN"]
 							AirDistribution string `json:"airDistribution,omitempty"`
 							// Fan Speed, 0 = off. 100 = max
 							FanSpeed uint8 `json:"fanSpeed,omitempty"`
@@ -552,7 +980,7 @@ type DataSchemaStruct struct {
 						} `json:"left,omitempty"`
 						// HVAC for single station in the vehicle
 						Right struct {
-							// Direction of airstream
+							// Direction of airstream Must be one of ["UP", "MIDDLE", "DOWN"]
 							AirDistribution string `json:"airDistribution,omitempty"`
 							// Fan Speed, 0 = off. 100 = max
 							FanSpeed uint8 `json:"fanSpeed,omitempty"`
@@ -564,7 +992,7 @@ type DataSchemaStruct struct {
 					Row3 struct {
 						// HVAC for single station in the vehicle
 						Left struct {
-							// Direction of airstream
+							// Direction of airstream Must be one of ["UP", "MIDDLE", "DOWN"]
 							AirDistribution string `json:"airDistribution,omitempty"`
 							// Fan Speed, 0 = off. 100 = max
 							FanSpeed uint8 `json:"fanSpeed,omitempty"`
@@ -573,7 +1001,7 @@ type DataSchemaStruct struct {
 						} `json:"left,omitempty"`
 						// HVAC for single station in the vehicle
 						Right struct {
-							// Direction of airstream
+							// Direction of airstream Must be one of ["UP", "MIDDLE", "DOWN"]
 							AirDistribution string `json:"airDistribution,omitempty"`
 							// Fan Speed, 0 = off. 100 = max
 							FanSpeed uint8 `json:"fanSpeed,omitempty"`
@@ -585,7 +1013,7 @@ type DataSchemaStruct struct {
 					Row4 struct {
 						// HVAC for single station in the vehicle
 						Left struct {
-							// Direction of airstream
+							// Direction of airstream Must be one of ["UP", "MIDDLE", "DOWN"]
 							AirDistribution string `json:"airDistribution,omitempty"`
 							// Fan Speed, 0 = off. 100 = max
 							FanSpeed uint8 `json:"fanSpeed,omitempty"`
@@ -594,7 +1022,7 @@ type DataSchemaStruct struct {
 						} `json:"left,omitempty"`
 						// HVAC for single station in the vehicle
 						Right struct {
-							// Direction of airstream
+							// Direction of airstream Must be one of ["UP", "MIDDLE", "DOWN"]
 							AirDistribution string `json:"airDistribution,omitempty"`
 							// Fan Speed, 0 = off. 100 = max
 							FanSpeed uint8 `json:"fanSpeed,omitempty"`
@@ -610,26 +1038,26 @@ type DataSchemaStruct struct {
 				HMI struct {
 					// ISO 639-1 standard language code for the current HMI
 					CurrentLanguage string `json:"currentLanguage,omitempty"`
-					// Date format used in the current HMI
+					// Date format used in the current HMI Must be one of ["YYYY_MM_DD", "DD_MM_YYYY", "MM_DD_YYYY", "YY_MM_DD", "DD_MM_YY", "MM_DD_YY"]
 					DateFormat string `json:"dateFormat,omitempty"`
-					// Current display theme
+					// Current display theme Must be one of ["DAY", "NIGHT"]
 					DayNightMode string `json:"dayNightMode,omitempty"`
-					// Distance unit used in the current HMI
+					// Distance unit used in the current HMI Must be one of ["MILES", "KILOMETERS"]
 					DistanceUnit string `json:"distanceUnit,omitempty"`
-					// EV fuel economy unit used in the current HMI
+					// EV fuel economy unit used in the current HMI Must be one of ["MILES_PER_KILOWATT_HOUR", "KILOMETERS_PER_KILOWATT_HOUR", "KILOWATT_HOURS_PER_100_MILES", "KILOWATT_HOURS_PER_100_KILOMETERS", "WATT_HOURS_PER_MILE", "WATT_HOURS_PER_KILOMETER"]
 					EVEconomyUnits string `json:"eVEconomyUnits,omitempty"`
-					// Fuel economy unit used in the current HMI
+					// Fuel economy unit used in the current HMI Must be one of ["MPG_UK", "MPG_US", "MILES_PER_LITER", "KILOMETERS_PER_LITER", "LITERS_PER_100_KILOMETERS"]
 					FuelEconomyUnits string `json:"fuelEconomyUnits,omitempty"`
-					// Temperature unit used in the current HMI
+					// Temperature unit used in the current HMI Must be one of ["C", "F"]
 					TemperatureUnit string `json:"temperatureUnit,omitempty"`
-					// Time format used in the current HMI
+					// Time format used in the current HMI Must be one of ["HR_12", "HR_24"]
 					TimeFormat string `json:"timeFormat,omitempty"`
-					// Tire pressure unit used in the current HMI
+					// Tire pressure unit used in the current HMI Must be one of ["‘PSI’", "‘KPA’", "’BAR’"]
 					TirePressureUnit string `json:"tirePressureUnit,omitempty"`
 				} `json:"hMI,omitempty"`
 				// All Media actions
 				Media struct {
-					// Tells if the media was
+					// Tells if the media was Must be one of ["UNKNOWN", "STOP", "PLAY", "FAST_FORWARD", "FAST_BACKWARD", "SKIP_FORWARD", "SKIP_BACKWARD"]
 					Action string `json:"action,omitempty"`
 					// URI of suggested media that was declined
 					DeclinedURI string `json:"declinedURI,omitempty"`
@@ -641,7 +1069,7 @@ type DataSchemaStruct struct {
 						Artist string `json:"artist,omitempty"`
 						// Current playback rate of media being played.
 						PlaybackRate float64 `json:"playbackRate,omitempty"`
-						// Media selected for playback
+						// Media selected for playback Must be one of ["UNKNOWN", "SIRIUS_XM", "AM", "FM", "DAB", "TV", "CD", "DVD", "AUX", "USB", "DISK", "BLUETOOTH", "INTERNET", "VOICE", "BEEP"]
 						Source string `json:"source,omitempty"`
 						// Name of track being played
 						Track string `json:"track,omitempty"`
@@ -662,18 +1090,18 @@ type DataSchemaStruct struct {
 						// Longitude of destination in WGS 84 geodetic coordinates.
 						Longitude float64 `json:"longitude,omitempty"`
 					} `json:"destinationSet,omitempty"`
-					// Navigation mute state that was selected.
+					// Navigation mute state that was selected. Must be one of ["MUTED", "ALERT_ONLY", "UNMUTED"]
 					Mute string `json:"mute,omitempty"`
 					// Current navigation volume
 					Volume uint8 `json:"volume,omitempty"`
 				} `json:"navigation,omitempty"`
 				// All smartphone projection actions.
 				SmartphoneProjection struct {
-					// Projection activation info.
+					// Projection activation info. Must be one of ["NONE", "ACTIVE", "INACTIVE"]
 					Active string `json:"active,omitempty"`
-					// Connectivity source selected for projection.
+					// Connectivity source selected for projection. Must be one of ["USB", "BLUETOOTH", "WIFI"]
 					Source string `json:"source,omitempty"`
-					// Supportable list for projection.
+					// Supportable list for projection. Must be one of ["ANDROID_AUTO", "APPLE_CARPLAY", "MIRROR_LINK", "OTHER"]
 					SupportedMode []string `json:"supportedMode,omitempty"`
 				} `json:"smartphoneProjection,omitempty"`
 			} `json:"infotainment,omitempty"`
@@ -733,7 +1161,7 @@ type DataSchemaStruct struct {
 			RearShade struct {
 				// Position of window blind. 0 = Fully retracted. 100 = Fully deployed.
 				Position uint8 `json:"position,omitempty"`
-				// Switch controlling sliding action such as window, sunroof, or blind.
+				// Switch controlling sliding action such as window, sunroof, or blind. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN"]
 				Switch string `json:"switch,omitempty"`
 			} `json:"rearShade,omitempty"`
 			// Rearview mirror.
@@ -1542,10 +1970,10 @@ type DataSchemaStruct struct {
 				Shade struct {
 					// Position of window blind. 0 = Fully retracted. 100 = Fully deployed.
 					Position uint8 `json:"position,omitempty"`
-					// Switch controlling sliding action such as window, sunroof, or blind.
+					// Switch controlling sliding action such as window, sunroof, or blind. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN"]
 					Switch string `json:"switch,omitempty"`
 				} `json:"shade,omitempty"`
-				// Switch controlling sliding action such as window, sunroof, or shade.
+				// Switch controlling sliding action such as window, sunroof, or shade. Must be one of ["INACTIVE", "CLOSE", "OPEN", "ONE_SHOT_CLOSE", "ONE_SHOT_OPEN", "TILT_UP", "TILT_DOWN"]
 				Switch string `json:"switch,omitempty"`
 			} `json:"sunroof,omitempty"`
 		} `json:"cabin,omitempty"`
@@ -1717,7 +2145,7 @@ type DataSchemaStruct struct {
 				Angle int16 `json:"angle,omitempty"`
 				// Steering wheel column extension from dashboard. 0 = Closest to dashboard. 100 = Furthest from dashboard.
 				Extension uint8 `json:"extension,omitempty"`
-				// Position of the steering wheel on the left or right side of the vehicle.
+				// Position of the steering wheel on the left or right side of the vehicle. Must be one of ["FRONT_LEFT", "FRONT_RIGHT"]
 				Position string `json:"position,omitempty"`
 				// Steering wheel column tilt. 0 = Lowest position. 100 = Highest position.
 				Tilt uint8 `json:"tilt,omitempty"`
@@ -1740,7 +2168,7 @@ type DataSchemaStruct struct {
 			Altitude float64 `json:"altitude,omitempty"`
 			// Information on the GNSS receiver used for determining current location.
 			GNSSReceiver struct {
-				// Fix status of GNSS receiver.
+				// Fix status of GNSS receiver. Must be one of ["NONE", "TWO_D", "TWO_D_SATELLITE_BASED_AUGMENTATION", "TWO_D_GROUND_BASED_AUGMENTATION", "TWO_D_SATELLITE_AND_GROUND_BASED_AUGMENTATION", "THREE_D", "THREE_D_SATELLITE_BASED_AUGMENTATION", "THREE_D_GROUND_BASED_AUGMENTATION", "THREE_D_SATELLITE_AND_GROUND_BASED_AUGMENTATION"]
 				FixType string `json:"fixType,omitempty"`
 				// Mounting position of GNSS receiver antenna relative to vehicle coordinate system. Axis definitions according to ISO 8855. Origin at center of (first) rear axle.
 				MountingPosition struct {
@@ -1819,7 +2247,7 @@ type DataSchemaStruct struct {
 			// Nominal Voltage of the battery.
 			NominalVoltage uint16 `json:"nominalVoltage,omitempty"`
 		} `json:"lowVoltageBattery,omitempty"`
-		// State of the supply voltage of the control units (usually 12V).
+		// State of the supply voltage of the control units (usually 12V). Must be one of ["UNDEFINED", "LOCK", "OFF", "ACC", "ON", "START"]
 		LowVoltageSystemState string `json:"lowVoltageSystemState,omitempty"`
 		// Maximum vertical weight on the tow ball of a trailer.
 		MaxTowBallWeight uint16 `json:"maxTowBallWeight,omitempty"`
@@ -1878,7 +2306,7 @@ type DataSchemaStruct struct {
 			DriveCycleStatus struct {
 				// Number of sensor Trouble Codes (DTC)
 				DTCCount uint8 `json:"dTCCount,omitempty"`
-				// Type of the ignition for ICE - spark = spark plug ignition, compression = self-igniting (Diesel engines)
+				// Type of the ignition for ICE - spark = spark plug ignition, compression = self-igniting (Diesel engines) Must be one of ["SPARK", "COMPRESSION"]
 				IgnitionType string `json:"ignitionType,omitempty"`
 				// Malfunction Indicator Light (MIL) - False = Off, True = On
 				IsMILOn bool `json:"isMILOn,omitempty"`
@@ -2115,7 +2543,7 @@ type DataSchemaStruct struct {
 			Status struct {
 				// Number of sensor Trouble Codes (DTC)
 				DTCCount uint8 `json:"dTCCount,omitempty"`
-				// Type of the ignition for ICE - spark = spark plug ignition, compression = self-igniting (Diesel engines)
+				// Type of the ignition for ICE - spark = spark plug ignition, compression = self-igniting (Diesel engines) Must be one of ["SPARK", "COMPRESSION"]
 				IgnitionType string `json:"ignitionType,omitempty"`
 				// Malfunction Indicator Light (MIL) False = Off, True = On
 				IsMILOn bool `json:"isMILOn,omitempty"`
@@ -2141,13 +2569,13 @@ type DataSchemaStruct struct {
 			AccumulatedBrakingEnergy float64 `json:"accumulatedBrakingEnergy,omitempty"`
 			// Engine-specific data, stopping at the bell housing.
 			CombustionEngine struct {
-				// Type of aspiration (natural, turbocharger, supercharger etc).
+				// Type of aspiration (natural, turbocharger, supercharger etc). Must be one of ["UNKNOWN", "NATURAL", "SUPERCHARGER", "TURBOCHARGER"]
 				AspirationType string `json:"aspirationType,omitempty"`
 				// Bore in millimetres.
 				Bore float64 `json:"bore,omitempty"`
 				// Engine compression ratio, specified in the format 'X:1', e.g. '9.2:1'.
 				CompressionRatio string `json:"compressionRatio,omitempty"`
-				// Engine configuration.
+				// Engine configuration. Must be one of ["UNKNOWN", "STRAIGHT", "V", "BOXER", "W", "ROTARY", "RADIAL", "SQUARE", "H", "U", "OPPOSED", "X"]
 				Configuration string `json:"configuration,omitempty"`
 				// Signals related to Diesel Exhaust Fluid (DEF). DEF is called AUS32 in ISO 22241.
 				DieselExhaustFluid struct {
@@ -2185,7 +2613,7 @@ type DataSchemaStruct struct {
 				EngineHours float64 `json:"engineHours,omitempty"`
 				// Engine oil capacity in liters.
 				EngineOilCapacity float64 `json:"engineOilCapacity,omitempty"`
-				// Engine oil level.
+				// Engine oil level. Must be one of ["CRITICALLY_LOW", "LOW", "NORMAL", "HIGH", "CRITICALLY_HIGH"]
 				EngineOilLevel string `json:"engineOilLevel,omitempty"`
 				// Accumulated idling time during engine lifetime. Definition of idling is not standardized.
 				IdleHours float64 `json:"idleHours,omitempty"`
@@ -2245,7 +2673,7 @@ type DataSchemaStruct struct {
 				AverageConsumption float64 `json:"averageConsumption,omitempty"`
 				// Fuel amount in liters consumed since start of current trip.
 				ConsumptionSinceStart float64 `json:"consumptionSinceStart,omitempty"`
-				// Defines the hybrid type of the vehicle.
+				// Defines the hybrid type of the vehicle. Must be one of ["UNKNOWN", "NOT_APPLICABLE", "STOP_START", "BELT_ISG", "CIMG", "PHEV"]
 				HybridType string `json:"hybridType,omitempty"`
 				// Current consumption in liters per 100 km.
 				InstantConsumption float64 `json:"instantConsumption,omitempty"`
@@ -2257,9 +2685,9 @@ type DataSchemaStruct struct {
 				Level uint8 `json:"level,omitempty"`
 				// Remaining range in meters using only liquid fuel.
 				Range uint32 `json:"range,omitempty"`
-				// Detailed information on fuels supported by the vehicle. Identifiers originating from DIN EN 16942:2021-08, appendix B, with additional suffix for octane (RON) where relevant.
+				// Detailed information on fuels supported by the vehicle. Identifiers originating from DIN EN 16942:2021-08, appendix B, with additional suffix for octane (RON) where relevant. Must be one of ["E5_95", "E5_98", "E10_95", "E10_98", "E85", "B7", "B10", "B20", "B30", "B100", "XTL", "LPG", "CNG", "LNG", "H2", "OTHER"]
 				SupportedFuel []string `json:"supportedFuel,omitempty"`
-				// High level information of fuel types supported
+				// High level information of fuel types supported Must be one of ["GASOLINE", "DIESEL", "E85", "LPG", "CNG", "LNG", "H2", "OTHER"]
 				SupportedFuelTypes []string `json:"supportedFuelTypes,omitempty"`
 				// Capacity of the fuel tank in liters.
 				TankCapacity float64 `json:"tankCapacity,omitempty"`
@@ -2293,9 +2721,9 @@ type DataSchemaStruct struct {
 					} `json:"chargeCurrent,omitempty"`
 					// Target charge limit (state of charge) for battery.
 					ChargeLimit uint8 `json:"chargeLimit,omitempty"`
-					// Type of charge plug (charging inlet) available on the vehicle. IEC types refer to IEC 62196,  GBT refers to  GB/T 20234.
+					// Type of charge plug (charging inlet) available on the vehicle. IEC types refer to IEC 62196,  GBT refers to  GB/T 20234. Must be one of ["IEC_TYPE_1_AC", "IEC_TYPE_2_AC", "IEC_TYPE_3_AC", "IEC_TYPE_4_DC", "IEC_TYPE_1_CCS_DC", "IEC_TYPE_2_CCS_DC", "TESLA_ROADSTER", "TESLA_HPWC", "TESLA_SUPERCHARGER", "GBT_AC", "GBT_DC", "OTHER"]
 					ChargePlugType []string `json:"chargePlugType,omitempty"`
-					// Status of the charge port cover, can potentially be controlled manually.
+					// Status of the charge port cover, can potentially be controlled manually. Must be one of ["OPEN", "CLOSED"]
 					ChargePortFlap string `json:"chargePortFlap,omitempty"`
 					// Current charging rate, as in kilometers of range added per hour.
 					ChargeRate float64 `json:"chargeRate,omitempty"`
@@ -2329,11 +2757,11 @@ type DataSchemaStruct struct {
 						// Maximum AC charging current (rms) at inlet for Phase 3 that can be accepted by the system.
 						Phase3 float64 `json:"phase3,omitempty"`
 					} `json:"maximumChargingCurrent,omitempty"`
-					// Control of the charge process. MANUAL means manually initiated (plug-in event, companion app, etc). TIMER means timer-based. GRID means grid-controlled (eg ISO 15118). PROFILE means controlled by profile download to vehicle.
+					// Control of the charge process. MANUAL means manually initiated (plug-in event, companion app, etc). TIMER means timer-based. GRID means grid-controlled (eg ISO 15118). PROFILE means controlled by profile download to vehicle. Must be one of ["MANUAL", "TIMER", "GRID", "PROFILE"]
 					Mode string `json:"mode,omitempty"`
 					// Electrical energy lost by power dissipation to heat inside the AC/DC converter.
 					PowerLoss float64 `json:"powerLoss,omitempty"`
-					// Start or stop the charging process.
+					// Start or stop the charging process. Must be one of ["START", "STOP"]
 					StartStopCharging string `json:"startStopCharging,omitempty"`
 					// Current temperature of AC/DC converter converting grid voltage to battery voltage.
 					Temperature float64 `json:"temperature,omitempty"`
@@ -2341,7 +2769,7 @@ type DataSchemaStruct struct {
 					TimeToComplete uint32 `json:"timeToComplete,omitempty"`
 					// Properties related to timing of battery charging sessions.
 					Timer struct {
-						// Defines timer mode for charging: INACTIVE - no timer set, charging may start as soon as battery is connected to a charger. START_TIME - charging shall start at Charging.Timer.Time. END_TIME - charging shall be finished (reach Charging.ChargeLimit) at Charging.Timer.Time. When charging is completed the vehicle shall change mode to 'inactive' or set a new Charging.Timer.Time. Charging shall start immediately if mode is 'starttime' or 'endtime' and Charging.Timer.Time is a time in the past.
+						// Defines timer mode for charging: INACTIVE - no timer set, charging may start as soon as battery is connected to a charger. START_TIME - charging shall start at Charging.Timer.Time. END_TIME - charging shall be finished (reach Charging.ChargeLimit) at Charging.Timer.Time. When charging is completed the vehicle shall change mode to 'inactive' or set a new Charging.Timer.Time. Charging shall start immediately if mode is 'starttime' or 'endtime' and Charging.Timer.Time is a time in the past. Must be one of ["INACTIVE", "START_TIME", "END_TIME"]
 						Mode string `json:"mode,omitempty"`
 						// Time for next charging-related action, formatted according to ISO 8601 with UTC time zone. Value has no significance if Charging.Timer.Mode is 'inactive'.
 						Time string `json:"time,omitempty"`
@@ -2411,9 +2839,9 @@ type DataSchemaStruct struct {
 				DiffLockFrontEngagement float64 `json:"diffLockFrontEngagement,omitempty"`
 				// Rear Diff Lock engagement. 0% = Diff lock fully disengaged. 100% = Diff lock fully engaged.
 				DiffLockRearEngagement float64 `json:"diffLockRearEngagement,omitempty"`
-				// Drive type.
+				// Drive type. Must be one of ["UNKNOWN", "FORWARD_WHEEL_DRIVE", "REAR_WHEEL_DRIVE", "ALL_WHEEL_DRIVE"]
 				DriveType string `json:"driveType,omitempty"`
-				// Is the gearbox in automatic or manual (paddle) mode.
+				// Is the gearbox in automatic or manual (paddle) mode. Must be one of ["MANUAL", "AUTOMATIC"]
 				GearChangeMode string `json:"gearChangeMode,omitempty"`
 				// Number of forward gears in the transmission. -1 = CVT.
 				GearCount int8 `json:"gearCount,omitempty"`
@@ -2423,7 +2851,7 @@ type DataSchemaStruct struct {
 				IsLowRangeEngaged bool `json:"isLowRangeEngaged,omitempty"`
 				// Is the transmission park lock engaged or not. False = Disengaged. True = Engaged.
 				IsParkLockEngaged bool `json:"isParkLockEngaged,omitempty"`
-				// Current gearbox performance mode.
+				// Current gearbox performance mode. Must be one of ["NORMAL", "SPORT", "ECONOMY", "SNOW", "RAIN"]
 				PerformanceMode string `json:"performanceMode,omitempty"`
 				// The selected gear. 0=Neutral, 1/2/..=Forward, -1/-2/..=Reverse, 126=Park, 127=Drive.
 				SelectedGear int8 `json:"selectedGear,omitempty"`
@@ -2433,10 +2861,10 @@ type DataSchemaStruct struct {
 				TorqueDistribution float64 `json:"torqueDistribution,omitempty"`
 				// Odometer reading, total distance travelled during the lifetime of the transmission.
 				TravelledDistance float64 `json:"travelledDistance,omitempty"`
-				// Transmission type.
+				// Transmission type. Must be one of ["UNKNOWN", "SEQUENTIAL", "H", "AUTOMATIC", "DSG", "CVT"]
 				Type string `json:"type,omitempty"`
 			} `json:"transmission,omitempty"`
-			// Defines the powertrain type of the vehicle.
+			// Defines the powertrain type of the vehicle. Must be one of ["COMBUSTION", "HYBRID", "ELECTRIC"]
 			Type string `json:"type,omitempty"`
 		} `json:"powertrain,omitempty"`
 		// The permitted total weight of cargo and installations (e.g. a roof rack) on top of the vehicle.
@@ -2521,5 +2949,9 @@ func NewVehicleStatus() DataSchemaStruct {
 }
 
 func (d DataSchemaStruct) Marshal() ([]byte, error) {
+	if valid, err := d.IsValid(); !valid {
+		return []byte{}, err
+	}
+
 	return json.Marshal(d)
 }
