@@ -1,4 +1,4 @@
-package tokenexchange
+package verify_privilege_token
 
 import (
 	"encoding/json"
@@ -10,13 +10,13 @@ import (
 type VehicleTokenClaims struct {
 	VehicleTokenID string
 	UserEthAddress string
-	Privileges     []int64
+	PrivilegeIDs   []int64
 }
 
 type vehicleTokenClaimsResponseRaw struct {
-	Sub        string
-	UserID     string
-	Privileges []int64
+	Sub            string
+	UserEthAddress string
+	Privileges     []int64
 }
 
 func getVehicleTokenClaims(c *fiber.Ctx) (VehicleTokenClaims, error) {
@@ -36,7 +36,7 @@ func getVehicleTokenClaims(c *fiber.Ctx) (VehicleTokenClaims, error) {
 
 	return VehicleTokenClaims{
 		VehicleTokenID: p.Sub,
-		UserEthAddress: p.UserID,
-		Privileges:     p.Privileges,
+		UserEthAddress: p.UserEthAddress,
+		PrivilegeIDs:   p.Privileges,
 	}, nil
 }
