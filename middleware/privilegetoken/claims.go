@@ -1,4 +1,4 @@
-package verify_privilege_token
+package privilegetoken
 
 import (
 	"encoding/json"
@@ -16,7 +16,7 @@ type PrivilegeTokenClaims struct {
 type privilegeTokenClaimsResponseRaw struct {
 	Sub            string
 	UserEthAddress string
-	Privileges     []int64
+	PrivilegeIDs   []int64
 }
 
 func getDeviceTokenClaims(c *fiber.Ctx) (PrivilegeTokenClaims, error) {
@@ -37,6 +37,6 @@ func getDeviceTokenClaims(c *fiber.Ctx) (PrivilegeTokenClaims, error) {
 	return PrivilegeTokenClaims{
 		DeviceTokenID:  p.Sub,
 		UserEthAddress: p.UserEthAddress,
-		PrivilegeIDs:   p.Privileges,
+		PrivilegeIDs:   p.PrivilegeIDs,
 	}, nil
 }

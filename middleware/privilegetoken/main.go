@@ -1,4 +1,4 @@
-package verify_privilege_token
+package privilegetoken
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-type VerifyPrivilegeTokenInterface interface {
+type IVerifyPrivilegeToken interface {
 	HasTokenPrivilege(privilegeID int64) fiber.Handler
 }
 
@@ -20,7 +20,7 @@ type verifyPrivilegeToken struct {
 	cfg Config
 }
 
-func New(cfg Config) VerifyPrivilegeTokenInterface {
+func New(cfg Config) IVerifyPrivilegeToken {
 	return &verifyPrivilegeToken{
 		cfg: cfg,
 	}
@@ -33,13 +33,14 @@ func (p *verifyPrivilegeToken) HasTokenPrivilege(privilegeID int64) fiber.Handle
 }
 
 func (p *verifyPrivilegeToken) checkPrivilege(c *fiber.Ctx, privilegeID int64) error {
-	logger := p.cfg.Log
+	logger := p.cfg.Log.With().Str("src", "mw.shared.privilegetoken").Logger()
+
 	claims, err := getDeviceTokenClaims(c)
 	if err != nil {
 		logger.Debug().Str("DeviceTokenID In Request", c.Params("tokenID")).
 			Str("DeviceTokenID in bearer token", claims.DeviceTokenID).
 			Msg(err.Error())
-		return fiber.NewError(fiber.StatusInternalServerError, "Error verifying user privilege!")
+		return fiber.NewError(fiber.StatusUnauthorized, "Error verifying user privilege!")
 	}
 
 	tkID := c.Params("tokenID")
