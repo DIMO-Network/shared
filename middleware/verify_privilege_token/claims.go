@@ -7,35 +7,35 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-type VehicleTokenClaims struct {
-	VehicleTokenID string
+type PrivilegeTokenClaims struct {
+	DeviceTokenID  string // Entity in this case is what we need privilege to access
 	UserEthAddress string
 	PrivilegeIDs   []int64
 }
 
-type vehicleTokenClaimsResponseRaw struct {
+type privilegeTokenClaimsResponseRaw struct {
 	Sub            string
 	UserEthAddress string
 	Privileges     []int64
 }
 
-func getVehicleTokenClaims(c *fiber.Ctx) (VehicleTokenClaims, error) {
+func getDeviceTokenClaims(c *fiber.Ctx) (PrivilegeTokenClaims, error) {
 	token := c.Locals("user").(*jwt.Token)
 	claims := token.Claims.(jwt.MapClaims)
 
 	jsonbody, err := json.Marshal(claims)
 	if err != nil {
-		return VehicleTokenClaims{}, err
+		return PrivilegeTokenClaims{}, err
 	}
 
-	p := vehicleTokenClaimsResponseRaw{}
+	p := privilegeTokenClaimsResponseRaw{}
 
 	if err := json.Unmarshal(jsonbody, &p); err != nil {
-		return VehicleTokenClaims{}, err
+		return PrivilegeTokenClaims{}, err
 	}
 
-	return VehicleTokenClaims{
-		VehicleTokenID: p.Sub,
+	return PrivilegeTokenClaims{
+		DeviceTokenID:  p.Sub,
 		UserEthAddress: p.UserEthAddress,
 		PrivilegeIDs:   p.Privileges,
 	}, nil

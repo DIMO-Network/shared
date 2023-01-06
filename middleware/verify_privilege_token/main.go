@@ -34,21 +34,21 @@ func (p *verifyPrivilegeToken) HasTokenPrivilege(privilegeID int64) fiber.Handle
 
 func (p *verifyPrivilegeToken) checkPrivilege(c *fiber.Ctx, privilegeID int64) error {
 	logger := p.cfg.Log
-	claims, err := getVehicleTokenClaims(c)
+	claims, err := getDeviceTokenClaims(c)
 	if err != nil {
-		logger.Debug().Str("VehicleTokenID In Request", c.Params("tokenID")).
-			Str("VehicleTokenID in bearer token", claims.VehicleTokenID).
+		logger.Debug().Str("DeviceTokenID In Request", c.Params("tokenID")).
+			Str("DeviceTokenID in bearer token", claims.DeviceTokenID).
 			Msg(err.Error())
 		return fiber.NewError(fiber.StatusInternalServerError, "Error verifying user privilege!")
 	}
 
 	tkID := c.Params("tokenID")
 
-	if tkID != claims.VehicleTokenID {
-		logger.Debug().Str("VehicleTokenID In Request", tkID).
-			Str("VehicleTokenID in bearer token", claims.VehicleTokenID).
-			Msg("Invalid vehicle token")
-		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized! Wrong vehicle token provided")
+	if tkID != claims.DeviceTokenID {
+		logger.Debug().Str("DeviceTokenID In Request", tkID).
+			Str("DeviceTokenID in bearer token", claims.DeviceTokenID).
+			Msg("Invalid device token provided")
+		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized! Wrong device token provided")
 	}
 
 	// Verify privilege is correct
@@ -58,7 +58,7 @@ func (p *verifyPrivilegeToken) checkPrivilege(c *fiber.Ctx, privilegeID int64) e
 		return fiber.NewError(fiber.StatusUnauthorized, fmt.Sprintf("Unauthorized! Token does not contain privilege %d.", privilegeID))
 	}
 
-	c.Locals("vehicleTokenClaims", claims)
+	c.Locals("deviceTokenClaims", claims)
 
 	return c.Next()
 }
