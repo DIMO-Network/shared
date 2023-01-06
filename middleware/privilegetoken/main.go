@@ -55,7 +55,7 @@ func (p *verifyPrivilegeToken) checkPrivilege(c *fiber.Ctx, privilegeID int64) e
 	// Verify privilege is correct
 	privilegeFound := slices.Contains(claims.PrivilegeIDs, privilegeID)
 	if !privilegeFound {
-		logger.Debug().Interface("Privilege In Request", claims.PrivilegeIDs).Msg("Invalid privilege requested")
+		logger.Debug().Str("tokenId", tkID).Int64("requiredPrivilege", privilegeID).Interface("jwtPrivileges", claims.PrivilegeIDs).Msg("Token lacks the required privilege.")
 		return fiber.NewError(fiber.StatusUnauthorized, fmt.Sprintf("Unauthorized! Token does not contain privilege %d.", privilegeID))
 	}
 
