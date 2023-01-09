@@ -8,7 +8,8 @@ import (
 )
 
 type TokenClaims struct {
-	DeviceTokenID  string // Entity in this case is what we need privilege to access
+	// DeviceTokenID  string // Entity in this case is what we need privilege to access
+	jwt.RegisteredClaims
 	UserEthAddress string
 	PrivilegeIDs   []int64
 }
@@ -35,7 +36,9 @@ func getDeviceTokenClaims(c *fiber.Ctx) (TokenClaims, error) {
 	}
 
 	return TokenClaims{
-		DeviceTokenID:  p.Sub,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject: p.Sub,
+		},
 		UserEthAddress: p.UserEthAddress,
 		PrivilegeIDs:   p.PrivilegeIDs,
 	}, nil

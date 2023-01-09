@@ -38,16 +38,16 @@ func (p *verifyPrivilegeToken) checkPrivilege(c *fiber.Ctx, privilegeID int64) e
 	claims, err := getDeviceTokenClaims(c)
 	if err != nil {
 		logger.Debug().Str("DeviceTokenID In Request", c.Params("tokenID")).
-			Str("DeviceTokenID in bearer token", claims.DeviceTokenID).
+			Str("DeviceTokenID in bearer token", claims.Subject).
 			Msg(err.Error())
 		return fiber.NewError(fiber.StatusUnauthorized, "Error verifying user privilege!")
 	}
 
 	tkID := c.Params("tokenID")
 
-	if tkID != claims.DeviceTokenID {
+	if tkID != claims.Subject {
 		logger.Debug().Str("DeviceTokenID", tkID).
-			Str("jwtTokenID", claims.DeviceTokenID).
+			Str("jwtTokenID", claims.Subject).
 			Msg("Mismatched token ids")
 		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized! Wrong device token provided")
 	}
