@@ -25,7 +25,7 @@ func getDeviceTokenClaims(c *fiber.Ctx) (TokenClaims, error) {
 
 	jsonbody, err := json.Marshal(claims)
 	if err != nil {
-		return TokenClaims{}, err  
+		return TokenClaims{}, err
 	}
 
 	p := privilegeTokenClaimsResponseRaw{}
