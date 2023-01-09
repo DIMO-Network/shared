@@ -9,6 +9,7 @@ package devices;
 service UserDeviceService {
 	rpc GetUserDevice(GetUserDeviceRequest) returns (UserDevice);
 	rpc ListUserDevicesForUser(ListUserDevicesForUserRequest) returns (ListUserDevicesForUserResponse);
+	rpc ApplyHardwareTemplate(ApplyHardwareTemplateRequest) returns (ApplyHardwareTemplateResponse);
 }
 
 message GetUserDeviceRequest {
@@ -30,4 +31,15 @@ message ListUserDevicesForUserRequest {
 
 message ListUserDevicesForUserResponse {
 	repeated UserDevice user_devices = 1;
+}
+
+message ApplyHardwareTemplateRequest {
+	string user_id = 1;
+	string user_device_id = 2;
+	string auto_api_unit_id = 3;
+	string hardware_template_id = 4;
+}
+
+message ApplyHardwareTemplateResponse {
+	bool Applied = 1;
 }
