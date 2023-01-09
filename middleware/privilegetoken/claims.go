@@ -8,7 +8,6 @@ import (
 )
 
 type TokenClaims struct {
-	// DeviceTokenID  string // Entity in this case is what we need privilege to access
 	jwt.RegisteredClaims
 	UserEthAddress string
 	PrivilegeIDs   []int64
