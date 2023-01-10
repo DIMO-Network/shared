@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -125,7 +126,7 @@ loop:
 
 		db, err = connect(opts)
 		if err != nil {
-			fmt.Printf("can't connect to db, dsn=%s, err=%s, tries=%d", opts.DSN, err, try)
+			fmt.Printf("can't connect to db, dsn=%s, err=%s, tries=%d", safePrintDSN(opts.DSN), err, try)
 
 			select {
 			case <-ctx.Done():
@@ -171,4 +172,23 @@ func (dbs *ReaderWriter) GetReaderConn() *sql.DB {
 // GetWriterConn returns connection to writer
 func (dbs *ReaderWriter) GetWriterConn() *sql.DB {
 	return dbs.Writer.DB
+}
+
+// safePrintDSN cleans the password from the DSN for logging
+func safePrintDSN(dsn string) string {
+	p := "password="
+	pwdStartIdx := strings.Index(dsn, p)
+	if pwdStartIdx > 0 {
+		pwdStartIdx += len(p)
+		pwdEndIdx := strings.Index(dsn[pwdStartIdx:], " ") + pwdStartIdx
+		if pwdEndIdx > pwdStartIdx {
+			sanitizedPwd := dsn[pwdStartIdx:pwdStartIdx+1] + "***"
+			// Split the original string into three parts: before the replacement, the replacement, and after the replacement
+			parts := []string{dsn[:pwdStartIdx], sanitizedPwd, dsn[pwdEndIdx:]}
+
+			// Join the three parts back together using the new string as the replacement
+			return strings.Join(parts, "")
+		}
+	}
+	return dsn
 }
