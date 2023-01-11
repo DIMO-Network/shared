@@ -2,7 +2,6 @@ package shared
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"reflect"
 	"strconv"
@@ -13,7 +12,7 @@ import (
 
 // LoadConfig fills in all the values in the Settings from local yml file (for dev) and env vars (for deployments)
 func LoadConfig[S any](filePath string) (S, error) {
-	file, err := ioutil.ReadFile(filePath)
+	file, err := os.ReadFile(filePath)
 	var settings S
 	// if no file found, ignore as we could be running in higher level environment. We could make this more explicit with a cli parameter w/ the filename
 	if err != nil {

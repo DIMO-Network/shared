@@ -26,3 +26,7 @@ protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=p
 This should use the settings from `.golangci.yml`, which you can override.
 
 If brew version does not work, download from https://github.com/golangci/golangci-lint/releases (darwin arm64 if M1), then copy to /usr/local/bin and sudo xattr -c golangci-lint
+
+## License
+
+[BSL](LICENSE.md)
