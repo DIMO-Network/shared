@@ -1,6 +1,8 @@
 # shared
 Library code shared among our repositories
 
+For an overview of the project, see the [DIMO technical documentation site](https://docs.dimo.zone/docs).
+
 ## vin utils
 Use the VIN type for strings that are VIN's and it gets some basic decoding functionality (eg. year, or tesla model).
 
