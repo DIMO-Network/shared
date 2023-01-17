@@ -7,44 +7,37 @@ import "google/protobuf/timestamp.proto";
 package devices;
 
 service UserDeviceService {
-        rpc GetUserDevice(GetUserDeviceRequest) returns (UserDevice);
-		rpc GetUserDeviceByTokenId(GetUserDeviceByTokenIdRequest) returns (UserDevice);
-        rpc ListUserDevicesForUser(ListUserDevicesForUserRequest) returns (ListUserDevicesForUserResponse);
-        rpc ApplyHardwareTemplate(ApplyHardwareTemplateRequest) returns (ApplyHardwareTemplateResponse);
+  rpc GetUserDevice(GetUserDeviceRequest) returns (UserDevice);
+  rpc GetUserDeviceByTokenId(GetUserDeviceByTokenIdRequest)
+      returns (UserDevice);
+  rpc ListUserDevicesForUser(ListUserDevicesForUserRequest)
+      returns (ListUserDevicesForUserResponse);
+  rpc ApplyHardwareTemplate(ApplyHardwareTemplateRequest)
+      returns (ApplyHardwareTemplateResponse);
 }
- 
- message GetUserDeviceRequest {
-        string id = 1;
- }
 
-message GetUserDeviceByTokenIdRequest {
-       int64 token_id = 1;
-}
+message GetUserDeviceRequest { string id = 1; }
+
+message GetUserDeviceByTokenIdRequest { int64 token_id = 1; }
 
 message UserDevice {
-    string id = 1;
-    string user_id = 2;
-	optional uint64 token_id = 3;
-	optional google.protobuf.Timestamp opted_in_at = 4;
-	optional bytes owner_address = 5;
-	optional uint64 aftermarket_device_token_id = 6;
+  string id = 1;
+  string user_id = 2;
+  optional uint64 token_id = 3;
+  optional google.protobuf.Timestamp opted_in_at = 4;
+  optional bytes owner_address = 5;
+  optional uint64 aftermarket_device_token_id = 6;
 }
 
-message ListUserDevicesForUserRequest {
-	string user_id = 1;
-}
+message ListUserDevicesForUserRequest { string user_id = 1; }
 
-message ListUserDevicesForUserResponse {
-	repeated UserDevice user_devices = 1;
-}
+message ListUserDevicesForUserResponse { repeated UserDevice user_devices = 1; }
 
 message ApplyHardwareTemplateRequest {
-	string user_id = 1;
-	string user_device_id = 2;
-	string auto_api_unit_id = 3;
-	string hardware_template_id = 4;
+  string user_id = 1;
+  string user_device_id = 2;
+  string auto_api_unit_id = 3;
+  string hardware_template_id = 4;
 }
 
-message ApplyHardwareTemplateResponse {
-	bool Applied = 1;
-}
+message ApplyHardwareTemplateResponse { bool Applied = 1; }
