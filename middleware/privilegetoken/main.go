@@ -1,13 +1,16 @@
 package privilegetoken
 
 import (
+	"fmt"
+
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog"
 	"golang.org/x/exp/slices"
 )
 
 type IVerifyPrivilegeToken interface {
-	OneOf(privilegeID ...int64) fiber.Handler
+	OneOf(contract common.Address, privilegeIDs []int64) fiber.Handler
 }
 
 type Config struct {
@@ -24,9 +27,9 @@ func New(cfg Config) IVerifyPrivilegeToken {
 	}
 }
 
-func (p *verifyPrivilegeToken) OneOf(privilegeIDs ...int64) fiber.Handler {
+func (p *verifyPrivilegeToken) OneOf(contract common.Address, privilegeIDs []int64) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		return p.checkPrivilege(c, privilegeIDs)
+		return p.checkPrivilege(c, contract, privilegeIDs)
 	}
 }
 
@@ -52,12 +55,17 @@ func (p *verifyPrivilegeToken) getClaims(c *fiber.Ctx, logger zerolog.Logger) (C
 	return claims, nil
 }
 
-func (p *verifyPrivilegeToken) checkPrivilege(c *fiber.Ctx, privilegeIDs []int64) error {
+func (p *verifyPrivilegeToken) checkPrivilege(c *fiber.Ctx, contract common.Address, privilegeIDs []int64) error {
 	logger := p.cfg.Log.With().Str("src", "mw.shared.privilegetoken").Logger()
 
+	// This checks that the privileges are for the token specified by the path variable :tokenID
 	claims, err := p.getClaims(c, logger)
 	if err != nil {
 		return err
+	}
+
+	if claims.ContractAddress != contract {
+		return fiber.NewError(fiber.StatusUnauthorized, fmt.Sprintf("Provided token is for the wrong contract: %s", claims.ContractAddress))
 	}
 
 	tkID := c.Params("tokenID")
