@@ -9,11 +9,16 @@ package rewards;
 
 service RewardsService {
 	rpc GetTotalPoints(google.protobuf.Empty) returns (GetTotalPointsResponse);
+    rpc GetAverageTokens(google.protobuf.Empty) returns (AverageTokensResponse);
     rpc GetQualifiedDevices(GetQualifiedDevicesRequest) returns (stream GetQualifiedDevicesDevice);
 }
 
 message GetTotalPointsResponse {
     int64 totalPoints = 1;
+}
+
+message AverageTokensResponse {
+    int64 averageTokens = 1;
 }
 
 message GetQualifiedDevicesRequest {
