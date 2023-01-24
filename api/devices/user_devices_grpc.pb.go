@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -26,6 +27,7 @@ type UserDeviceServiceClient interface {
 	GetUserDeviceByTokenId(ctx context.Context, in *GetUserDeviceByTokenIdRequest, opts ...grpc.CallOption) (*UserDevice, error)
 	ListUserDevicesForUser(ctx context.Context, in *ListUserDevicesForUserRequest, opts ...grpc.CallOption) (*ListUserDevicesForUserResponse, error)
 	ApplyHardwareTemplate(ctx context.Context, in *ApplyHardwareTemplateRequest, opts ...grpc.CallOption) (*ApplyHardwareTemplateResponse, error)
+	GetAllUserDeviceValuation(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ValuationResponse, error)
 }
 
 type userDeviceServiceClient struct {
@@ -72,6 +74,15 @@ func (c *userDeviceServiceClient) ApplyHardwareTemplate(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *userDeviceServiceClient) GetAllUserDeviceValuation(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ValuationResponse, error) {
+	out := new(ValuationResponse)
+	err := c.cc.Invoke(ctx, "/devices.UserDeviceService/GetAllUserDeviceValuation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserDeviceServiceServer is the server API for UserDeviceService service.
 // All implementations must embed UnimplementedUserDeviceServiceServer
 // for forward compatibility
@@ -80,6 +91,7 @@ type UserDeviceServiceServer interface {
 	GetUserDeviceByTokenId(context.Context, *GetUserDeviceByTokenIdRequest) (*UserDevice, error)
 	ListUserDevicesForUser(context.Context, *ListUserDevicesForUserRequest) (*ListUserDevicesForUserResponse, error)
 	ApplyHardwareTemplate(context.Context, *ApplyHardwareTemplateRequest) (*ApplyHardwareTemplateResponse, error)
+	GetAllUserDeviceValuation(context.Context, *emptypb.Empty) (*ValuationResponse, error)
 	mustEmbedUnimplementedUserDeviceServiceServer()
 }
 
@@ -98,6 +110,9 @@ func (UnimplementedUserDeviceServiceServer) ListUserDevicesForUser(context.Conte
 }
 func (UnimplementedUserDeviceServiceServer) ApplyHardwareTemplate(context.Context, *ApplyHardwareTemplateRequest) (*ApplyHardwareTemplateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApplyHardwareTemplate not implemented")
+}
+func (UnimplementedUserDeviceServiceServer) GetAllUserDeviceValuation(context.Context, *emptypb.Empty) (*ValuationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllUserDeviceValuation not implemented")
 }
 func (UnimplementedUserDeviceServiceServer) mustEmbedUnimplementedUserDeviceServiceServer() {}
 
@@ -184,6 +199,24 @@ func _UserDeviceService_ApplyHardwareTemplate_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserDeviceService_GetAllUserDeviceValuation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServiceServer).GetAllUserDeviceValuation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/devices.UserDeviceService/GetAllUserDeviceValuation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServiceServer).GetAllUserDeviceValuation(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserDeviceService_ServiceDesc is the grpc.ServiceDesc for UserDeviceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +239,10 @@ var UserDeviceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ApplyHardwareTemplate",
 			Handler:    _UserDeviceService_ApplyHardwareTemplate_Handler,
+		},
+		{
+			MethodName: "GetAllUserDeviceValuation",
+			Handler:    _UserDeviceService_GetAllUserDeviceValuation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
