@@ -11,6 +11,7 @@ service RewardsService {
 	rpc GetTotalPoints(google.protobuf.Empty) returns (GetTotalPointsResponse);
     rpc GetAverageTokens(google.protobuf.Empty) returns (AverageTokensResponse);
     rpc GetQualifiedDevices(GetQualifiedDevicesRequest) returns (stream GetQualifiedDevicesDevice);
+    rpc GetDeviceRewards(GetDeviceRewardsRequest) returns (GetDeviceRewardsResponse);
 }
 
 message GetTotalPointsResponse {
@@ -29,4 +30,22 @@ message GetQualifiedDevicesRequest {
 message GetQualifiedDevicesDevice {
     string id = 1;
     repeated string integration_ids = 2;
+}
+
+message GetDeviceRewardsRequest {
+    string id = 1;
+};
+
+message DeviceRewardsWeek {
+    string end_date = 1;
+    double tokens = 2;
+    int32 connection_streak = 3;
+    int32 disconnection_streak = 4;
+    repeated string integration_ids = 5;
+}
+
+message GetDeviceRewardsResponse {
+    string id = 1;
+    double tokens = 2;
+    repeated DeviceRewardsWeek weeks = 3;
 }
