@@ -18,7 +18,10 @@ service UserDeviceService {
   rpc ApplyHardwareTemplate(ApplyHardwareTemplateRequest)
       returns (ApplyHardwareTemplateResponse);
   rpc GetAllUserDeviceValuation(google.protobuf.Empty) returns (ValuationResponse);
+	rpc GetUserDeviceByAutoPIUnitId(GetUserDeviceByAutoPIUnitIdRequest) returns (UserDeviceAutoPIUnitResponse);
 }
+
+message GetUserDeviceByAutoPIUnitIdRequest { string id = 1; }
 
 message GetUserDeviceRequest { string id = 1; }
 
@@ -35,6 +38,13 @@ message UserDevice {
   optional google.protobuf.Timestamp opted_in_at = 4;
   optional bytes owner_address = 5;
   optional uint64 aftermarket_device_token_id = 6;
+}
+
+message UserDeviceAutoPIUnitResponse {
+  string user_device_id = 1;
+  string user_id = 2;
+  string device_definition_id = 3;
+  string device_style_id = 4;
 }
 
 message ListUserDevicesForUserRequest { string user_id = 1; }
