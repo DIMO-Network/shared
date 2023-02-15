@@ -59,3 +59,23 @@ func (v VIN) TeslaModel() string {
 	// Maybe some error handling?
 	return teslaModelByDigit[v[3]]
 }
+
+func (v VIN) Wmi() string {
+	return string(v[0:3])
+}
+
+func (v VIN) VDS() string {
+	return string(v[3:8])
+}
+
+func (v VIN) VIS() string {
+	return string(v[9:17])
+}
+
+func (v VIN) CheckDigit() string {
+	return string(v[8:9])
+}
+
+func (v VIN) SerialNumber() string {
+	return string(v[11:17])
+}
