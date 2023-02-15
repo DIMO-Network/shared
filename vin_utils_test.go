@@ -34,6 +34,94 @@ func TestVIN_Year(t *testing.T) {
 	}
 }
 
+func TestVIN_VDS(t *testing.T) {
+	tests := []struct {
+		name string
+		v    VIN
+		want string
+	}{
+		{
+			name: "1FT FX1E5 7 JKE37092 VIN",
+			v:    "1FTFX1E57JKE37092",
+			want: "FX1E5",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.v.VDS(); got != tt.want {
+				t.Errorf("VDS() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestVIN_VIS(t *testing.T) {
+	tests := []struct {
+		name string
+		v    VIN
+		want string
+	}{
+		{
+			name: "1FT FX1E5 7 JKE37092 VIN",
+			v:    "1FTFX1E57JKE37092",
+			want: "JKE37092",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.v.VIS(); got != tt.want {
+				t.Errorf("VIS() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestVIN_CheckDigit(t *testing.T) {
+	tests := []struct {
+		name string
+		v    VIN
+		want string
+	}{
+		{
+			name: "1FT FX1E5 7 JKE37092 VIN",
+			v:    "1FTFX1E57JKE37092",
+			want: "7",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.v.CheckDigit(); got != tt.want {
+				t.Errorf("CheckDigit() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestVIN_SerialNumber(t *testing.T) {
+	tests := []struct {
+		name string
+		v    VIN
+		want string
+	}{
+		{
+			name: "1HGBH41JXMN109186 VIN",
+			v:    "1HGBH41JXMN109186",
+			want: "109186",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.v.SerialNumber(); got != tt.want {
+				t.Errorf("SerialNumber() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestVIN_String(t *testing.T) {
 	vs := "WBAEW53494PG11352"
 	v := VIN(vs)
