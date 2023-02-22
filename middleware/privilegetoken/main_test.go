@@ -2,7 +2,6 @@ package privilegetoken
 
 import (
 	"fmt"
-	"log"
 	"net/http/httptest"
 	"os"
 	"testing"
@@ -58,7 +57,7 @@ func TestSuccessOnValidSinglePrivilege(t *testing.T) {
 
 	test := httpTestTemplate{
 		description:  "Test success response when token contains at only allowed privilege on endpoint",
-		route:        fmt.Sprintf("/v1/test/%d", Commands),
+		route:        fmt.Sprintf("/v1/test/%d", 1),
 		expectedCode: fiber.StatusOK,
 	}
 
@@ -82,7 +81,7 @@ func TestSuccessOnValidSinglePrivilege(t *testing.T) {
 	req := httptest.NewRequest("GET", test.route, nil)
 
 	resp, _ := th.app.Test(req, 1)
-	log.Println(test.expectedCode, resp.StatusCode, "zzzzz")
+
 	// Verify, if the status code is as expected
 	th.assert.Equalf(test.expectedCode, resp.StatusCode, test.description)
 }
@@ -92,7 +91,7 @@ func TestSuccessOnValidTokenPrivilegeOnMany(t *testing.T) {
 
 	test := httpTestTemplate{
 		description:  "Test success response when token contains at least 1 of allowed privileges on endpoint",
-		route:        fmt.Sprintf("/v1/test/%d", Commands),
+		route:        fmt.Sprintf("/v1/test/%d", 1),
 		expectedCode: fiber.StatusOK,
 	}
 
@@ -127,7 +126,7 @@ func TestMiddlewareWriteClaimsToContext(t *testing.T) {
 
 	test := httpTestTemplate{
 		description:  "Test success response when token contains at least 1 of allowed privileges on endpoint",
-		route:        fmt.Sprintf("/v1/test/%d", Commands),
+		route:        fmt.Sprintf("/v1/test/%d", 1),
 		expectedCode: fiber.StatusOK,
 	}
 
@@ -167,7 +166,7 @@ func TestFailureOnInvalidPrivilegeInToken(t *testing.T) {
 
 	test := httpTestTemplate{
 		description:  "Test unauthorized response when token does not contain at least 1 of allowed privileges on endpoint",
-		route:        fmt.Sprintf("/v1/test/%d", Commands),
+		route:        fmt.Sprintf("/v1/test/%d", 1),
 		expectedCode: fiber.StatusUnauthorized,
 	}
 
@@ -201,7 +200,7 @@ func TestFailureOnInvalidContractAddress(t *testing.T) {
 
 	test := httpTestTemplate{
 		description:  "Test unauthorized response when token does not contain at least 1 of allowed privileges on endpoint",
-		route:        fmt.Sprintf("/v1/test/%d", Commands),
+		route:        fmt.Sprintf("/v1/test/%d", 1),
 		expectedCode: fiber.StatusUnauthorized,
 	}
 
