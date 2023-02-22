@@ -228,3 +228,4 @@ func TestFailureOnInvalidContractAddress(t *testing.T) {
 	// Verify, if the status code is as expected
 	th.assert.Equalf(test.expectedCode, resp.StatusCode, test.description)
 }
+
