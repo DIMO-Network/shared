@@ -81,7 +81,7 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 			if err != nil {
 				return errors.Wrapf(err, "error reading failed request body")
 			}
-			errResp := BuildResponseError(res.StatusCode, errors.Errorf("received non success status code %d with body: %s", res.StatusCode, string(body)))
+			errResp := BuildResponseError(res.StatusCode, errors.Errorf("received non success status code %d for url %s with body: %s", res.StatusCode, req.URL.String(), string(body)))
 			if code := res.StatusCode; 400 <= code && code < 500 {
 				// unrecoverable since probably bad payload or n
 				return retry.Unrecoverable(BuildResponseError(code, errResp))
