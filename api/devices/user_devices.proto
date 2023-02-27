@@ -38,6 +38,12 @@ message UserDevice {
   optional google.protobuf.Timestamp opted_in_at = 4;
   optional bytes owner_address = 5;
   optional uint64 aftermarket_device_token_id = 6;
+  repeated UserDeviceIntegration integrations = 7;
+}
+
+message UserDeviceIntegration {
+  string id = 1;
+  string status = 2; // This is not great, but getting tied to the list seems worse. We may regret this.
 }
 
 message UserDeviceAutoPIUnitResponse {
