@@ -23,6 +23,11 @@ func TestVIN_Year(t *testing.T) {
 			v:    "2FMPK4J97NBA08224",
 			want: 2022,
 		},
+		{
+			name: "invalid year vin",
+			v:    "2FMPK4J97IBA08224",
+			want: 0,
+		},
 	}
 
 	for _, tt := range tests {

@@ -38,7 +38,7 @@ var years = map[byte]int{
 
 type VIN string
 
-// Year will decode the year portion from the VIN from 1994 to 2023. returns 0 if out of range. VIN nomenclature only allows for 30 year timespans, then repeats, ie. 2023 = 1993
+// Year will decode the year portion from the VIN from 2005 to 2034. returns 0 if out of range. VIN nomenclature only allows for 30 year timespans, then repeats, ie. 2023 = 1993
 func (v VIN) Year() int {
 	return years[v[9]]
 }
