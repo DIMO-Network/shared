@@ -19,6 +19,7 @@ service UserDeviceService {
       returns (ApplyHardwareTemplateResponse);
   rpc GetAllUserDeviceValuation(google.protobuf.Empty) returns (ValuationResponse);
 	rpc GetUserDeviceByAutoPIUnitId(GetUserDeviceByAutoPIUnitIdRequest) returns (UserDeviceAutoPIUnitResponse);
+  rpc GetClaimedVehiclesGrowth(google.protobuf.Empty) returns (ClaimedVehiclesGrowth);
 }
 
 message GetUserDeviceByAutoPIUnitIdRequest { string id = 1; }
@@ -65,3 +66,8 @@ message ApplyHardwareTemplateRequest {
 }
 
 message ApplyHardwareTemplateResponse { bool Applied = 1; }
+
+message ClaimedVehiclesGrowth {
+  int64 TotalClaimedVehicles = 1;
+  float GrowthPercentage = 2;
+}

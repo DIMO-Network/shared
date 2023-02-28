@@ -29,6 +29,7 @@ type UserDeviceServiceClient interface {
 	ApplyHardwareTemplate(ctx context.Context, in *ApplyHardwareTemplateRequest, opts ...grpc.CallOption) (*ApplyHardwareTemplateResponse, error)
 	GetAllUserDeviceValuation(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ValuationResponse, error)
 	GetUserDeviceByAutoPIUnitId(ctx context.Context, in *GetUserDeviceByAutoPIUnitIdRequest, opts ...grpc.CallOption) (*UserDeviceAutoPIUnitResponse, error)
+	GetClaimedVehiclesGrowth(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ClaimedVehiclesGrowth, error)
 }
 
 type userDeviceServiceClient struct {
@@ -93,6 +94,15 @@ func (c *userDeviceServiceClient) GetUserDeviceByAutoPIUnitId(ctx context.Contex
 	return out, nil
 }
 
+func (c *userDeviceServiceClient) GetClaimedVehiclesGrowth(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ClaimedVehiclesGrowth, error) {
+	out := new(ClaimedVehiclesGrowth)
+	err := c.cc.Invoke(ctx, "/devices.UserDeviceService/GetClaimedVehiclesGrowth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserDeviceServiceServer is the server API for UserDeviceService service.
 // All implementations must embed UnimplementedUserDeviceServiceServer
 // for forward compatibility
@@ -103,6 +113,7 @@ type UserDeviceServiceServer interface {
 	ApplyHardwareTemplate(context.Context, *ApplyHardwareTemplateRequest) (*ApplyHardwareTemplateResponse, error)
 	GetAllUserDeviceValuation(context.Context, *emptypb.Empty) (*ValuationResponse, error)
 	GetUserDeviceByAutoPIUnitId(context.Context, *GetUserDeviceByAutoPIUnitIdRequest) (*UserDeviceAutoPIUnitResponse, error)
+	GetClaimedVehiclesGrowth(context.Context, *emptypb.Empty) (*ClaimedVehiclesGrowth, error)
 	mustEmbedUnimplementedUserDeviceServiceServer()
 }
 
@@ -127,6 +138,9 @@ func (UnimplementedUserDeviceServiceServer) GetAllUserDeviceValuation(context.Co
 }
 func (UnimplementedUserDeviceServiceServer) GetUserDeviceByAutoPIUnitId(context.Context, *GetUserDeviceByAutoPIUnitIdRequest) (*UserDeviceAutoPIUnitResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserDeviceByAutoPIUnitId not implemented")
+}
+func (UnimplementedUserDeviceServiceServer) GetClaimedVehiclesGrowth(context.Context, *emptypb.Empty) (*ClaimedVehiclesGrowth, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetClaimedVehiclesGrowth not implemented")
 }
 func (UnimplementedUserDeviceServiceServer) mustEmbedUnimplementedUserDeviceServiceServer() {}
 
@@ -249,6 +263,24 @@ func _UserDeviceService_GetUserDeviceByAutoPIUnitId_Handler(srv interface{}, ctx
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserDeviceService_GetClaimedVehiclesGrowth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServiceServer).GetClaimedVehiclesGrowth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/devices.UserDeviceService/GetClaimedVehiclesGrowth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServiceServer).GetClaimedVehiclesGrowth(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserDeviceService_ServiceDesc is the grpc.ServiceDesc for UserDeviceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -279,6 +311,10 @@ var UserDeviceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserDeviceByAutoPIUnitId",
 			Handler:    _UserDeviceService_GetUserDeviceByAutoPIUnitId_Handler,
+		},
+		{
+			MethodName: "GetClaimedVehiclesGrowth",
+			Handler:    _UserDeviceService_GetClaimedVehiclesGrowth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
