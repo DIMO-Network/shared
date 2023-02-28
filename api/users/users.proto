@@ -16,4 +16,9 @@ message User {
 	string id = 1;
 	optional string ethereum_address = 2;
 	optional string email_address = 3;
+	optional UserReferrer referred_by = 4;
+}
+
+message UserReferrer {
+	bytes ethereum_address = 1;
 }
