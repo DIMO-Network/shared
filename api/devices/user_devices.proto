@@ -22,6 +22,8 @@ service UserDeviceService {
   rpc GetClaimedVehiclesGrowth(google.protobuf.Empty) returns (ClaimedVehiclesGrowth);
   rpc CreateTemplate(CreateTemplateRequest)
       returns (CreateTemplateResponse);
+  rpc RegisterUserDeviceFromVIN(RegisterUserDeviceFromVINRequest)
+      returns (RegisterUserDeviceFromVINResponse);
 }
 
 message GetUserDeviceByAutoPIUnitIdRequest { string id = 1; }
@@ -80,3 +82,13 @@ message CreateTemplateRequest {
 }
 
 message CreateTemplateResponse { int64 Id = 1; }
+
+message RegisterUserDeviceFromVINRequest {
+  string user_device_id = 1;
+  string vin = 2;
+  string country_code = 3;
+}
+
+message RegisterUserDeviceFromVINResponse {
+  bool created = 1;
+}
