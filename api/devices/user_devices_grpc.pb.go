@@ -31,6 +31,7 @@ type UserDeviceServiceClient interface {
 	GetUserDeviceByAutoPIUnitId(ctx context.Context, in *GetUserDeviceByAutoPIUnitIdRequest, opts ...grpc.CallOption) (*UserDeviceAutoPIUnitResponse, error)
 	GetClaimedVehiclesGrowth(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ClaimedVehiclesGrowth, error)
 	CreateTemplate(ctx context.Context, in *CreateTemplateRequest, opts ...grpc.CallOption) (*CreateTemplateResponse, error)
+	RegisterUserDeviceFromVIN(ctx context.Context, in *RegisterUserDeviceFromVINRequest, opts ...grpc.CallOption) (*RegisterUserDeviceFromVINResponse, error)
 }
 
 type userDeviceServiceClient struct {
@@ -113,6 +114,15 @@ func (c *userDeviceServiceClient) CreateTemplate(ctx context.Context, in *Create
 	return out, nil
 }
 
+func (c *userDeviceServiceClient) RegisterUserDeviceFromVIN(ctx context.Context, in *RegisterUserDeviceFromVINRequest, opts ...grpc.CallOption) (*RegisterUserDeviceFromVINResponse, error) {
+	out := new(RegisterUserDeviceFromVINResponse)
+	err := c.cc.Invoke(ctx, "/devices.UserDeviceService/RegisterUserDeviceFromVIN", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserDeviceServiceServer is the server API for UserDeviceService service.
 // All implementations must embed UnimplementedUserDeviceServiceServer
 // for forward compatibility
@@ -125,6 +135,7 @@ type UserDeviceServiceServer interface {
 	GetUserDeviceByAutoPIUnitId(context.Context, *GetUserDeviceByAutoPIUnitIdRequest) (*UserDeviceAutoPIUnitResponse, error)
 	GetClaimedVehiclesGrowth(context.Context, *emptypb.Empty) (*ClaimedVehiclesGrowth, error)
 	CreateTemplate(context.Context, *CreateTemplateRequest) (*CreateTemplateResponse, error)
+	RegisterUserDeviceFromVIN(context.Context, *RegisterUserDeviceFromVINRequest) (*RegisterUserDeviceFromVINResponse, error)
 	mustEmbedUnimplementedUserDeviceServiceServer()
 }
 
@@ -155,6 +166,9 @@ func (UnimplementedUserDeviceServiceServer) GetClaimedVehiclesGrowth(context.Con
 }
 func (UnimplementedUserDeviceServiceServer) CreateTemplate(context.Context, *CreateTemplateRequest) (*CreateTemplateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTemplate not implemented")
+}
+func (UnimplementedUserDeviceServiceServer) RegisterUserDeviceFromVIN(context.Context, *RegisterUserDeviceFromVINRequest) (*RegisterUserDeviceFromVINResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterUserDeviceFromVIN not implemented")
 }
 func (UnimplementedUserDeviceServiceServer) mustEmbedUnimplementedUserDeviceServiceServer() {}
 
@@ -313,6 +327,24 @@ func _UserDeviceService_CreateTemplate_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserDeviceService_RegisterUserDeviceFromVIN_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterUserDeviceFromVINRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserDeviceServiceServer).RegisterUserDeviceFromVIN(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/devices.UserDeviceService/RegisterUserDeviceFromVIN",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserDeviceServiceServer).RegisterUserDeviceFromVIN(ctx, req.(*RegisterUserDeviceFromVINRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserDeviceService_ServiceDesc is the grpc.ServiceDesc for UserDeviceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -351,6 +383,10 @@ var UserDeviceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateTemplate",
 			Handler:    _UserDeviceService_CreateTemplate_Handler,
+		},
+		{
+			MethodName: "RegisterUserDeviceFromVIN",
+			Handler:    _UserDeviceService_RegisterUserDeviceFromVIN_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
