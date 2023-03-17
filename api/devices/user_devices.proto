@@ -34,6 +34,7 @@ message GetUserDeviceByTokenIdRequest { int64 token_id = 1; }
 
 message ValuationResponse {
   float total = 1;
+  float growthPercentage = 2;
 }
 
 message UserDevice {
