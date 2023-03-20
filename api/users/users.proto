@@ -21,4 +21,5 @@ message User {
 
 message UserReferrer {
 	bytes ethereum_address = 1;
+	bool referrer_valid = 2;
 }
