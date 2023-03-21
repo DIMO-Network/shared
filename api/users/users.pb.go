@@ -144,7 +144,8 @@ type UserReferrer struct {
 	unknownFields protoimpl.UnknownFields
 
 	EthereumAddress []byte `protobuf:"bytes,1,opt,name=ethereum_address,json=ethereumAddress,proto3" json:"ethereum_address,omitempty"`
-	ReferrerValid   bool   `protobuf:"varint,2,opt,name=referrer_valid,json=referrerValid,proto3" json:"referrer_valid,omitempty"`
+	// ReferrerValid will be false if the referring user has deleted their account or no longer has a confirmed eth address
+	ReferrerValid bool `protobuf:"varint,2,opt,name=referrer_valid,json=referrerValid,proto3" json:"referrer_valid,omitempty"`
 }
 
 func (x *UserReferrer) Reset() {

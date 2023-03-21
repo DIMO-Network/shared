@@ -21,5 +21,6 @@ message User {
 
 message UserReferrer {
 	bytes ethereum_address = 1;
+	// referrer_valid will be false if the referring user has deleted their account or no longer has a confirmed eth address
 	bool referrer_valid = 2;
 }
