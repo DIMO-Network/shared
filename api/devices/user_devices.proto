@@ -45,6 +45,7 @@ message UserDevice {
   optional bytes owner_address = 5;
   optional uint64 aftermarket_device_token_id = 6;
   repeated UserDeviceIntegration integrations = 7;
+  optional string vin = 8;
 }
 
 message UserDeviceIntegration {
