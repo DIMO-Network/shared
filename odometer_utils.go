@@ -1,7 +1,7 @@
 package shared
 
-// isOdometerValid encapsulates logic to decide whether to return odometer
-func isOdometerValid(odometer float64) bool {
+// IsOdometerValid encapsulates logic to decide whether to return odometer
+func IsOdometerValid(odometer float64) bool {
 	if odometer <= 100 {
 		return false
 	}
