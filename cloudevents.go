@@ -23,4 +23,6 @@ type CloudEvent[A any] struct {
 	Type string `json:"type"`
 	// Data contains domain-specific information about the event.
 	Data A `json:"data"`
+	// Signature is an extension https://github.com/cloudevents/spec/blob/main/cloudevents/documented-extensions.md
+	Signature string `json:"signature,omitempty"`
 }
