@@ -2,9 +2,9 @@ package kafka
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/Shopify/sarama"
+	"github.com/goccy/go-json"
 	"github.com/rs/zerolog"
 )
 
