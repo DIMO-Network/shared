@@ -19,8 +19,7 @@ type wrap[A any] struct {
 	logger  *zerolog.Logger
 }
 
-func (w *wrap[A]) Setup(sarama.ConsumerGroupSession) error { return nil }
-
+func (w *wrap[A]) Setup(sarama.ConsumerGroupSession) error   { return nil }
 func (w *wrap[A]) Cleanup(sarama.ConsumerGroupSession) error { return nil }
 
 func (w *wrap[A]) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
@@ -30,11 +29,10 @@ func (w *wrap[A]) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama
 			var a A
 			if err := json.Unmarshal(msg.Value, &a); err != nil {
 				w.logger.Err(err).Msg("Failed unmarshaling message.")
-				continue
-			}
-			if err := w.handler(a); err != nil {
+			} else if err := w.handler(a); err != nil {
 				w.logger.Err(err).Msg("Error processing message.")
 			}
+			session.MarkMessage(msg, "")
 		case <-session.Context().Done():
 			return nil
 		}
