@@ -15,7 +15,7 @@ type Config struct {
 }
 
 type wrap[A any] struct {
-	handler func(A) error
+	handler func(context.Context, A) error
 	logger  *zerolog.Logger
 }
 
@@ -29,7 +29,7 @@ func (w *wrap[A]) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama
 			var a A
 			if err := json.Unmarshal(msg.Value, &a); err != nil {
 				w.logger.Err(err).Msg("Failed unmarshaling message.")
-			} else if err := w.handler(a); err != nil {
+			} else if err := w.handler(session.Context(), a); err != nil {
 				w.logger.Err(err).Msg("Error processing message.")
 			}
 			session.MarkMessage(msg, "")
@@ -39,7 +39,7 @@ func (w *wrap[A]) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama
 	}
 }
 
-func Consume[A any](ctx context.Context, config Config, handler func(A) error, logger *zerolog.Logger) error {
+func Consume[A any](ctx context.Context, config Config, handler func(context.Context, A) error, logger *zerolog.Logger) error {
 	g, err := sarama.NewConsumerGroup(config.Brokers, config.Group, nil)
 	if err != nil {
 		return err
