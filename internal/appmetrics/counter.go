@@ -6,26 +6,6 @@ import (
 )
 
 var (
-	SmartcarIngestTotalOps = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "device_data_api_smartcar_ingest_ops_total",
-		Help: "Total smartcar ingest events started",
-	})
-
-	SmartcarIngestSuccessOps = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "device_data_api_smartcar_ingest_success_ops_total",
-		Help: "Total succesful smartcar ingest events completed",
-	})
-
-	AutoPiIngestSuccessOps = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "device_data_api_autopi_ingest_success_ops_total",
-		Help: "Total successful AutoPi ingest events completed",
-	})
-
-	AutoPiIngestTotalOps = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "device_data_api_autopi_ingest_ops_total",
-		Help: "Total AutoPi ingest events started",
-	})
-
 	GRPCPanicsCount = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "device_data_api_panics_total",
 		Help: "Total Panics recovered",
