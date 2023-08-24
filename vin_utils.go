@@ -48,6 +48,7 @@ func (v VIN) String() string {
 }
 
 var teslaModelByDigit = map[byte]string{
+	'C': "Cybertruck",
 	'R': "Roadster",
 	'S': "Model S",
 	'X': "Model X",
