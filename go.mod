@@ -10,13 +10,13 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gofiber/fiber/v2 v2.46.0
 	github.com/golang-jwt/jwt/v5 v5.0.0
-	github.com/golang/mock v1.6.0
 	github.com/jarcoal/httpmock v1.1.0
 	github.com/lib/pq v1.10.7
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.15.1
+	github.com/prometheus/client_golang v1.11.1
 	github.com/rs/zerolog v1.28.0
 	github.com/stretchr/testify v1.8.1
+	go.uber.org/mock v0.2.0
 	golang.org/x/exp v0.0.0-20230105000112-eab7a2c85304
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.30.0
@@ -41,7 +41,7 @@ require (
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
-	github.com/prometheus/common v0.42.0 // indirect
+	github.com/prometheus/common v0.26.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
