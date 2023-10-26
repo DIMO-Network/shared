@@ -21,3 +21,10 @@ func NullDecimalToInt(x types.NullDecimal) *big.Int {
 func IntToDecimal(x *big.Int) types.Decimal {
 	return types.NewDecimal(new(decimal.Big).SetBigMantScale(x, 0))
 }
+
+func NullIntToDecimal(x *big.Int) types.NullDecimal {
+	if x == nil {
+		return types.NewNullDecimal(nil)
+	}
+	return types.NewNullDecimal(new(decimal.Big).SetBigMantScale(x, 0))
+}
