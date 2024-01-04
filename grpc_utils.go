@@ -15,9 +15,15 @@ func GrpcErrorToFiber(err error, msgAppend string) error {
 		return nil
 	}
 	// pull out grpc error status to then convert to fiber http equivalent
-	errStatus, _ := status.FromError(err)
+	errStatus, ok := status.FromError(err)
+	if !ok {
+		return err
+	}
 
 	switch errStatus.Code() {
+	// future thoughts:
+	// user-facing error message should be localized and sent in the
+	// [google.rpc.Status.details][google.rpc.Status.details].
 	case codes.InvalidArgument:
 		return fiber.NewError(fiber.StatusBadRequest, errStatus.Message()+". "+msgAppend)
 	case codes.NotFound:
