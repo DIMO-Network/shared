@@ -1,33 +1,31 @@
 // Package privileges contains the different privileges that can be given to a user.
+// Privilege names and values defined here come from values stored on chain.
 package privileges
 
-// Privilege is a type for the different privileges that can be given.
-type Privilege int64
-
 const (
-	// NonLocationData provides access to all data excluding location data.
-	NonLocationData Privilege = 1
+	// VehicleNonLocationData provides access to all data excluding location data.
+	VehicleNonLocationData int64 = 1
 
-	// Commands provides access to all commands that can be sent to the device.
-	Commands Privilege = 2
+	// VehicleCommands provides access to all commands that can be sent to the device.
+	VehicleCommands int64 = 2
 
-	// CurrentLocation provides access to the current location of the device.
-	CurrentLocation Privilege = 3
+	// VehicleCurrentLocation provides access to the current location of the device.
+	VehicleCurrentLocation int64 = 3
 
-	// AllTimeLocation provives access to current and historical location data.
-	AllTimeLocation Privilege = 4
+	// VehicleAllTimeLocation provives access to current and historical location data.
+	VehicleAllTimeLocation int64 = 4
 )
 
-// String returns the string representation of a privilege.
-func (p Privilege) String() string {
+// PrivilegeString returns the string representation of a privilege.
+func PrivilegeString(p int64) string {
 	switch p {
-	case NonLocationData:
+	case VehicleNonLocationData:
 		return "NonLocationData"
-	case Commands:
+	case VehicleCommands:
 		return "Commands"
-	case CurrentLocation:
+	case VehicleCurrentLocation:
 		return "CurrentLocation"
-	case AllTimeLocation:
+	case VehicleAllTimeLocation:
 		return "AllTimeLocation"
 	default:
 		return "Unknown"
