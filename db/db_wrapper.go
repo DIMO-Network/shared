@@ -58,14 +58,14 @@ func NewDbConnection(ctx context.Context, ready *bool, ro ConnectOptions, wo Con
 
 		rCtx, rCancel := context.WithCancel(ctx)
 		wg.Add(1)
-		go func(ctx context.Context, wg *sync.WaitGroup, ec chan error, rc chan bool) {
+		go func(_ context.Context, wg *sync.WaitGroup, ec chan error, rc chan bool) {
 			defer wg.Done()
 			dbs.Reader.DB = connectWithRetry(rCtx, ec, rc, ro)
 		}(rCtx, &wg, errCh, readyCh)
 
 		wCtx, wCancel := context.WithCancel(ctx)
 		wg.Add(1)
-		go func(ctx context.Context, wg *sync.WaitGroup, ec chan error, rc chan bool) {
+		go func(_ context.Context, wg *sync.WaitGroup, ec chan error, rc chan bool) {
 			defer wg.Done()
 			dbs.Writer.DB = connectWithRetry(wCtx, ec, rc, wo)
 		}(wCtx, &wg, errCh, readyCh)
