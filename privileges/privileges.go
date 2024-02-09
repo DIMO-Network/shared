@@ -6,12 +6,12 @@ package privileges
 type Privilege int64
 
 const (
-	// ManufacureMintDevice provides access to minting a device.
-	ManufacureMintDevice Privilege = 1
-	// ManufactureDistributeDevice provides access to distributing a device.
-	ManufactureDistributeDevice Privilege = 2
-	// ManufactureFactoryReset provides access to factory resetting a device.
-	ManufactureFactoryReset Privilege = 3
+	// ManufacturerMintDevice provides access to minting a device.
+	ManufacturerMintDevice Privilege = 1
+	// ManufacturerDistributeDevice provides access to distributing a device.
+	ManufacturerDistributeDevice Privilege = 2
+	// ManufacturerFactoryReset provides access to factory resetting a device.
+	ManufacturerFactoryReset Privilege = 3
 
 	// Vehicle Privileges.
 
