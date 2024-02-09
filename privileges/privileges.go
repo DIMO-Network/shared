@@ -24,19 +24,3 @@ const (
 	// VehicleAllTimeLocation provives access to current and historical location data.
 	VehicleAllTimeLocation Privilege = 4
 )
-
-// String returns the string representation of a VehiclePrivilege.
-func (v Privilege) String() string {
-	switch v {
-	case VehicleNonLocationData:
-		return "NonLocationData"
-	case VehicleCommands:
-		return "Commands"
-	case VehicleCurrentLocation:
-		return "CurrentLocation"
-	case VehicleAllTimeLocation:
-		return "AllTimeLocation"
-	default:
-		return "Unknown"
-	}
-}
