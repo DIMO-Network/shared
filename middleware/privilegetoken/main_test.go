@@ -6,6 +6,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/DIMO-Network/shared/privileges"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -46,12 +47,6 @@ func initTestHelper(t *testing.T) testHelper {
 func (t testHelper) signToken(p jwt.MapClaims) *jwt.Token {
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, p)
 }
-
-const (
-	Commands        = 1
-	AllTimeLocation = 2
-)
-
 func TestSuccessOnValidSinglePrivilege(t *testing.T) {
 	th := initTestHelper(t)
 
@@ -67,14 +62,14 @@ func TestSuccessOnValidSinglePrivilege(t *testing.T) {
 		token := th.signToken((jwt.MapClaims{
 			"token_id":         "1",
 			"contract_address": vehicleAddr,
-			"privilege_ids":    []int64{Commands},
+			"privilege_ids":    []int64{int64(privileges.VehicleCommands)},
 		}))
 
 		c.Locals("user", token)
 		return c.Next()
 	})
 
-	th.app.Get("/v1/test/:tokenID", th.privilegeMiddleware.OneOf(vehicleAddr, []int64{Commands}), func(c *fiber.Ctx) error {
+	th.app.Get("/v1/test/:tokenID", th.privilegeMiddleware.OneOf(vehicleAddr, []privileges.Privilege{privileges.VehicleCommands}), func(c *fiber.Ctx) error {
 		return c.SendString("Ok")
 	})
 
@@ -101,14 +96,14 @@ func TestSuccessOnValidTokenPrivilegeOnMany(t *testing.T) {
 		token := th.signToken((jwt.MapClaims{
 			"token_id":         "1",
 			"contract_address": vehicleAddr,
-			"privilege_ids":    []int64{Commands},
+			"privilege_ids":    []int64{int64(privileges.VehicleCommands)},
 		}))
 
 		c.Locals("user", token)
 		return c.Next()
 	})
 
-	th.app.Get("/v1/test/:tokenID", th.privilegeMiddleware.OneOf(vehicleAddr, []int64{Commands, AllTimeLocation}), func(c *fiber.Ctx) error {
+	th.app.Get("/v1/test/:tokenID", th.privilegeMiddleware.OneOf(vehicleAddr, []privileges.Privilege{privileges.VehicleCommands, privileges.VehicleAllTimeLocation}), func(c *fiber.Ctx) error {
 
 		return c.SendString("Ok")
 	})
@@ -134,7 +129,7 @@ func TestMiddlewareWriteClaimsToContext(t *testing.T) {
 	cClaims := CustomClaims{
 		ContractAddress: vehicleAddr,
 		TokenID:         "1",
-		PrivilegeIDs:    []int64{Commands},
+		PrivilegeIDs:    []privileges.Privilege{privileges.VehicleCommands},
 	}
 	th.app.Use(func(c *fiber.Ctx) error {
 		token := th.signToken((jwt.MapClaims{
@@ -147,7 +142,7 @@ func TestMiddlewareWriteClaimsToContext(t *testing.T) {
 		return c.Next()
 	})
 
-	th.app.Get("/v1/test/:tokenID", th.privilegeMiddleware.OneOf(vehicleAddr, []int64{Commands, AllTimeLocation}), func(c *fiber.Ctx) error {
+	th.app.Get("/v1/test/:tokenID", th.privilegeMiddleware.OneOf(vehicleAddr, []privileges.Privilege{privileges.VehicleAllTimeLocation, privileges.VehicleCommands}), func(c *fiber.Ctx) error {
 		cl := c.Locals("tokenClaims").(CustomClaims)
 		th.assert.Equal(cl, cClaims)
 		return c.SendString("Ok")
@@ -176,14 +171,14 @@ func TestFailureOnInvalidPrivilegeInToken(t *testing.T) {
 		token := th.signToken((jwt.MapClaims{
 			"token_id":         "1",
 			"contract_address": vehicleAddr,
-			"privilege_ids":    []int64{Commands},
+			"privilege_ids":    []int64{int64(privileges.VehicleCommands)},
 		}))
 
 		c.Locals("user", token)
 		return c.Next()
 	})
 
-	th.app.Get("/v1/test/:tokenID", th.privilegeMiddleware.OneOf(vehicleAddr, []int64{AllTimeLocation}), func(c *fiber.Ctx) error {
+	th.app.Get("/v1/test/:tokenID", th.privilegeMiddleware.OneOf(vehicleAddr, []privileges.Privilege{privileges.VehicleAllTimeLocation}), func(c *fiber.Ctx) error {
 		return c.SendString("Ok")
 	})
 
@@ -210,14 +205,14 @@ func TestFailureOnInvalidContractAddress(t *testing.T) {
 		token := th.signToken((jwt.MapClaims{
 			"token_id":         "1",
 			"contract_address": common.BytesToAddress([]byte{uint8(2)}),
-			"privilege_ids":    []int64{Commands},
+			"privilege_ids":    []int64{int64(privileges.VehicleCommands)},
 		}))
 
 		c.Locals("user", token)
 		return c.Next()
 	})
 
-	th.app.Get("/v1/test/:tokenID", th.privilegeMiddleware.OneOf(vehicleAddr, []int64{AllTimeLocation}), func(c *fiber.Ctx) error {
+	th.app.Get("/v1/test/:tokenID", th.privilegeMiddleware.OneOf(vehicleAddr, []privileges.Privilege{privileges.VehicleAllTimeLocation}), func(c *fiber.Ctx) error {
 		return c.SendString("Ok")
 	})
 

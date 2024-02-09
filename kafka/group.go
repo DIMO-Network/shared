@@ -15,8 +15,10 @@ type Config struct {
 }
 
 type wrap[A any] struct {
+	//nolint:structcheck // false positive
 	handler func(context.Context, A) error
-	logger  *zerolog.Logger
+	//nolint:structcheck // false positive
+	logger *zerolog.Logger
 }
 
 func (w *wrap[A]) Setup(sarama.ConsumerGroupSession) error   { return nil }

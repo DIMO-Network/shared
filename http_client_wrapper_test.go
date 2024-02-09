@@ -63,16 +63,3 @@ func Test_httpClientWrapper_ExecuteRequest_doesNotRetryCertainStatusCodes(t *tes
 		})
 	}
 }
-
-func Test(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		// TODO: test cases
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-
-		})
-	}
-}
