@@ -2,23 +2,32 @@
 // Privilege names and values defined here come from values stored on chain.
 package privileges
 
+// Privilege is an enum that represents the different privileges that can be given to a user.
+type Privilege int64
+
 const (
+	// ManufacureMintDevice provides access to minting a device.
+	ManufacureMintDevice Privilege = 1
+	// ManufactureDistributeDevice provides access to distributing a device.
+	ManufactureDistributeDevice Privilege = 2
+	// ManufactureFactoryReset provides access to factory resetting a device.
+	ManufactureFactoryReset Privilege = 3
+
+	// Vehicle Privileges.
+
 	// VehicleNonLocationData provides access to all data excluding location data.
-	VehicleNonLocationData int64 = 1
-
+	VehicleNonLocationData Privilege = 1
 	// VehicleCommands provides access to all commands that can be sent to the device.
-	VehicleCommands int64 = 2
-
+	VehicleCommands Privilege = 2
 	// VehicleCurrentLocation provides access to the current location of the device.
-	VehicleCurrentLocation int64 = 3
-
+	VehicleCurrentLocation Privilege = 3
 	// VehicleAllTimeLocation provives access to current and historical location data.
-	VehicleAllTimeLocation int64 = 4
+	VehicleAllTimeLocation Privilege = 4
 )
 
-// PrivilegeString returns the string representation of a privilege.
-func PrivilegeString(p int64) string {
-	switch p {
+// String returns the string representation of a VehiclePrivilege.
+func (v Privilege) String() string {
+	switch v {
 	case VehicleNonLocationData:
 		return "NonLocationData"
 	case VehicleCommands:

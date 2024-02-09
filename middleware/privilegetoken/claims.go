@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/DIMO-Network/shared/privileges"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/gofiber/fiber/v2"
@@ -12,9 +13,9 @@ import (
 )
 
 type CustomClaims struct {
-	ContractAddress common.Address `json:"contract_address"`
-	TokenID         string         `json:"token_id"`
-	PrivilegeIDs    []int64        `json:"privilege_ids"`
+	ContractAddress common.Address         `json:"contract_address"`
+	TokenID         string                 `json:"token_id"`
+	PrivilegeIDs    []privileges.Privilege `json:"privilege_ids"`
 }
 
 type Token struct {

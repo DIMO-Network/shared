@@ -3,6 +3,7 @@ package privilegetoken
 import (
 	"fmt"
 
+	"github.com/DIMO-Network/shared/privileges"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog"
@@ -10,7 +11,7 @@ import (
 )
 
 type IVerifyPrivilegeToken interface {
-	OneOf(contract common.Address, privilegeIDs []int64) fiber.Handler
+	OneOf(contract common.Address, privilegeIDs []privileges.Privilege) fiber.Handler
 }
 
 type Config struct {
@@ -27,7 +28,7 @@ func New(cfg Config) IVerifyPrivilegeToken {
 	}
 }
 
-func (p *verifyPrivilegeToken) OneOf(contract common.Address, privilegeIDs []int64) fiber.Handler {
+func (p *verifyPrivilegeToken) OneOf(contract common.Address, privilegeIDs []privileges.Privilege) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		return p.checkPrivilege(c, contract, privilegeIDs)
 	}
@@ -55,7 +56,7 @@ func (p *verifyPrivilegeToken) getClaims(c *fiber.Ctx, logger zerolog.Logger) (C
 	return claims, nil
 }
 
-func (p *verifyPrivilegeToken) checkPrivilege(c *fiber.Ctx, contract common.Address, privilegeIDs []int64) error {
+func (p *verifyPrivilegeToken) checkPrivilege(c *fiber.Ctx, contract common.Address, privilegeIDs []privileges.Privilege) error {
 	logger := p.cfg.Log.With().Str("src", "mw.shared.privilegetoken").Logger()
 
 	// This checks that the privileges are for the token specified by the path variable :tokenID
