@@ -27,7 +27,7 @@ func (c *CustomClaims) Proto() (*structpb.Struct, error) {
 	ap := make([]any, len(c.PrivilegeIDs))
 
 	for i := range c.PrivilegeIDs {
-		ap[i] = c.PrivilegeIDs[i]
+		ap[i] = int64(c.PrivilegeIDs[i])
 	}
 
 	return structpb.NewStruct(
