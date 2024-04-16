@@ -1,13 +1,14 @@
 package shared
 
 import (
+	"strings"
+	"unicode"
+
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
-	"strings"
-	"unicode"
 )
 
 func SlugString(term string) string {
