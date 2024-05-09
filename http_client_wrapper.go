@@ -20,7 +20,7 @@ type httpClientWrapper struct {
 	baseURL     string
 	headers     map[string]string
 	torProxyURL string
-	retry       int
+	retry       uint
 }
 
 type HTTPResponseError struct {
@@ -32,7 +32,7 @@ func BuildResponseError(statusCode int, err error) error {
 	return HTTPResponseError{StatusCode: statusCode, error: err}
 }
 
-func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool, opts ...HttpClientWrapperOption) (HTTPClientWrapper, error) {
+func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool, opts ...HTTPClientWrapperOption) (HTTPClientWrapper, error) {
 	if headers == nil {
 		headers = map[string]string{}
 	}
@@ -51,7 +51,7 @@ func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, he
 		client.Transport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
 	}
 
-	params := defaultHttpClientWrapperOptions
+	params := defaultHTTPClientWrapperOptions
 	for _, opt := range opts {
 		opt(&params)
 	}
@@ -65,19 +65,23 @@ func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, he
 	}, nil
 }
 
-type HttpClientWrapperOptions struct {
-	Retry int
+type HTTPClientWrapperOptions struct {
+	Retry uint
 }
 
-var defaultHttpClientWrapperOptions = HttpClientWrapperOptions{
+var defaultHTTPClientWrapperOptions = HTTPClientWrapperOptions{
 	Retry: 5,
 }
 
-type HttpClientWrapperOption func(*HttpClientWrapperOptions)
+type HTTPClientWrapperOption func(*HTTPClientWrapperOptions)
 
-func WithRetry(retry int) HttpClientWrapperOption {
-	return func(opts *HttpClientWrapperOptions) {
-		opts.Retry = retry
+func WithRetry(retry uint) HTTPClientWrapperOption {
+	return func(opts *HTTPClientWrapperOptions) {
+		if retry >= 0 {
+			opts.Retry = retry
+		} else {
+			opts.Retry = defaultHTTPClientWrapperOptions.Retry
+		}
 	}
 }
 
@@ -113,7 +117,7 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 			return errResp
 		}
 		return err
-	}, retry.Attempts(uint(h.retry)), retry.Delay(500*time.Millisecond), retry.MaxDelay(9*time.Second))
+	}, retry.Attempts(h.retry), retry.Delay(500*time.Millisecond), retry.MaxDelay(9*time.Second))
 
 	if res == nil {
 		return nil, err
