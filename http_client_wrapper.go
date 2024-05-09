@@ -77,11 +77,7 @@ type HTTPClientWrapperOption func(*HTTPClientWrapperOptions)
 
 func WithRetry(retry uint) HTTPClientWrapperOption {
 	return func(opts *HTTPClientWrapperOptions) {
-		if retry >= 0 {
-			opts.Retry = retry
-		} else {
-			opts.Retry = defaultHTTPClientWrapperOptions.Retry
-		}
+		opts.Retry = retry
 	}
 }
 
