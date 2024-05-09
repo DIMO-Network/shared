@@ -20,6 +20,7 @@ type httpClientWrapper struct {
 	baseURL     string
 	headers     map[string]string
 	torProxyURL string
+	retry       int
 }
 
 type HTTPResponseError struct {
@@ -31,7 +32,7 @@ func BuildResponseError(statusCode int, err error) error {
 	return HTTPResponseError{StatusCode: statusCode, error: err}
 }
 
-func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool) (HTTPClientWrapper, error) {
+func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool, opts ...HttpClientWrapperOption) (HTTPClientWrapper, error) {
 	if headers == nil {
 		headers = map[string]string{}
 	}
@@ -49,12 +50,35 @@ func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, he
 		}
 		client.Transport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
 	}
+
+	params := defaultHttpClientWrapperOptions
+	for _, opt := range opts {
+		opt(&params)
+	}
+
 	return &httpClientWrapper{
 		httpClient:  client,
 		baseURL:     baseURL,
 		headers:     headers,
 		torProxyURL: torProxyURL,
+		retry:       params.Retry,
 	}, nil
+}
+
+type HttpClientWrapperOptions struct {
+	Retry int
+}
+
+var defaultHttpClientWrapperOptions = HttpClientWrapperOptions{
+	Retry: 5,
+}
+
+type HttpClientWrapperOption func(*HttpClientWrapperOptions)
+
+func WithRetry(retry int) HttpClientWrapperOption {
+	return func(opts *HttpClientWrapperOptions) {
+		opts.Retry = retry
+	}
 }
 
 // ExecuteRequest calls an endpoint, optional body and error handling. path is appended to the baseURL, same for json
@@ -89,7 +113,7 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 			return errResp
 		}
 		return err
-	}, retry.Attempts(5), retry.Delay(500*time.Millisecond), retry.MaxDelay(9*time.Second))
+	}, retry.Attempts(uint(h.retry)), retry.Delay(500*time.Millisecond), retry.MaxDelay(9*time.Second))
 
 	if res == nil {
 		return nil, err

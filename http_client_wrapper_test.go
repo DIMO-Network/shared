@@ -10,7 +10,9 @@ import (
 
 func Test_httpClientWrapper_ExecuteRequest_failsTooManyRetries(t *testing.T) {
 	const baseURL = "http://test.com"
-	hcw, _ := NewHTTPClientWrapper(baseURL, "", 1, nil, true)
+	retryCount := 5
+
+	hcw, _ := NewHTTPClientWrapper(baseURL, "", 1, nil, true, WithRetry(retryCount))
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 	path := "/api/vehicle/v2/makes"
@@ -19,7 +21,7 @@ func Test_httpClientWrapper_ExecuteRequest_failsTooManyRetries(t *testing.T) {
 	countInfo := httpmock.GetCallCountInfo()
 	c := countInfo["GET "+baseURL+path]
 
-	assert.Equal(t, 5, c, "expected five retries")
+	assert.Equal(t, retryCount, c, "expected five retries")
 	assert.Error(t, err, "expected error")
 	assert.ErrorIs(t, err, err.(HTTPResponseError), "expected HTTPResponseError")
 	assert.Equal(t, 503, err.(HTTPResponseError).StatusCode, "expected 409")
