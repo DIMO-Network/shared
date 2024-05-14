@@ -11,6 +11,8 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+// SlugString converts names into url or ID friendly human readable names, aiming for alphanumeric and dashes.
+// Replaces _ with -, which may be undesired depending on your use case.
 func SlugString(term string) string {
 	lowerCase := cases.Lower(language.English, cases.NoLower)
 	lowerTerm := lowerCase.String(term)
@@ -19,6 +21,9 @@ func SlugString(term string) string {
 	cleaned, _, _ := transform.String(t, lowerTerm)
 	cleaned = strings.ReplaceAll(cleaned, " ", "-")
 	cleaned = strings.ReplaceAll(cleaned, "_", "-")
+
+	cleaned = strings.ReplaceAll(cleaned, "/", "-")
+	cleaned = strings.ReplaceAll(cleaned, ".", "-")
 
 	return cleaned
 }
