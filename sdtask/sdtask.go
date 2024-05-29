@@ -14,9 +14,9 @@ type CredentialData struct {
 	Expiry        time.Time `json:"expiry"`
 	RefreshToken  string    `json:"refreshToken"`
 	// Version is an API version. Currently only used for Tesla: 1 is the old
-	// "Owner api" and 2 is the new "Fleet API".
+	// "Owner API" and 2 is the new "Fleet API".
 	Version int `json:"version,omitempty"`
-	// Region is the two-letter code for the region. Currently only used for
+	// Region is a lowercase two-letter code for the region. Currently only used for
 	// Tesla, and can only be "na" or "eu".
 	Region          string           `json:"region,omitempty"`
 	SyntheticDevice *SyntheticDevice `json:"syntheticDevice,omitempty"`
