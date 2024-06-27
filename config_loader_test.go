@@ -15,6 +15,7 @@ ENV: dev
 REDIS:
   URL: redis.bobby
 INLINE_URL: inline.bobby
+IGNORE: ignoreme
 `
 	settings, err := loadFromYaml[TestSettings]([]byte(data))
 	assert.NoError(t, err, "no error expected")
@@ -24,6 +25,7 @@ INLINE_URL: inline.bobby
 	assert.Equal(t, "dev", settings.Env)
 	assert.Equal(t, "redis.bobby", settings.Redis.URL)
 	assert.Equal(t, "inline.bobby", settings.Inline.URL)
+	assert.Equal(t, "", settings.Ignore)
 }
 
 func Test_loadFromEnvVars(t *testing.T) {
@@ -37,6 +39,7 @@ func Test_loadFromEnvVars(t *testing.T) {
 	t.Setenv("PORT", "5000")
 	t.Setenv("REDIS_URL", "redis.bobby")
 	t.Setenv("INLINE_URL", "inline.bobby")
+	t.Setenv("IGNORE", "ignoreme")
 
 	err := loadFromEnvVars(&settings) // b/c of type inference we don't need to specify the type
 	assert.NoError(t, err)
@@ -46,6 +49,7 @@ func Test_loadFromEnvVars(t *testing.T) {
 	assert.Equal(t, "mydb.aws.net", settings.DbConnectString)
 	assert.Equal(t, "redis.bobby", settings.Redis.URL)
 	assert.Equal(t, "inline.bobby", settings.Inline.URL)
+	assert.Equal(t, "", settings.Ignore)
 }
 
 func Test_loadFromEnvVars_errIfNotPointer(t *testing.T) {
@@ -74,6 +78,7 @@ type TestSettings struct {
 	Env             string        `yaml:"ENV"`
 	Redis           RedisSubProp  `yaml:"REDIS"`
 	Inline          InlineSubProp `yaml:",inline"`
+	Ignore          string        `yaml:"-"`
 }
 
 type RedisSubProp struct {
