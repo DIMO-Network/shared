@@ -56,7 +56,10 @@ func loadFromEnvVars[S any](settings S) error {
 			// iterate through the fields - like above, prepend fieldYamlName
 			for i := 0; i < field.NumField(); i++ {
 				subField := field.Field(i)
-				subFieldYamlName := fieldYamlName + "_" + field.Type().Field(i).Tag.Get("yaml")
+				subFieldYamlName := field.Type().Field(i).Tag.Get("yaml")
+				if fieldYamlName != ",inline" {
+					subFieldYamlName = fieldYamlName + "_" + subFieldYamlName
+				}
 				err = matchEnvVarToField(subFieldYamlName, subField)
 			}
 		} else {
