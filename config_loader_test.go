@@ -25,7 +25,7 @@ IGNORE: ignoreme
 	assert.Equal(t, "dev", settings.Env)
 	assert.Equal(t, "redis.bobby", settings.Redis.URL)
 	assert.Equal(t, "inline.bobby", settings.Inline.URL)
-	assert.Equal(t, "", settings.Ignore)
+	assert.Equal(t, "", settings.IGNORE)
 }
 
 func Test_loadFromEnvVars(t *testing.T) {
@@ -49,7 +49,7 @@ func Test_loadFromEnvVars(t *testing.T) {
 	assert.Equal(t, "mydb.aws.net", settings.DbConnectString)
 	assert.Equal(t, "redis.bobby", settings.Redis.URL)
 	assert.Equal(t, "inline.bobby", settings.Inline.URL)
-	assert.Equal(t, "", settings.Ignore)
+	assert.Equal(t, "", settings.IGNORE)
 }
 
 func Test_loadFromEnvVars_errIfNotPointer(t *testing.T) {
@@ -78,7 +78,7 @@ type TestSettings struct {
 	Env             string        `yaml:"ENV"`
 	Redis           RedisSubProp  `yaml:"REDIS"`
 	Inline          InlineSubProp `yaml:",inline"`
-	Ignore          string        `yaml:"-"`
+	IGNORE          string        `yaml:"-"`
 }
 
 type RedisSubProp struct {
