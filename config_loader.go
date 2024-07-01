@@ -5,6 +5,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
@@ -51,12 +52,18 @@ func loadFromEnvVars[S any](settings S) error {
 	for i := 0; i < valueOfConfig.NumField(); i++ {
 		field := valueOfConfig.Field(i)
 		fieldYamlName := typeOfT.Field(i).Tag.Get("yaml")
-
+		if fieldYamlName == "-" {
+			continue
+		}
 		if field.Kind() == reflect.Struct {
 			// iterate through the fields - like above, prepend fieldYamlName
 			for i := 0; i < field.NumField(); i++ {
 				subField := field.Field(i)
-				subFieldYamlName := fieldYamlName + "_" + field.Type().Field(i).Tag.Get("yaml")
+				subFieldYamlName := field.Type().Field(i).Tag.Get("yaml")
+				if !strings.HasSuffix(fieldYamlName, ",inline") {
+					subFieldYamlName = fieldYamlName + "_" + subFieldYamlName
+				}
+
 				err = matchEnvVarToField(subFieldYamlName, subField)
 			}
 		} else {
