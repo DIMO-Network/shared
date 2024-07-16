@@ -28,6 +28,8 @@ type CloudEvent[A any] struct {
 	DataContentType string `json:"datacontenttype,omitempty"`
 	// DataSchema is an optional URI pointing to a schema for the data field.
 	DataSchema string `json:"dataschema,omitempty"`
+	// VehicleTokenID is an optional field that identifies the NFT for the event's vehicle.
+	VehicleTokenID uint32 `json:"vehicleTokenId,omitempty"`
 	// Data contains domain-specific information about the event.
 	Data A `json:"data"`
 }
