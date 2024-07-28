@@ -24,6 +24,7 @@ func SlugString(term string) string {
 
 	cleaned = strings.ReplaceAll(cleaned, "/", "-")
 	cleaned = strings.ReplaceAll(cleaned, ".", "-")
+	cleaned = strings.ReplaceAll(cleaned, "'", "-")
 
 	return cleaned
 }
