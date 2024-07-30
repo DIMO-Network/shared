@@ -12,6 +12,8 @@ const (
 	ManufacturerDistributeDevice Privilege = 2
 	// ManufacturerFactoryReset provides access to factory resetting a device.
 	ManufacturerFactoryReset Privilege = 3
+	// ManufacturerDeviceLastSeen indicates when the device last transmitted data. Precision is reduced to the start of 3 hour bucket.
+	ManufacturerDeviceLastSeen Privilege = 5
 
 	// Vehicle Privileges.
 
