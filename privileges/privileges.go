@@ -6,14 +6,20 @@ package privileges
 type Privilege int64
 
 const (
+	// Manufacturer Privileges.
+
 	// ManufacturerMintDevice provides access to minting a device.
 	ManufacturerMintDevice Privilege = 1
 	// ManufacturerDistributeDevice provides access to distributing a device.
 	ManufacturerDistributeDevice Privilege = 2
 	// ManufacturerFactoryReset provides access to factory resetting a device.
 	ManufacturerFactoryReset Privilege = 3
-	// ManufacturerDeviceLastSeen indicates when the device last transmitted data. Precision is reduced to the start of 3 hour bucket.
-	ManufacturerDeviceLastSeen Privilege = 5
+	// ManufacturerDeviceReprovision provides access to force remint aftermarket device.
+	ManufacturerDeviceReprovision Privilege = 4
+	// ManufacturerDeviceDefinitionInsert provides access to add device definitions on chain.
+	ManufacturerDeviceDefinitionInsert Privilege = 5
+	// ManufacturerDeviceLastSeen provides access start of time block when device last transmitted data.
+	ManufacturerDeviceLastSeen Privilege = 6
 
 	// Vehicle Privileges.
 
