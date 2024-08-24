@@ -1,6 +1,7 @@
 package set
 
 import (
+	"slices"
 	"testing"
 )
 
@@ -20,5 +21,26 @@ func TestSet(t *testing.T) {
 
 	if s.Contains("xpp") {
 		t.Error("set contains xpp but this was never added")
+	}
+}
+
+func TestSetRange(t *testing.T) {
+	expected := []int{1, 3, 4}
+
+	s := New(expected...)
+
+	var out []int
+
+	yield := func(a int) bool {
+		out = append(out, a)
+		return true
+	}
+
+	s.All()(yield)
+
+	slices.Sort(out)
+
+	if !slices.Equal(out, expected) {
+		t.Errorf("iteration produced %v instead of the expected %v", out, expected)
 	}
 }

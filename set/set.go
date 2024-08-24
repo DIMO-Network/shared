@@ -22,3 +22,13 @@ func (s Set[A]) Contains(a A) bool {
 	_, ok := s[a]
 	return ok
 }
+
+func (s Set[A]) All() func(func(A) bool) {
+	return func(yield func(A) bool) {
+		for a := range s {
+			if !yield(a) {
+				return
+			}
+		}
+	}
+}
