@@ -2,6 +2,7 @@ package shared
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"reflect"
 	"strconv"
@@ -82,6 +83,12 @@ func matchEnvVarToField(envVarName string, field reflect.Value) error { // other
 		var val any
 		switch field.Kind() {
 		case reflect.String:
+			if strings.HasPrefix(env, "http") {
+				if urlParsed, err := url.Parse(env); err == nil {
+					val = urlParsed
+					break
+				}
+			}
 			val = env
 		case reflect.Bool:
 			val, err = strconv.ParseBool(env)
