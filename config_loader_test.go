@@ -1,6 +1,8 @@
 package shared
 
 import (
+	"github.com/stretchr/testify/require"
+	"net/url"
 	"reflect"
 	"testing"
 
@@ -16,6 +18,7 @@ REDIS:
   URL: redis.bobby
 INLINE_URL: inline.bobby
 IGNORE: ignoreme
+ACTUAL_URL_OBJECT: https://identity-api.dimo.zone/query
 `
 	settings, err := loadFromYaml[TestSettings]([]byte(data))
 	assert.NoError(t, err, "no error expected")
@@ -26,6 +29,9 @@ IGNORE: ignoreme
 	assert.Equal(t, "redis.bobby", settings.Redis.URL)
 	assert.Equal(t, "inline.bobby", settings.Inline.URL)
 	assert.Equal(t, "", settings.IGNORE)
+	assert.Equal(t, "https://identity-api.dimo.zone/query", settings.ActualURLObject.String())
+	assert.Equal(t, "/query", settings.ActualURLObject.Path)
+	assert.Equal(t, "identity-api.dimo.zone", settings.ActualURLObject.Host)
 }
 
 func Test_loadFromEnvVars(t *testing.T) {
@@ -40,9 +46,10 @@ func Test_loadFromEnvVars(t *testing.T) {
 	t.Setenv("REDIS_URL", "redis.bobby")
 	t.Setenv("INLINE_URL", "inline.bobby")
 	t.Setenv("IGNORE", "ignoreme")
+	t.Setenv("ACTUAL_URL_OBJECT", "https://identity-api.dimo.zone/query")
 
 	err := loadFromEnvVars(&settings) // b/c of type inference we don't need to specify the type
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.NotNilf(t, settings, "expected not nil")
 	assert.Equal(t, "test", settings.Env)
 	assert.Equal(t, 5000, settings.Port)
@@ -50,6 +57,9 @@ func Test_loadFromEnvVars(t *testing.T) {
 	assert.Equal(t, "redis.bobby", settings.Redis.URL)
 	assert.Equal(t, "inline.bobby", settings.Inline.URL)
 	assert.Equal(t, "", settings.IGNORE)
+	assert.Equal(t, "https://identity-api.dimo.zone/query", settings.ActualURLObject.String())
+	assert.Equal(t, "/query", settings.ActualURLObject.Path)
+	assert.Equal(t, "identity-api.dimo.zone", settings.ActualURLObject.Host)
 }
 
 func Test_loadFromEnvVars_errIfNotPointer(t *testing.T) {
@@ -58,9 +68,10 @@ func Test_loadFromEnvVars_errIfNotPointer(t *testing.T) {
 	assert.Error(t, err, "expected error if settings not a pointer")
 }
 
-func Test_matchEnvVarToField(t *testing.T) {
+func Test_matchEnvVarToField_PortInt(t *testing.T) {
 	settings := &TestSettings{}
 	t.Setenv("PORT", "5000")
+	t.Setenv("ACTUAL_URL_OBJECT", "https://identity-api.dimo.zone/query")
 
 	valueOfConfig := reflect.ValueOf(settings).Elem()
 	field := valueOfConfig.Field(0)
@@ -72,6 +83,22 @@ func Test_matchEnvVarToField(t *testing.T) {
 	assert.Equal(t, 5000, settings.Port)
 }
 
+func Test_matchEnvVarToField_Url(t *testing.T) {
+	settings := &TestSettings{}
+	t.Setenv("ACTUAL_URL_OBJECT", "https://identity-api.dimo.zone/query")
+
+	valueOfConfig := reflect.ValueOf(settings).Elem()
+	field := valueOfConfig.Field(6)
+
+	err := matchEnvVarToField("ACTUAL_URL_OBJECT", field)
+	assert.NoError(t, err)
+
+	//assert.Equal(t, "https://identity-api.dimo.zone/query", field.String())
+	assert.Equal(t, "https://identity-api.dimo.zone/query", settings.ActualURLObject.String())
+	assert.Equal(t, "/query", settings.ActualURLObject.Path)
+	assert.Equal(t, "identity-api.dimo.zone", settings.ActualURLObject.Host)
+}
+
 type TestSettings struct {
 	Port            int           `yaml:"PORT"`
 	DbConnectString string        `yaml:"DB_CONNECT_STRING"`
@@ -79,6 +106,7 @@ type TestSettings struct {
 	Redis           RedisSubProp  `yaml:"REDIS"`
 	Inline          InlineSubProp `yaml:",inline"`
 	IGNORE          string        `yaml:"-"`
+	ActualURLObject url.URL       `yaml:"ACTUAL_URL_OBJECT"`
 }
 
 type RedisSubProp struct {

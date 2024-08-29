@@ -53,10 +53,12 @@ func loadFromEnvVars[S any](settings S) error {
 	for i := 0; i < valueOfConfig.NumField(); i++ {
 		field := valueOfConfig.Field(i)
 		fieldYamlName := typeOfT.Field(i).Tag.Get("yaml")
-		if fieldYamlName == "-" {
+		if fieldYamlName == "-" { // ignore property
 			continue
 		}
-		if field.Kind() == reflect.Struct {
+		if typeOfT.Field(i).Type == reflect.TypeOf(url.URL{}) {
+			err = matchEnvVarToField(fieldYamlName, field)
+		} else if field.Kind() == reflect.Struct {
 			// iterate through the fields - like above, prepend fieldYamlName
 			for i := 0; i < field.NumField(); i++ {
 				subField := field.Field(i)
@@ -83,12 +85,6 @@ func matchEnvVarToField(envVarName string, field reflect.Value) error { // other
 		var val any
 		switch field.Kind() {
 		case reflect.String:
-			if strings.HasPrefix(env, "http") {
-				if urlParsed, err := url.Parse(env); err == nil {
-					val = urlParsed
-					break
-				}
-			}
 			val = env
 		case reflect.Bool:
 			val, err = strconv.ParseBool(env)
@@ -96,6 +92,17 @@ func matchEnvVarToField(envVarName string, field reflect.Value) error { // other
 			val, err = strconv.Atoi(env)
 		case reflect.Int64:
 			val, err = strconv.ParseInt(env, 10, 64)
+		default:
+			// want to check for actual type, not just Kind, which are like the standard types
+			if field.Type() == reflect.TypeOf(url.URL{}) {
+				if urlParsed, err := url.Parse(env); err == nil {
+					val = *urlParsed
+				} else {
+					return err
+				}
+			} else {
+				return fmt.Errorf("unknown setting Type: %s", field.Type().Name())
+			}
 		}
 		// now set the field with the val
 		if val != nil {
