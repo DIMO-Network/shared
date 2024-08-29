@@ -21,8 +21,8 @@ IGNORE: ignoreme
 ACTUAL_URL_OBJECT: https://identity-api.dimo.zone/query
 `
 	settings, err := loadFromYaml[TestSettings]([]byte(data))
-	assert.NoError(t, err, "no error expected")
-	assert.NotNilf(t, settings, "settings not expected to be nil")
+	require.NoError(t, err, "no error expected")
+	require.NotNilf(t, settings, "settings not expected to be nil")
 	assert.Equal(t, 3000, settings.Port)
 	assert.Equal(t, "mydb.aws.net", settings.DbConnectString)
 	assert.Equal(t, "dev", settings.Env)
