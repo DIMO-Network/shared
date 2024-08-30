@@ -26,7 +26,7 @@ require (
 	google.golang.org/protobuf v1.33.0
 )
 
-require github.com/DIMO-Network/yaml v0.0.0-20240829213909-b0be6e9dbcdc
+require github.com/DIMO-Network/yaml v0.1.0
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect

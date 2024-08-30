@@ -20,6 +20,7 @@ REDIS:
 INLINE_URL: inline.bobby
 IGNORE: ignoreme
 ACTUAL_URL_OBJECT: https://identity-api.dimo.zone/query
+MINT_VEHICLE_NFT_CONTRACT: 0x45fbCD3ef7361d156e8b16F5538AE36DEdf61Da8
 `
 	settings, err := loadFromYaml[TestSettings]([]byte(data))
 	require.NoError(t, err, "no error expected")
@@ -33,6 +34,7 @@ ACTUAL_URL_OBJECT: https://identity-api.dimo.zone/query
 	assert.Equal(t, "https://identity-api.dimo.zone/query", settings.ActualURLObject.String())
 	assert.Equal(t, "/query", settings.ActualURLObject.Path)
 	assert.Equal(t, "identity-api.dimo.zone", settings.ActualURLObject.Host)
+	assert.Equal(t, "0x45fbCD3ef7361d156e8b16F5538AE36DEdf61Da8", settings.MintVehicleNFTContract.String())
 }
 
 func Test_loadFromEnvVars(t *testing.T) {
