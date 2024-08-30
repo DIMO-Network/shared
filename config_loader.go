@@ -2,13 +2,15 @@ package shared
 
 import (
 	"fmt"
+	"github.com/DIMO-Network/yaml"
+	"github.com/ethereum/go-ethereum/common"
+	"net/url"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/pkg/errors"
-	"gopkg.in/yaml.v3"
 )
 
 // LoadConfig fills in all the values in the Settings from local yml file (for dev) and env vars (for deployments)
@@ -52,10 +54,18 @@ func loadFromEnvVars[S any](settings S) error {
 	for i := 0; i < valueOfConfig.NumField(); i++ {
 		field := valueOfConfig.Field(i)
 		fieldYamlName := typeOfT.Field(i).Tag.Get("yaml")
-		if fieldYamlName == "-" {
+		if fieldYamlName == "-" { // ignore property
 			continue
 		}
-		if field.Kind() == reflect.Struct {
+		// handle specific types we want to support
+		specialTypes := []reflect.Type{
+			reflect.TypeOf(url.URL{}),
+			reflect.TypeOf(common.Address{}),
+		}
+
+		if field.Kind() == reflect.Struct &&
+			// exclude any special types
+			!containsType(specialTypes, typeOfT.Field(i).Type) {
 			// iterate through the fields - like above, prepend fieldYamlName
 			for i := 0; i < field.NumField(); i++ {
 				subField := field.Field(i)
@@ -67,10 +77,20 @@ func loadFromEnvVars[S any](settings S) error {
 				err = matchEnvVarToField(subFieldYamlName, subField)
 			}
 		} else {
+			// any scalar property should just be handled here
 			err = matchEnvVarToField(fieldYamlName, field)
 		}
 	}
 	return err
+}
+
+func containsType(types []reflect.Type, t reflect.Type) bool {
+	for _, typ := range types {
+		if typ == t {
+			return true
+		}
+	}
+	return false
 }
 
 // matchEnvVarToField updates the field with the corresponding env variable value.
@@ -89,6 +109,23 @@ func matchEnvVarToField(envVarName string, field reflect.Value) error { // other
 			val, err = strconv.Atoi(env)
 		case reflect.Int64:
 			val, err = strconv.ParseInt(env, 10, 64)
+		default:
+			// support special types
+			switch field.Type() {
+			case reflect.TypeOf(url.URL{}):
+				if urlParsed, err := url.Parse(env); err == nil {
+					val = *urlParsed
+				} else {
+					return err
+				}
+			case reflect.TypeOf(common.Address{}):
+				if !common.IsHexAddress(env) {
+					return fmt.Errorf("environment variable %s is not a valid eth address", env)
+				}
+				val = common.HexToAddress(env)
+			default:
+				return fmt.Errorf("unknown setting type: %s", field.Type().Name())
+			}
 		}
 		// now set the field with the val
 		if val != nil {

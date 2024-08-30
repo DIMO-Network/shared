@@ -61,6 +61,12 @@ github.com/AzureAD/microsoft-authentication-library-for-go v0.4.0/go.mod h1:Vt9s
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/DATA-DOG/go-sqlmock v1.4.1/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
+github.com/DIMO-Network/yaml v0.0.0-20240829211632-fe064f6bb3ea h1:UBTHQ87nPvHeS3CdEvncHYSPGNPe05J+ogpt+jOAbOw=
+github.com/DIMO-Network/yaml v0.0.0-20240829211632-fe064f6bb3ea/go.mod h1:ZnGYWIk212DH3rr71T92uMvQEkt3htOz7ZA5rhI1ijw=
+github.com/DIMO-Network/yaml v0.0.0-20240829213909-b0be6e9dbcdc h1:FEXR84MA7TdeLBtX3c+hTVJ9rpOHsAw4/hHWtYGzZV8=
+github.com/DIMO-Network/yaml v0.0.0-20240829213909-b0be6e9dbcdc/go.mod h1:ZnGYWIk212DH3rr71T92uMvQEkt3htOz7ZA5rhI1ijw=
+github.com/DIMO-Network/yaml v0.1.0 h1:KQ3oKHUZETchR6Pxbmmol3e4ewrPv/q8cEwqxfwyZbU=
+github.com/DIMO-Network/yaml v0.1.0/go.mod h1:KkiehcbkVzH8Pf8f9dja8B2aW81gYYZSqfwzSj9yN68=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/IBM/sarama v1.43.3 h1:Yj6L2IaNvb2mRBop39N7mmJAHBVY3dTPncr3qGVkxPA=
 github.com/IBM/sarama v1.43.3/go.mod h1:FVIRaLrhK3Cla/9FfRF5X9Zua2KpS3SYIXxhac1H+FQ=

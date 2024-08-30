@@ -1,6 +1,8 @@
 module github.com/DIMO-Network/shared
 
-go 1.21
+go 1.22.3
+
+toolchain go1.22.6
 
 require (
 	github.com/IBM/sarama v1.43.3
@@ -22,8 +24,9 @@ require (
 	golang.org/x/exp v0.0.0-20240213143201-ec583247a57a
 	google.golang.org/grpc v1.61.1
 	google.golang.org/protobuf v1.33.0
-	gopkg.in/yaml.v3 v3.0.1
 )
+
+require github.com/DIMO-Network/yaml v0.1.0
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -56,6 +59,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.6 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240213162025-012b6fc9bca9 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (
