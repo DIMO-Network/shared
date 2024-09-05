@@ -12,7 +12,7 @@ require (
 	github.com/ericlagergren/decimal v0.0.0-20190420051523-6335edbaa640 // Do not upgrade this package. It will drag up the version used by SQLBoiler and break things.
 	github.com/ethereum/go-ethereum v1.14.0
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/gofiber/fiber/v2 v2.52.0
+	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/jarcoal/httpmock v1.1.0
 	github.com/lib/pq v1.10.9
