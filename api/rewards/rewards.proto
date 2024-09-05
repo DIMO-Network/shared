@@ -12,6 +12,8 @@ service RewardsService {
     rpc GetAverageTokens(google.protobuf.Empty) returns (AverageTokensResponse);
     rpc GetQualifiedDevices(GetQualifiedDevicesRequest) returns (stream GetQualifiedDevicesDevice);
     rpc GetDeviceRewards(GetDeviceRewardsRequest) returns (GetDeviceRewardsResponse);
+
+    rpc GetBlacklistStatus(GetBlacklistStatusRequest) returns (GetBlacklistStatusResponse);
 }
 
 message GetTotalPointsResponse {
@@ -48,4 +50,12 @@ message GetDeviceRewardsResponse {
     string id = 1;
     double tokens = 2;
     repeated DeviceRewardsWeek weeks = 3;
+}
+
+message GetBlacklistStatusRequest {
+    bytes ethereum_address = 1;
+}
+
+message GetBlacklistStatusResponse {
+    bool is_blacklisted = 1;
 }
