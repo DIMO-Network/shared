@@ -14,6 +14,8 @@ service RewardsService {
     rpc GetDeviceRewards(GetDeviceRewardsRequest) returns (GetDeviceRewardsResponse);
 
     rpc GetBlacklistStatus(GetBlacklistStatusRequest) returns (GetBlacklistStatusResponse);
+    rpc SetBlacklistStatus(SetBlacklistStatusRequest) returns (SetBlacklistStatusResponse);
+
 }
 
 message GetTotalPointsResponse {
@@ -58,4 +60,12 @@ message GetBlacklistStatusRequest {
 
 message GetBlacklistStatusResponse {
     bool is_blacklisted = 1;
+}
+
+message SetBlacklistStatusRequest {
+    bytes ethereum_address = 1;
+    bool is_blacklisted = 2;
+}
+
+message SetBlacklistStatusResponse {
 }

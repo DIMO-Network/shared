@@ -25,6 +25,7 @@ const (
 	RewardsService_GetQualifiedDevices_FullMethodName = "/rewards.RewardsService/GetQualifiedDevices"
 	RewardsService_GetDeviceRewards_FullMethodName    = "/rewards.RewardsService/GetDeviceRewards"
 	RewardsService_GetBlacklistStatus_FullMethodName  = "/rewards.RewardsService/GetBlacklistStatus"
+	RewardsService_SetBlacklistStatus_FullMethodName  = "/rewards.RewardsService/SetBlacklistStatus"
 )
 
 // RewardsServiceClient is the client API for RewardsService service.
@@ -36,6 +37,7 @@ type RewardsServiceClient interface {
 	GetQualifiedDevices(ctx context.Context, in *GetQualifiedDevicesRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[GetQualifiedDevicesDevice], error)
 	GetDeviceRewards(ctx context.Context, in *GetDeviceRewardsRequest, opts ...grpc.CallOption) (*GetDeviceRewardsResponse, error)
 	GetBlacklistStatus(ctx context.Context, in *GetBlacklistStatusRequest, opts ...grpc.CallOption) (*GetBlacklistStatusResponse, error)
+	SetBlacklistStatus(ctx context.Context, in *SetBlacklistStatusRequest, opts ...grpc.CallOption) (*SetBlacklistStatusResponse, error)
 }
 
 type rewardsServiceClient struct {
@@ -105,6 +107,16 @@ func (c *rewardsServiceClient) GetBlacklistStatus(ctx context.Context, in *GetBl
 	return out, nil
 }
 
+func (c *rewardsServiceClient) SetBlacklistStatus(ctx context.Context, in *SetBlacklistStatusRequest, opts ...grpc.CallOption) (*SetBlacklistStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetBlacklistStatusResponse)
+	err := c.cc.Invoke(ctx, RewardsService_SetBlacklistStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RewardsServiceServer is the server API for RewardsService service.
 // All implementations must embed UnimplementedRewardsServiceServer
 // for forward compatibility.
@@ -114,6 +126,7 @@ type RewardsServiceServer interface {
 	GetQualifiedDevices(*GetQualifiedDevicesRequest, grpc.ServerStreamingServer[GetQualifiedDevicesDevice]) error
 	GetDeviceRewards(context.Context, *GetDeviceRewardsRequest) (*GetDeviceRewardsResponse, error)
 	GetBlacklistStatus(context.Context, *GetBlacklistStatusRequest) (*GetBlacklistStatusResponse, error)
+	SetBlacklistStatus(context.Context, *SetBlacklistStatusRequest) (*SetBlacklistStatusResponse, error)
 	mustEmbedUnimplementedRewardsServiceServer()
 }
 
@@ -138,6 +151,9 @@ func (UnimplementedRewardsServiceServer) GetDeviceRewards(context.Context, *GetD
 }
 func (UnimplementedRewardsServiceServer) GetBlacklistStatus(context.Context, *GetBlacklistStatusRequest) (*GetBlacklistStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBlacklistStatus not implemented")
+}
+func (UnimplementedRewardsServiceServer) SetBlacklistStatus(context.Context, *SetBlacklistStatusRequest) (*SetBlacklistStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetBlacklistStatus not implemented")
 }
 func (UnimplementedRewardsServiceServer) mustEmbedUnimplementedRewardsServiceServer() {}
 func (UnimplementedRewardsServiceServer) testEmbeddedByValue()                        {}
@@ -243,6 +259,24 @@ func _RewardsService_GetBlacklistStatus_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RewardsService_SetBlacklistStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetBlacklistStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RewardsServiceServer).SetBlacklistStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RewardsService_SetBlacklistStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RewardsServiceServer).SetBlacklistStatus(ctx, req.(*SetBlacklistStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RewardsService_ServiceDesc is the grpc.ServiceDesc for RewardsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -265,6 +299,10 @@ var RewardsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetBlacklistStatus",
 			Handler:    _RewardsService_GetBlacklistStatus_Handler,
+		},
+		{
+			MethodName: "SetBlacklistStatus",
+			Handler:    _RewardsService_SetBlacklistStatus_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
