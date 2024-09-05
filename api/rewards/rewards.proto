@@ -65,6 +65,9 @@ message GetBlacklistStatusResponse {
 message SetBlacklistStatusRequest {
     bytes ethereum_address = 1;
     bool is_blacklisted = 2;
+    // A note describing why someone was blacklisted, typically containing the name of the
+    // person doing it and a link to an issue.
+    string note = 3;
 }
 
 message SetBlacklistStatusResponse {
