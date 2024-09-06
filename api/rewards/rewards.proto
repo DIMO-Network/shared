@@ -60,13 +60,15 @@ message GetBlacklistStatusRequest {
 
 message GetBlacklistStatusResponse {
     bool is_blacklisted = 1;
+    string note = 2;
+    google.protobuf.Timestamp created_at = 3;
 }
 
 message SetBlacklistStatusRequest {
     bytes ethereum_address = 1;
     bool is_blacklisted = 2;
     // A note describing why someone was blacklisted, typically containing the name of the
-    // person doing it and a link to an issue.
+    // person doing it and a link to an issue. Ignored if is_blacklisted is false.
     string note = 3;
 }
 
