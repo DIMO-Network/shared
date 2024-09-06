@@ -22,6 +22,17 @@ func TestSet(t *testing.T) {
 	if s.Contains("xpp") {
 		t.Error("set contains xpp but this was never added")
 	}
+
+	var s2 Set[int]
+	s2.Add(2)
+	if !s2.Contains(2) {
+		t.Error("expected set to contain 2 but it did not")
+	}
+
+	var s3 Set[uint32]
+	if s3.Contains(2) {
+		t.Error("expected set to not contain 2 but it did")
+	}
 }
 
 func TestSetRange(t *testing.T) {
