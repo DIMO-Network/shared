@@ -42,7 +42,10 @@ func (w *wrap[A]) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama
 }
 
 func Consume[A any](ctx context.Context, config Config, handler func(context.Context, A) error, logger *zerolog.Logger) error {
-	g, err := sarama.NewConsumerGroup(config.Brokers, config.Group, nil)
+	kconf := sarama.NewConfig()
+	kconf.Version = sarama.V3_6_0_0
+
+	g, err := sarama.NewConsumerGroup(config.Brokers, config.Group, kconf)
 	if err != nil {
 		return err
 	}
