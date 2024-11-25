@@ -33,8 +33,10 @@ const (
 	VehicleAllTimeLocation Privilege = 4
 	// VehicleVinCredential provides access to the VIN Verified Credential.
 	VehicleVinCredential Privilege = 5
+	// VehicleSubscribeLiveDataPrivilege allows a user to subscribe to live data from the vehicle.
+	VehicleSubscribeLiveDataPrivilege = 6
 	// VehicleRawData provides access to the raw data from the vehicle.
-	VehicleRawData = 6
+	VehicleRawData = 7
 	// VehicleApproximateLocation provides access to the approximate location of the vehicle.
-	VehicleApproximateLocation = 7
+	VehicleApproximateLocation = 8
 )
