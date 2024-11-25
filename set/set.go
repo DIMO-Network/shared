@@ -13,12 +13,19 @@ func New[A comparable](as ...A) Set[A] {
 }
 
 // Add adds an element to the set.
-func (s Set[A]) Add(a A) {
-	s[a] = struct{}{}
+func (s *Set[A]) Add(a A) {
+	if *s == nil {
+		*s = New(a)
+		return
+	}
+	(*s)[a] = struct{}{}
 }
 
 // Contains checks if an element is in the set.
 func (s Set[A]) Contains(a A) bool {
+	if s == nil {
+		return false
+	}
 	_, ok := s[a]
 	return ok
 }
