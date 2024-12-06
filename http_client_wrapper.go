@@ -3,11 +3,12 @@ package shared
 import (
 	"bytes"
 	"context"
-	"golang.org/x/time/rate"
 	"io"
 	"net/http"
 	"net/url"
 	"time"
+
+	"golang.org/x/time/rate"
 
 	"github.com/avast/retry-go/v4"
 	"github.com/pkg/errors"
@@ -35,7 +36,7 @@ func BuildResponseError(statusCode int, err error) error {
 	return HTTPResponseError{StatusCode: statusCode, error: err}
 }
 
-func NewTLSHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool, opts ...HTTPClientWrapperOption) (HTTPClientWrapper, error) {
+func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool, opts ...HTTPClientWrapperOption) (HTTPClientWrapper, error) {
 	if headers == nil {
 		headers = map[string]string{}
 	}
