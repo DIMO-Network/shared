@@ -2,6 +2,8 @@ package shared
 
 import (
 	"bytes"
+	"context"
+	"golang.org/x/time/rate"
 	"io"
 	"net/http"
 	"net/url"
@@ -21,6 +23,7 @@ type httpClientWrapper struct {
 	headers     map[string]string
 	torProxyURL string
 	retry       uint
+	limiter     *rate.Limiter
 }
 
 type HTTPResponseError struct {
@@ -32,7 +35,7 @@ func BuildResponseError(statusCode int, err error) error {
 	return HTTPResponseError{StatusCode: statusCode, error: err}
 }
 
-func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool, opts ...HTTPClientWrapperOption) (HTTPClientWrapper, error) {
+func NewTLSHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool, opts ...HTTPClientWrapperOption) (HTTPClientWrapper, error) {
 	if headers == nil {
 		headers = map[string]string{}
 	}
@@ -56,21 +59,29 @@ func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, he
 		opt(&params)
 	}
 
+	if params.Transport != nil {
+		client.Transport = params.Transport
+	}
+
 	return &httpClientWrapper{
 		httpClient:  client,
 		baseURL:     baseURL,
 		headers:     headers,
 		torProxyURL: torProxyURL,
 		retry:       params.Retry,
+		limiter:     params.Limiter,
 	}, nil
 }
 
 type HTTPClientWrapperOptions struct {
-	Retry uint
+	Retry     uint
+	Transport *http.Transport
+	Limiter   *rate.Limiter
 }
 
 var defaultHTTPClientWrapperOptions = HTTPClientWrapperOptions{
-	Retry: 5,
+	Retry:   5,
+	Limiter: rate.NewLimiter(50, 100),
 }
 
 type HTTPClientWrapperOption func(*HTTPClientWrapperOptions)
@@ -78,6 +89,18 @@ type HTTPClientWrapperOption func(*HTTPClientWrapperOptions)
 func WithRetry(retry uint) HTTPClientWrapperOption {
 	return func(opts *HTTPClientWrapperOptions) {
 		opts.Retry = retry
+	}
+}
+
+func WithLimiter(limiter *rate.Limiter) HTTPClientWrapperOption {
+	return func(opts *HTTPClientWrapperOptions) {
+		opts.Limiter = limiter
+	}
+}
+
+func WithTransport(transport *http.Transport) HTTPClientWrapperOption {
+	return func(opts *HTTPClientWrapperOptions) {
+		opts.Transport = transport
 	}
 }
 
@@ -95,6 +118,12 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 	}
 
 	var res *http.Response
+
+	// Wait for permission from limiter to proceed
+	err = h.limiter.Wait(context.Background())
+	if err != nil {
+		return nil, err
+	}
 
 	err = retry.Do(func() error {
 		res, err = h.httpClient.Do(req)
