@@ -26,7 +26,10 @@ require (
 	google.golang.org/protobuf v1.34.2
 )
 
-require github.com/DIMO-Network/yaml v0.1.0
+require (
+	github.com/DIMO-Network/yaml v0.1.0
+	golang.org/x/time v0.5.0
+)
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
