@@ -81,8 +81,7 @@ type HTTPClientWrapperOptions struct {
 }
 
 var defaultHTTPClientWrapperOptions = HTTPClientWrapperOptions{
-	Retry:   5,
-	Limiter: rate.NewLimiter(50, 100),
+	Retry: 5,
 }
 
 type HTTPClientWrapperOption func(*HTTPClientWrapperOptions)
@@ -120,10 +119,12 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 
 	var res *http.Response
 
-	// Wait for permission from limiter to proceed
-	err = h.limiter.Wait(context.Background())
-	if err != nil {
-		return nil, err
+	if h.limiter != nil {
+		// Wait for permission from limiter to proceed
+		err = h.limiter.Wait(context.Background())
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	err = retry.Do(func() error {
