@@ -2,14 +2,14 @@ package shared
 
 import (
 	"fmt"
-	"github.com/DIMO-Network/yaml"
-	"github.com/ethereum/go-ethereum/common"
 	"net/url"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
 
+	"github.com/DIMO-Network/yaml"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 )
 
@@ -109,6 +109,26 @@ func matchEnvVarToField(envVarName string, field reflect.Value) error { // other
 			val, err = strconv.Atoi(env)
 		case reflect.Int64:
 			val, err = strconv.ParseInt(env, 10, 64)
+		case reflect.Int32:
+			var val64 int64
+			val64, err = strconv.ParseInt(env, 10, 32)
+			val = int32(val64)
+		case reflect.Uint:
+			var val64 uint64
+			val64, err = strconv.ParseUint(env, 10, 64)
+			val = uint(val64)
+		case reflect.Uint64:
+			val, err = strconv.ParseUint(env, 10, 64)
+		case reflect.Uint32:
+			var val64 uint64
+			val64, err = strconv.ParseUint(env, 10, 32)
+			val = uint32(val64)
+		case reflect.Float64:
+			val, err = strconv.ParseFloat(env, 64)
+		case reflect.Float32:
+			var val64 float64
+			val64, err = strconv.ParseFloat(env, 32)
+			val = float32(val64)
 		default:
 			// support special types
 			switch field.Type() {
