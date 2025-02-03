@@ -2,6 +2,15 @@ package db
 
 import "fmt"
 
+const (
+	SSLModeDisable    = "disable"
+	SSLModeAllow      = "allow"
+	SSLModePrefer     = "prefer"
+	SSLModeRequire    = "require"
+	SSLModeVerifyCA   = "verify-ca"
+	SSLModeVerifyFull = "verify-full"
+)
+
 // Settings connection settings to postgres db
 type Settings struct {
 	User               string `yaml:"USER"`
@@ -11,11 +20,16 @@ type Settings struct {
 	Name               string `yaml:"NAME"`
 	MaxOpenConnections int    `yaml:"MAX_OPEN_CONNECTIONS"`
 	MaxIdleConnections int    `yaml:"MAX_IDLE_CONNECTIONS"`
+	SSLMode            string `yaml:"SSL_MODE"`
 }
 
 // BuildConnectionString builds the connection string to the database - for now same as reader
-func (app *Settings) BuildConnectionString(withSearchPath bool, sslMode SSLMode) string {
-	cs := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=%s",
+func (app *Settings) BuildConnectionString(withSearchPath bool) string {
+	sslMode := SSLModeDisable
+	if app.SSLMode != "" {
+		sslMode = app.SSLMode
+	}
+	cs := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s =%s",
 		app.User,
 		app.Password,
 		app.Name,
@@ -28,16 +42,3 @@ func (app *Settings) BuildConnectionString(withSearchPath bool, sslMode SSLMode)
 	}
 	return cs
 }
-
-// SSLMode represents the different PostgreSQL SSL modes
-type SSLMode string
-
-const (
-	SSLModeDisable SSLMode = "disable"
-	SSLModeAllow   SSLMode = "allow"
-	// SSLModePrefer falls back to no SSL if can't connect with SSL
-	SSLModePrefer     SSLMode = "prefer"
-	SSLModeRequire    SSLMode = "require"
-	SSLModeVerifyCA   SSLMode = "verify-ca"
-	SSLModeVerifyFull SSLMode = "verify-full"
-)
