@@ -2,13 +2,14 @@ package shared
 
 import (
 	"fmt"
-	"github.com/DIMO-Network/yaml"
-	"github.com/ethereum/go-ethereum/common"
 	"net/url"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/DIMO-Network/yaml"
+	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/pkg/errors"
 )
