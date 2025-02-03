@@ -29,7 +29,7 @@ func (app *Settings) BuildConnectionString(withSearchPath bool) string {
 	if app.SSLMode != "" {
 		sslMode = app.SSLMode
 	}
-	cs := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslMode=%s",
+	cs := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=%s",
 		app.User,
 		app.Password,
 		app.Name,
