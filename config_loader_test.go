@@ -1,11 +1,12 @@
 package shared
 
 import (
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/stretchr/testify/require"
 	"net/url"
 	"reflect"
 	"testing"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/stretchr/testify/require"
 
 	"github.com/stretchr/testify/assert"
 )
