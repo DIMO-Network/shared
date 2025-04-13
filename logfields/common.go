@@ -2,7 +2,8 @@ package logfields
 
 const (
 	FunctionName = "func"
-	TokenID      = "token_id"
+	VehicleTokenID      = "vehicle_token_id"
+	AftermarketTokenID      = "aftermarket_token_id"
 	VIN          = "vin"
 	WMI          = "wmi"
 	Payload      = "payload"
