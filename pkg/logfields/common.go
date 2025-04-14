@@ -1,25 +1,29 @@
 package logfields
 
 const (
-	FunctionName       = "func"
-	VehicleTokenID     = "vehicle_token_id"
-	AftermarketTokenID = "aftermarket_token_id"
+	FunctionName = "func"
+	// VehicleTokenID to track the vehicle's token id. type: uint64
+	VehicleTokenID = "vehicleTokenId"
+	// AftermarketTokenID to track the aftermarket device token id. Type: uint64.
+	AftermarketTokenID = "aftermarketTokenId"
 	VIN                = "vin"
 	WMI                = "wmi"
-	Payload            = "payload"
-	CountryCode        = "country_code"
-	DefinitionID       = "definition_id"
+	// Payload can be used to track different payloads from stream or requests/responses. Type: string or raw json
+	Payload      = "payload"
+	CountryCode  = "countryCode"
+	DefinitionID = "definitionId"
 )
 
 const (
-	CloudEventID       = "cloudevent_id"
-	CloudEventSource   = "cloudevent_source"
-	CloudEventType     = "cloudevent_type"
-	CloudEventSubject  = "cloudevent_subject"
-	CloudEventProducer = "cloudevent_producer"
+	// CloudEventID unique id for the event. Type: string
+	CloudEventID       = "cloudeventId"
+	CloudEventSource   = "cloudeventSource"
+	CloudEventType     = "cloudeventType"
+	CloudEventSubject  = "cloudeventSubject"
+	CloudEventProducer = "cloudeventProducer"
 )
 
 const (
-	GRPCStatusCode = "grpc_status_code"
-	GRPCMethod     = "grpc_method"
+	GRPCStatusCode = "grpcStatusCode"
+	GRPCMethod     = "grpcMethod"
 )
