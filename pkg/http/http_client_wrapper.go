@@ -1,4 +1,4 @@
-package shared
+package http
 
 import (
 	"bytes"
@@ -14,11 +14,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-type HTTPClientWrapper interface {
+type ClientWrapper interface {
 	ExecuteRequest(path, method string, body []byte) (*http.Response, error)
 }
 
-type httpClientWrapper struct {
+type clientWrapper struct {
 	httpClient  *http.Client
 	baseURL     string
 	headers     map[string]string
@@ -27,16 +27,16 @@ type httpClientWrapper struct {
 	limiter     *rate.Limiter
 }
 
-type HTTPResponseError struct {
+type ResponseError struct {
 	error
 	StatusCode int
 }
 
 func BuildResponseError(statusCode int, err error) error {
-	return HTTPResponseError{StatusCode: statusCode, error: err}
+	return ResponseError{StatusCode: statusCode, error: err}
 }
 
-func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool, opts ...HTTPClientWrapperOption) (HTTPClientWrapper, error) {
+func NewClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool, opts ...ClientWrapperOption) (ClientWrapper, error) {
 	if headers == nil {
 		headers = map[string]string{}
 	}
@@ -64,7 +64,7 @@ func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, he
 		client.Transport = params.Transport
 	}
 
-	return &httpClientWrapper{
+	return &clientWrapper{
 		httpClient:  client,
 		baseURL:     baseURL,
 		headers:     headers,
@@ -74,32 +74,32 @@ func NewHTTPClientWrapper(baseURL, torProxyURL string, timeout time.Duration, he
 	}, nil
 }
 
-type HTTPClientWrapperOptions struct {
+type ClientWrapperOptions struct {
 	Retry     uint
 	Transport *http.Transport
 	Limiter   *rate.Limiter
 }
 
-var defaultHTTPClientWrapperOptions = HTTPClientWrapperOptions{
+var defaultHTTPClientWrapperOptions = ClientWrapperOptions{
 	Retry: 5,
 }
 
-type HTTPClientWrapperOption func(*HTTPClientWrapperOptions)
+type ClientWrapperOption func(*ClientWrapperOptions)
 
-func WithRetry(retry uint) HTTPClientWrapperOption {
-	return func(opts *HTTPClientWrapperOptions) {
+func WithRetry(retry uint) ClientWrapperOption {
+	return func(opts *ClientWrapperOptions) {
 		opts.Retry = retry
 	}
 }
 
-func WithLimiter(limiter *rate.Limiter) HTTPClientWrapperOption {
-	return func(opts *HTTPClientWrapperOptions) {
+func WithLimiter(limiter *rate.Limiter) ClientWrapperOption {
+	return func(opts *ClientWrapperOptions) {
 		opts.Limiter = limiter
 	}
 }
 
-func WithTransport(transport *http.Transport) HTTPClientWrapperOption {
-	return func(opts *HTTPClientWrapperOptions) {
+func WithTransport(transport *http.Transport) ClientWrapperOption {
+	return func(opts *ClientWrapperOptions) {
 		opts.Transport = transport
 	}
 }
@@ -107,7 +107,7 @@ func WithTransport(transport *http.Transport) HTTPClientWrapperOption {
 // ExecuteRequest calls an endpoint, optional body and error handling. path is appended to the baseURL, same for json
 // headers and authorization. If request results in non 2xx response, will always return error with payload body in err message.
 // response should have defer response.Body.Close() after the error check as it could be nil when err is != nil
-func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*http.Response, error) {
+func (h clientWrapper) ExecuteRequest(path, method string, body []byte) (*http.Response, error) {
 	req, err := http.NewRequest(method, h.baseURL+path, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
@@ -152,7 +152,7 @@ func (h httpClientWrapper) ExecuteRequest(path, method string, body []byte) (*ht
 
 	if retryErrors, ok := err.(retry.Error); ok {
 		for _, e := range retryErrors {
-			if httpError, ok := e.(HTTPResponseError); ok {
+			if httpError, ok := e.(ResponseError); ok {
 				return res, httpError
 			}
 		}

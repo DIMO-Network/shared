@@ -1,4 +1,4 @@
-package shared
+package set
 
 // StringSet offers a nice api to deal with string lists
 type StringSet struct {

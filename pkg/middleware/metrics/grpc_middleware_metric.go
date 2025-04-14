@@ -9,7 +9,7 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/DIMO-Network/shared/internal/appmetrics"
+	"github.com/DIMO-Network/shared/pkg/appmetrics"
 
 	"time"
 

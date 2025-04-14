@@ -1,4 +1,4 @@
-package shared
+package settings
 
 import (
 	"net/url"

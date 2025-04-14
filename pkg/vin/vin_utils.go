@@ -1,4 +1,4 @@
-package shared
+package vin
 
 // VINs are not allowed to contain I, O, or Q.
 // In the year digit we additionally disallow U, Z, and 0.

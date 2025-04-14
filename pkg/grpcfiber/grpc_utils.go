@@ -1,4 +1,4 @@
-package shared
+package grpcfiber
 
 import (
 	"github.com/gofiber/fiber/v2"

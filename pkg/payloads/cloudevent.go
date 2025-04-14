@@ -1,4 +1,4 @@
-package shared
+package payloads
 
 import "time"
 
@@ -32,4 +32,14 @@ type CloudEvent[A any] struct {
 	VehicleTokenID uint32 `json:"vehicleTokenId,omitempty"`
 	// Data contains domain-specific information about the event.
 	Data A `json:"data"`
+}
+
+// CloudEventHeaders contains the fields common to all CloudEvent messages.
+type CloudEventHeaders struct {
+	ID          string    `json:"id"`
+	Source      string    `json:"source"`
+	SpecVersion string    `json:"specversion"`
+	Subject     string    `json:"subject"`
+	Time        time.Time `json:"time"`
+	Type        string    `json:"type"`
 }

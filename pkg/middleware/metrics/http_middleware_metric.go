@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/DIMO-Network/shared/internal/appmetrics"
+	"github.com/DIMO-Network/shared/pkg/appmetrics"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/prometheus/client_golang/prometheus"

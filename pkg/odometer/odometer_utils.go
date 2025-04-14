@@ -1,4 +1,4 @@
-package shared
+package odometer
 
 // IsOdometerValid encapsulates logic to decide whether to return odometer
 func IsOdometerValid(odometer float64) bool {
