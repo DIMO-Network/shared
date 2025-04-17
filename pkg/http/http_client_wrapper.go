@@ -21,6 +21,7 @@ var ErrBadRequest = errors.New("bad request")
 type ClientWrapper interface {
 	ExecuteRequest(path, method string, body []byte) (*http.Response, error)
 	ExecuteRequestWithAuth(path, method string, body []byte, authHeader string) (*http.Response, error)
+	GraphQLQuery(authHeader, query string, result interface{}) error
 }
 
 type clientWrapper struct {
