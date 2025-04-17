@@ -16,6 +16,7 @@ import (
 
 type ClientWrapper interface {
 	ExecuteRequest(path, method string, body []byte) (*http.Response, error)
+	ExecuteRequestWithAuth(path, method string, body []byte, authHeader string) (*http.Response, error)
 }
 
 type clientWrapper struct {
@@ -104,10 +105,14 @@ func WithTransport(transport *http.Transport) ClientWrapperOption {
 	}
 }
 
-// ExecuteRequest calls an endpoint, optional body and error handling. path is appended to the baseURL, same for json
-// headers and authorization. If request results in non 2xx response, will always return error with payload body in err message.
-// response should have defer response.Body.Close() after the error check as it could be nil when err is != nil
 func (h clientWrapper) ExecuteRequest(path, method string, body []byte) (*http.Response, error) {
+	return h.ExecuteRequestWithAuth(path, method, body, "")
+}
+
+// ExecuteRequestWithAuth calls an endpoint, optional body and error handling. path is appended to the baseURL, same for json
+// headers and authorization. If request results in non 2xx response, will always return error with payload body in err message.
+// response should have defer response.Body.Close() after the error check as it could be nil when err is != nil. Adds auth if passed in
+func (h clientWrapper) ExecuteRequestWithAuth(path, method string, body []byte, authHeader string) (*http.Response, error) {
 	req, err := http.NewRequest(method, h.baseURL+path, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
@@ -115,6 +120,9 @@ func (h clientWrapper) ExecuteRequest(path, method string, body []byte) (*http.R
 
 	for hk, hv := range h.headers {
 		req.Header.Set(hk, hv)
+	}
+	if authHeader != "" {
+		req.Header.Set("Authorization", authHeader)
 	}
 
 	var res *http.Response
