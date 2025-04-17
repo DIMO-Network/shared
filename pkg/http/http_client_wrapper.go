@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/url"
@@ -13,6 +14,9 @@ import (
 	"github.com/avast/retry-go/v4"
 	"github.com/pkg/errors"
 )
+
+var ErrNotFound = errors.New("not found")
+var ErrBadRequest = errors.New("bad request")
 
 type ClientWrapper interface {
 	ExecuteRequest(path, method string, body []byte) (*http.Response, error)
@@ -105,6 +109,57 @@ func WithTransport(transport *http.Transport) ClientWrapperOption {
 	}
 }
 
+// GraphQLQuery calls ExecuteRequestWithAuth with the prepared gql query. authHeader is optional. The baseURL must be
+// set in the clientWrapper with the full path eg. including /query path.
+//
+// Example:
+// client := NewClientWrapper("https://identity-api.dimo.zone/query",...)
+// query := `{vehicle(tokenId:123){id,owner}}`
+//
+//	var wrapper struct {
+//			Data struct {
+//				Vehicle coremodels.Vehicle `json:"vehicle"`
+//			} `json:"data"`
+//		}
+//
+// err := client.GraphQLQuery(query, &wrapper)
+func (h clientWrapper) GraphQLQuery(authHeader, query string, result interface{}) error {
+	// GraphQL request
+	requestPayload := GraphQLRequest{Query: query}
+	payloadBytes, err := json.Marshal(requestPayload)
+	if err != nil {
+		return err
+	}
+
+	// POST request
+	res, err := h.ExecuteRequestWithAuth("", "POST", payloadBytes, authHeader)
+	if err != nil {
+		// not sure why we do this
+		if _, ok := err.(ResponseError); !ok {
+			return errors.Wrapf(err, "error calling identity api from url %s. request: %s", h.baseURL, string(payloadBytes))
+		}
+	}
+	defer res.Body.Close() // nolint
+
+	if res.StatusCode == 404 {
+		return ErrNotFound
+	}
+	if res.StatusCode == 400 {
+		return ErrBadRequest
+	}
+
+	bodyBytes, err := io.ReadAll(res.Body)
+	if err != nil {
+		return errors.Wrapf(err, "error reading response body from url %s", h.baseURL)
+	}
+
+	if err := json.Unmarshal(bodyBytes, result); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (h clientWrapper) ExecuteRequest(path, method string, body []byte) (*http.Response, error) {
 	return h.ExecuteRequestWithAuth(path, method, body, "")
 }
@@ -167,4 +222,8 @@ func (h clientWrapper) ExecuteRequestWithAuth(path, method string, body []byte, 
 	}
 
 	return res, err
+}
+
+type GraphQLRequest struct {
+	Query string `json:"query"`
 }
