@@ -28,6 +28,11 @@ func TestVIN_Year(t *testing.T) {
 			v:    "2FMPK4J97IBA08224",
 			want: 0,
 		},
+		{
+			name: "japan chasis number",
+			v:    "ZWR90-8000186",
+			want: 0,
+		},
 	}
 
 	for _, tt := range tests {
@@ -49,6 +54,11 @@ func TestVIN_VDS(t *testing.T) {
 			name: "1FT FX1E5 7 JKE37092 VIN",
 			v:    "1FTFX1E57JKE37092",
 			want: "FX1E5",
+		},
+		{
+			name: "japan chasis number",
+			v:    "ZWR90-8000186",
+			want: "",
 		},
 	}
 
@@ -72,6 +82,11 @@ func TestVIN_VIS(t *testing.T) {
 			v:    "1FTFX1E57JKE37092",
 			want: "JKE37092",
 		},
+		{
+			name: "japan chasis number",
+			v:    "ZWR90-8000186",
+			want: "",
+		},
 	}
 
 	for _, tt := range tests {
@@ -93,6 +108,11 @@ func TestVIN_CheckDigit(t *testing.T) {
 			name: "1FT FX1E5 7 JKE37092 VIN",
 			v:    "1FTFX1E57JKE37092",
 			want: "7",
+		},
+		{
+			name: "japan chasis number",
+			v:    "ZWR90-8000186",
+			want: "",
 		},
 	}
 
@@ -116,6 +136,11 @@ func TestVIN_SerialNumber(t *testing.T) {
 			v:    "1HGBH41JXMN109186",
 			want: "109186",
 		},
+		{
+			name: "japan chasis number",
+			v:    "ZWR90-8000186",
+			want: "8000186",
+		},
 	}
 
 	for _, tt := range tests {
@@ -130,6 +155,12 @@ func TestVIN_SerialNumber(t *testing.T) {
 func TestVIN_String(t *testing.T) {
 	vs := "WBAEW53494PG11352"
 	v := VIN(vs)
+	if v.String() != vs {
+		t.Errorf("did not get expected vin strin")
+	}
+
+	vs = "ZWR90-8000186"
+	v = VIN(vs)
 	if v.String() != vs {
 		t.Errorf("did not get expected vin strin")
 	}
