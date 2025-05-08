@@ -202,6 +202,11 @@ func TestVIN_IsJapanChassis(t *testing.T) {
 			v:    "",
 			want: false,
 		},
+		{
+			name: "Nissan shorter chassis",
+			v:    "GFC27-183060",
+			want: true,
+		},
 	}
 
 	for _, tt := range tests {
