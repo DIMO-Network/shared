@@ -13,21 +13,24 @@ import (
 	"golang.org/x/exp/slices"
 )
 
+// VerifyPrivilegeToken is a middleware that verifies the privileges of a token
 type VerifyPrivilegeToken struct {
 	Contract  common.Address
 	ChainID   uint64
 	PathParam string
 }
 
-func (p *VerifyPrivilegeToken) OneOf(privilegeIDs []privileges.Privilege) fiber.Handler {
+// OneOf verifies that the token contains at least one of the specified privileges
+func (v *VerifyPrivilegeToken) OneOf(privilegeIDs []privileges.Privilege) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		return p.verifyPrivileges(c, privilegeIDs, false)
+		return v.verifyPrivileges(c, privilegeIDs, false)
 	}
 }
 
-func (p *VerifyPrivilegeToken) AllOf(privilegeIDs []privileges.Privilege) fiber.Handler {
+// AllOf verifies that the token contains all of the specified privileges
+func (v *VerifyPrivilegeToken) AllOf(privilegeIDs []privileges.Privilege) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		return p.verifyPrivileges(c, privilegeIDs, true)
+		return v.verifyPrivileges(c, privilegeIDs, true)
 	}
 }
 
