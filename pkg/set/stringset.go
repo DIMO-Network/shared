@@ -29,3 +29,13 @@ func (s *StringSet) Slice() []string {
 func (s *StringSet) Len() int {
 	return len(s.elements)
 }
+
+func (s *StringSet) All() func(func(string) bool) {
+	return func(yield func(string) bool) {
+		for a := range s.elements {
+			if !yield(a) {
+				return
+			}
+		}
+	}
+}
