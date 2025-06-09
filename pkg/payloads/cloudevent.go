@@ -4,6 +4,8 @@ import "time"
 
 // CloudEvent represents an event according to the CloudEvents spec.
 // See https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
+//
+// Deprecated: Use github.com/DIMO-Network/cloudevent.CloudEvent instead.
 type CloudEvent[A any] struct {
 	// ID is an identifier for the event. The combination of ID and Source must
 	// be unique.
@@ -35,6 +37,8 @@ type CloudEvent[A any] struct {
 }
 
 // CloudEventHeaders contains the fields common to all CloudEvent messages.
+//
+// Deprecated: Use github.com/DIMO-Network/cloudevent.CloudEventHeaders instead.
 type CloudEventHeaders struct {
 	ID          string    `json:"id"`
 	Source      string    `json:"source"`
