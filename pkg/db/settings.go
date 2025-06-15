@@ -13,14 +13,14 @@ const (
 
 // Settings connection settings to postgres db
 type Settings struct {
-	User               string `yaml:"USER"`
-	Password           string `yaml:"PASSWORD"`
-	Port               string `yaml:"PORT"`
-	Host               string `yaml:"HOST"`
-	Name               string `yaml:"NAME"`
-	MaxOpenConnections int    `yaml:"MAX_OPEN_CONNECTIONS"`
-	MaxIdleConnections int    `yaml:"MAX_IDLE_CONNECTIONS"`
-	SSLMode            string `yaml:"SSL_MODE"`
+	User               string `env:"USER"                 yaml:"USER"`
+	Password           string `env:"PASSWORD"             yaml:"PASSWORD"`
+	Port               string `env:"PORT"                 yaml:"PORT"`
+	Host               string `env:"HOST"                 yaml:"HOST"`
+	Name               string `env:"NAME"                 yaml:"NAME"`
+	MaxOpenConnections int    `env:"MAX_OPEN_CONNECTIONS" yaml:"MAX_OPEN_CONNECTIONS"`
+	MaxIdleConnections int    `env:"MAX_IDLE_CONNECTIONS" yaml:"MAX_IDLE_CONNECTIONS"`
+	SSLMode            string `env:"SSL_MODE"             yaml:"SSL_MODE"`
 }
 
 // BuildConnectionString builds the connection string to the database - for now same as reader
