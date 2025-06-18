@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	_ "github.com/lib/pq" // concrete implementation of database
@@ -43,10 +44,10 @@ type ReaderWriter struct {
 var dbs *ReaderWriter
 
 // NewDbConnection connects to the reader and writer per passed in options, with retries, returning a DBReaderWriter object that contains sql.DB connection
-func NewDbConnection(ctx context.Context, ready *bool, ro ConnectOptions, wo ConnectOptions) *ReaderWriter {
+func NewDbConnection(ctx context.Context, ready *atomic.Bool, ro ConnectOptions, wo ConnectOptions) *ReaderWriter {
 	dbs = &ReaderWriter{Reader: &DB{}, Writer: &DB{}}
 
-	go func(ctx context.Context, ready *bool, dbs *ReaderWriter) {
+	go func(ctx context.Context, ready *atomic.Bool, dbs *ReaderWriter) {
 		errCh := make(chan error)
 		defer close(errCh)
 
@@ -74,7 +75,7 @@ func NewDbConnection(ctx context.Context, ready *bool, ro ConnectOptions, wo Con
 			rCancel()
 			wCancel()
 			wg.Wait()
-			*ready = r
+			ready.Store(r)
 		}
 
 		rCount := 0

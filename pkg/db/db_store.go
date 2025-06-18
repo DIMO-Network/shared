@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -14,7 +15,7 @@ const databaseDriver = "postgres"
 // instance holds a single instance of the database
 var instance *ReaderWriter
 
-var ready bool
+var ready atomic.Bool
 
 // once is used to ensure that there is only a single instance of the database
 var once sync.Once
@@ -23,7 +24,7 @@ var once sync.Once
 type Store struct {
 	db    func() *sql.DB
 	dbs   *ReaderWriter
-	ready *bool
+	ready *atomic.Bool
 }
 
 // NewDbConnectionFromSettings sets up a db connection from the settings, only once
@@ -60,7 +61,7 @@ func NewDbConnectionFromSettings(ctx context.Context, settings *Settings, withSe
 
 // IsReady returns if db is ready to connect to
 func (store *Store) IsReady() bool {
-	return *store.ready
+	return store.ready.Load()
 }
 
 // DBS returns the reader and writer databases to connect to
@@ -70,7 +71,7 @@ func (store *Store) DBS() *ReaderWriter {
 
 // NewDbConnectionForTest use this for tests as we have multiple sessions in parallel and don't want the synced one
 func NewDbConnectionForTest(ctx context.Context, settings *Settings, withSearchPath bool) Store {
-	localReady := false
+	localReady := atomic.Bool{}
 	dbConnection := NewDbConnection(
 		ctx,
 		&localReady,
