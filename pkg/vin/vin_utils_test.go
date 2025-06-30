@@ -212,3 +212,35 @@ func TestVIN_IsJapanChassis(t *testing.T) {
 		})
 	}
 }
+
+func TestVIN_TeslaModel(t *testing.T) {
+	tests := []struct {
+		name string
+		v    VIN
+		want string
+	}{
+		{
+			name: "Tesla invalid VIN",
+			v:    "7G2QEHED8RA003343",
+			want: "",
+		},
+		{
+			name: "Tesla Cybertruck VIN",
+			v:    "7G2CEHED8RA003343",
+			want: "Cybertruck",
+		},
+		{
+			name: "Tesla Model 3 VIN",
+			v:    "5YJ3E1EC9LF714710",
+			want: "Model 3",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.v.TeslaModel(); got != tt.want {
+				t.Errorf("TeslaModel() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
