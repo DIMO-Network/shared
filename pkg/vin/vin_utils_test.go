@@ -197,6 +197,11 @@ func TestVIN_IsValidJapanChassis(t *testing.T) {
 			v:    "",
 			want: false,
 		},
+		{
+			name: "lowercase letters",
+			v:    "a412345",
+			want: false,
+		},
 	}
 
 	for _, tt := range tests {

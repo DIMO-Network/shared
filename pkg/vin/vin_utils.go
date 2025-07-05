@@ -58,7 +58,7 @@ func (v VIN) IsValidVIN() bool {
 }
 
 func (v VIN) IsValidJapanChassis() bool {
-	re := regexp.MustCompile(`(?i)^[A-Z0-9]{2,7}-?\d{5,7}$`)
+	re := regexp.MustCompile(`(?)^[A-Z0-9]{2,7}-?\d{5,7}$`)
 	return re.MatchString(string(v))
 }
 
