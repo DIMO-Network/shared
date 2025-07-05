@@ -51,10 +51,7 @@ func (v VIN) IsValidVIN() bool {
 	// Check if the string matches the VIN pattern
 	// Excluding I, O, Q as per standard
 	re := regexp.MustCompile(`^[A-HJ-NPR-Z0-9]{17}$`)
-	if !re.MatchString(string(v)) {
-		return false
-	}
-	return true
+	return re.MatchString(string(v))
 }
 
 func (v VIN) IsValidJapanChassis() bool {
