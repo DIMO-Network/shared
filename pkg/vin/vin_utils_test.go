@@ -166,7 +166,7 @@ func TestVIN_String(t *testing.T) {
 	}
 }
 
-func TestVIN_IsJapanChassis(t *testing.T) {
+func TestVIN_IsValidJapanChassis(t *testing.T) {
 	tests := []struct {
 		name string
 		v    VIN
@@ -178,9 +178,9 @@ func TestVIN_IsJapanChassis(t *testing.T) {
 			want: true,
 		},
 		{
-			name: "Invalid Japan chassis without dash",
-			v:    "ZWR908000186",
-			want: false,
+			name: "Japan chassis without dash",
+			v:    "DJLAS203662",
+			want: true,
 		},
 		{
 			name: "Standard VIN with 17 characters",
@@ -193,21 +193,21 @@ func TestVIN_IsJapanChassis(t *testing.T) {
 			want: false,
 		},
 		{
-			name: "Short VIN with dash",
-			v:    "BMW-123",
-			want: true,
-		},
-		{
 			name: "Empty string",
 			v:    "",
+			want: false,
+		},
+		{
+			name: "lowercase letters",
+			v:    "a412345",
 			want: false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.v.IsJapanChassis(); got != tt.want {
-				t.Errorf("IsJapanChassis() = %v, want %v", got, tt.want)
+			if got := tt.v.IsValidJapanChassis(); got != tt.want {
+				t.Errorf("IsValidJapanChassis() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -240,6 +240,58 @@ func TestVIN_TeslaModel(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.v.TeslaModel(); got != tt.want {
 				t.Errorf("TeslaModel() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestVIN_IsValidVIN(t *testing.T) {
+	tests := []struct {
+		name string
+		v    VIN
+		want bool
+	}{
+		{
+			name: "Valid VIN with 17 characters",
+			v:    "1HGCM82633A123456",
+			want: true,
+		},
+		{
+			name: "Invalid VIN with length less than 17 characters",
+			v:    "1HGCM82633A12345",
+			want: false,
+		},
+		{
+			name: "Invalid VIN with length greater than 17 characters",
+			v:    "1HGCM82633A1234567",
+			want: false,
+		},
+		{
+			name: "Invalid VIN with special characters",
+			v:    "1HGCM8@#33A123456",
+			want: false,
+		},
+		{
+			name: "Invalid VIN with lowercase letters",
+			v:    "1hgcm82633a123456",
+			want: false,
+		},
+		{
+			name: "Invalid VIN with disallowed letters I, O, Q",
+			v:    "1HGCM82633O123456",
+			want: false,
+		},
+		{
+			name: "Empty VIN",
+			v:    "",
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.v.IsValidVIN(); got != tt.want {
+				t.Errorf("IsValidVIN() = %v, want %v", got, tt.want)
 			}
 		})
 	}
