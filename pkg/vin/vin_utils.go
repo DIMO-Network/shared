@@ -1,6 +1,9 @@
 package vin
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 // VINs are not allowed to contain I, O, or Q. Except if they're Japanese chassis numbers
 // In the year digit we additionally disallow U, Z, and 0.
@@ -40,13 +43,25 @@ var years = map[byte]int{
 
 type VIN string
 
-func (v VIN) IsJapanChassis() bool {
-	return len(v) < 17 && strings.Contains(string(v), "-")
+func (v VIN) IsValidVIN() bool {
+	if len(v) != 17 {
+		return false
+	}
+
+	// Check if the string matches the VIN pattern
+	// Excluding I, O, Q as per standard
+	re := regexp.MustCompile(`^[A-HJ-NPR-Z0-9]{17}$`)
+	return re.MatchString(string(v))
+}
+
+func (v VIN) IsValidJapanChassis() bool {
+	re := regexp.MustCompile(`(?)^[A-Z0-9]{2,7}-?\d{5,7}$`)
+	return re.MatchString(string(v))
 }
 
 // Year will decode the year portion from the VIN from 2005 to 2034. returns 0 if out of range. VIN nomenclature only allows for 30 year timespans, then repeats, ie. 2023 = 1993
 func (v VIN) Year() int {
-	if v.IsJapanChassis() {
+	if v.IsValidJapanChassis() {
 		return 0
 	}
 	return years[v[9]]
@@ -66,7 +81,7 @@ var teslaModelByDigit = map[byte]string{
 }
 
 func (v VIN) TeslaModel() string {
-	if v.IsJapanChassis() {
+	if v.IsValidJapanChassis() {
 		return ""
 	}
 	// Maybe some error handling?
@@ -78,28 +93,28 @@ func (v VIN) Wmi() string {
 }
 
 func (v VIN) VDS() string {
-	if v.IsJapanChassis() {
+	if v.IsValidJapanChassis() {
 		return ""
 	}
 	return string(v[3:8])
 }
 
 func (v VIN) VIS() string {
-	if v.IsJapanChassis() {
+	if v.IsValidJapanChassis() {
 		return ""
 	}
 	return string(v[9:17])
 }
 
 func (v VIN) CheckDigit() string {
-	if v.IsJapanChassis() {
+	if v.IsValidJapanChassis() {
 		return ""
 	}
 	return string(v[8:9])
 }
 
 func (v VIN) SerialNumber() string {
-	if v.IsJapanChassis() {
+	if v.IsValidJapanChassis() {
 		parts := strings.Split(string(v), "-")
 		if len(parts) > 1 {
 			return parts[1]
