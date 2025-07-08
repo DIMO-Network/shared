@@ -178,6 +178,11 @@ func TestVIN_IsValidJapanChassis(t *testing.T) {
 			want: true,
 		},
 		{
+			name: "Invalid japan chassis number all the same",
+			v:    "AAAAAAAAAAAAA",
+			want: false,
+		},
+		{
 			name: "Japan chassis without dash",
 			v:    "DJLAS203662",
 			want: true,
@@ -185,6 +190,11 @@ func TestVIN_IsValidJapanChassis(t *testing.T) {
 		{
 			name: "Standard VIN with 17 characters",
 			v:    "1FTFX1E57JKE37092",
+			want: false,
+		},
+		{
+			name: "Invalid VIN with all chars the same",
+			v:    "AAAAAAAAAAAAAAAAA",
 			want: false,
 		},
 		{

@@ -47,6 +47,9 @@ func (v VIN) IsValidVIN() bool {
 	if len(v) != 17 {
 		return false
 	}
+	if AreAllCharactersTheSameAlt(string(v)) {
+		return false
+	}
 
 	// Check if the string matches the VIN pattern
 	// Excluding I, O, Q as per standard
@@ -55,6 +58,9 @@ func (v VIN) IsValidVIN() bool {
 }
 
 func (v VIN) IsValidJapanChassis() bool {
+	if AreAllCharactersTheSameAlt(string(v)) {
+		return false
+	}
 	re := regexp.MustCompile(`(?)^[A-Z0-9]{2,7}-?\d{5,7}$`)
 	return re.MatchString(string(v))
 }
@@ -121,4 +127,19 @@ func (v VIN) SerialNumber() string {
 		}
 	}
 	return string(v[11:17])
+}
+
+// AreAllCharactersTheSameAlt check not getting bogus VIN
+func AreAllCharactersTheSameAlt(s string) bool {
+	if len(s) <= 1 {
+		return true
+	}
+
+	firstChar := rune(s[0])
+	for _, char := range s[1:] {
+		if char != firstChar {
+			return false
+		}
+	}
+	return true
 }
