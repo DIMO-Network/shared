@@ -20,27 +20,36 @@ import (
 var ErrBadRequest = fmt.Errorf("bad request")
 
 type AuthService struct {
-	authURL    url.URL
-	clientID   common.Address
-	domain     string
-	privateKey *ecdsa.PrivateKey
-	token      *jwt.Token
-	logger     zerolog.Logger
-	m          sync.RWMutex
+	authURL            url.URL
+	tokenExchangeURL   url.URL
+	nftContractAddress common.Address
+	clientID           common.Address
+	domain             string
+	privateKey         *ecdsa.PrivateKey
+	token              *jwt.Token
+	logger             zerolog.Logger
+	m                  sync.RWMutex
 }
 
-func NewAuthService(logger zerolog.Logger, authURL url.URL, clientID common.Address, domain string, privateKeyHex string) (*AuthService, error) {
-	ecdsaPrivateKey, err := crypto.HexToECDSA(privateKeyHex)
+func NewAuthService(logger zerolog.Logger, settings *Settings) (*AuthService, error) {
+	authURL, tokenExchangeURL, nftContractAddress, clientID, err := settings.ParseURLs()
+	if err != nil {
+		return nil, err
+	}
+
+	ecdsaPrivateKey, err := crypto.HexToECDSA(settings.PrivateKeyHex)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AuthService{
-		authURL:    authURL,
-		clientID:   clientID,
-		domain:     domain,
-		privateKey: ecdsaPrivateKey,
-		logger:     logger,
+		authURL:            authURL,
+		tokenExchangeURL:   tokenExchangeURL,
+		nftContractAddress: nftContractAddress,
+		clientID:           clientID,
+		domain:             settings.Domain,
+		privateKey:         ecdsaPrivateKey,
+		logger:             logger,
 	}, nil
 }
 
@@ -254,4 +263,65 @@ type AuthSubmitChallengeResponse struct {
 	TokenType   string `json:"token_type"`
 	ExpiresIn   int    `json:"expires_in"`
 	IDToken     string `json:"id_token"`
+}
+
+type TokenExchangeRequest struct {
+	NFTContractAddress string `json:"nftContractAddress"`
+	Privileges         []int  `json:"privileges"`
+	TokenID            int    `json:"tokenId"`
+}
+
+type TokenExchangeResponse struct {
+	Token string `json:"token"`
+}
+
+// GetVehicleJWT exchanges a developer JWT for a vehicle-specific JWT token
+func (a *AuthService) GetVehicleJWT(devJWT string, privileges []int, tokenID int) (string, error) {
+	h := map[string]string{
+		"Content-Type":  "application/json",
+		"Authorization": "Bearer " + devJWT,
+	}
+	hcw, _ := shttp.NewClientWrapper(a.tokenExchangeURL.String(), "", 10*time.Second, h, false, shttp.WithRetry(3))
+
+	requestPayload := TokenExchangeRequest{
+		NFTContractAddress: a.nftContractAddress.String(),
+		Privileges:         privileges,
+		TokenID:            tokenID,
+	}
+
+	payloadBytes, err := json.Marshal(requestPayload)
+	if err != nil {
+		a.logger.Err(err).Msg("Failed to marshal token exchange request")
+		return "", err
+	}
+
+	resp, err := hcw.ExecuteRequest("/v1/tokens/exchange", "POST", payloadBytes)
+	if err != nil {
+		a.logger.Err(err).Msg("Failed to send token exchange request")
+		return "", err
+	}
+
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			a.logger.Err(err).Msg("Failed to close response body")
+		}
+	}(resp.Body)
+
+	if resp.StatusCode != 200 {
+		return "", ErrBadRequest
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		a.logger.Err(err).Msg("Failed to read response body")
+		return "", err
+	}
+
+	var decoded TokenExchangeResponse
+	if err = json.Unmarshal(body, &decoded); err != nil {
+		return "", err
+	}
+
+	return decoded.Token, nil
 }
