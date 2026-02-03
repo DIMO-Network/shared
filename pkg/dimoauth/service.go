@@ -156,7 +156,7 @@ func (a *AuthService) getChallenge() (*AuthChallenge, error) {
 	resp, err := hcw.ExecuteRequest("/auth/web3/generate_challenge?"+payload.Encode(), "POST", nil)
 	if err != nil {
 		a.logger.Err(err).Msgf("Failed to send auth challenge request. authUrl is: %s, clientID is: %s, redirectURL is: %s, scope is: %s",
-			a.authURL.String(), a.clientID.String(), a.redirectURL, "openid email")
+			a.authURL.String(), a.clientID.String(), a.redirectURL.String(), "openid email")
 		return nil, err
 	}
 
