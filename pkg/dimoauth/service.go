@@ -24,7 +24,7 @@ type AuthService struct {
 	tokenExchangeURL   url.URL
 	nftContractAddress common.Address
 	clientID           common.Address
-	domain             string
+	redirectURL        url.URL
 	privateKey         *ecdsa.PrivateKey
 	token              *jwt.Token
 	logger             zerolog.Logger
@@ -32,22 +32,17 @@ type AuthService struct {
 }
 
 func NewAuthService(logger zerolog.Logger, settings *Settings) (*AuthService, error) {
-	authURL, tokenExchangeURL, nftContractAddress, clientID, err := settings.ParseURLs()
-	if err != nil {
-		return nil, err
-	}
-
 	ecdsaPrivateKey, err := crypto.HexToECDSA(settings.PrivateKeyHex)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AuthService{
-		authURL:            authURL,
-		tokenExchangeURL:   tokenExchangeURL,
-		nftContractAddress: nftContractAddress,
-		clientID:           clientID,
-		domain:             settings.Domain,
+		authURL:            settings.AuthURL,
+		tokenExchangeURL:   settings.TokenExchangeURL,
+		nftContractAddress: settings.NFTContractAddress,
+		clientID:           settings.ClientID,
+		redirectURL:        settings.RedirectURL,
 		privateKey:         ecdsaPrivateKey,
 		logger:             logger,
 	}, nil
@@ -107,7 +102,7 @@ func (a *AuthService) getNewToken() (*jwt.Token, error) {
 		ClientID:  a.clientID.String(),
 		State:     challenge.State,
 		GrantType: "authorization_code",
-		Domain:    a.domain,
+		Domain:    a.redirectURL.String(),
 		Signature: hexutil.Encode(signature),
 	}
 
@@ -146,22 +141,22 @@ func (a *AuthService) getChallenge() (*AuthChallenge, error) {
 	if a.clientID.String() == "" {
 		return nil, fmt.Errorf("client id is empty, check settings")
 	}
-	if a.domain == "" {
-		return nil, fmt.Errorf("domain is empty, check settings")
+	if a.redirectURL.String() == "" {
+		return nil, fmt.Errorf("redirectURL is empty, check settings")
 	}
 	hcw, _ := shttp.NewClientWrapper(a.authURL.String(), "", 10*time.Second, nil, true, shttp.WithRetry(3))
 
 	payload := url.Values{}
 	payload.Add("client_id", a.clientID.String())
-	payload.Add("domain", a.domain)
+	payload.Add("redirectURL", a.redirectURL.String())
 	payload.Add("scope", "openid email")
 	payload.Add("response_type", "code")
 	payload.Add("address", a.clientID.String())
 
 	resp, err := hcw.ExecuteRequest("/auth/web3/generate_challenge?"+payload.Encode(), "POST", nil)
 	if err != nil {
-		a.logger.Err(err).Msgf("Failed to send auth challenge request. authUrl is: %s, clientID is: %s, domain is: %s, scope is: %s",
-			a.authURL.String(), a.clientID.String(), a.domain, "openid email")
+		a.logger.Err(err).Msgf("Failed to send auth challenge request. authUrl is: %s, clientID is: %s, redirectURL is: %s, scope is: %s",
+			a.authURL.String(), a.clientID.String(), a.redirectURL.String(), "openid email")
 		return nil, err
 	}
 
@@ -201,7 +196,7 @@ func (a *AuthService) submitChallenge(challenge AuthSubmitChallengePayload) (*Au
 	payload.Add("client_id", challenge.ClientID)
 	payload.Add("state", challenge.State)
 	payload.Add("grant_type", challenge.GrantType)
-	payload.Add("domain", challenge.Domain)
+	payload.Add("redirectURL", challenge.Domain)
 	payload.Add("signature", challenge.Signature)
 
 	payloadBytes := []byte(payload.Encode())
@@ -239,7 +234,7 @@ func (a *AuthService) submitChallenge(challenge AuthSubmitChallengePayload) (*Au
 
 type AuthRequestChallengePayload struct {
 	ClientID     string `json:"client_id"`
-	Domain       string `json:"domain"`
+	Domain       string `json:"redirectURL"`
 	Scope        string `json:"scope"`
 	ResponseType string `json:"response_type"`
 	Address      string `json:"address"`
@@ -252,7 +247,7 @@ type AuthChallenge struct {
 
 type AuthSubmitChallengePayload struct {
 	ClientID  string `json:"client_id"`
-	Domain    string `json:"domain"`
+	Domain    string `json:"redirectURL"`
 	GrantType string `json:"grant_type"`
 	State     string `json:"state"`
 	Signature string `json:"signature"`
@@ -268,7 +263,7 @@ type AuthSubmitChallengeResponse struct {
 type TokenExchangeRequest struct {
 	NFTContractAddress string `json:"nftContractAddress"`
 	Privileges         []int  `json:"privileges"`
-	TokenID            int    `json:"tokenId"`
+	TokenID            uint64 `json:"tokenId"`
 }
 
 type TokenExchangeResponse struct {
@@ -276,7 +271,7 @@ type TokenExchangeResponse struct {
 }
 
 // GetVehicleJWT exchanges a developer JWT for a vehicle-specific JWT token
-func (a *AuthService) GetVehicleJWT(devJWT string, privileges []int, tokenID int) (string, error) {
+func (a *AuthService) GetVehicleJWT(devJWT string, privileges []int, tokenID uint64) (string, error) {
 	h := map[string]string{
 		"Content-Type":  "application/json",
 		"Authorization": "Bearer " + devJWT,
