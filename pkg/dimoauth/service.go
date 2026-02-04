@@ -196,7 +196,7 @@ func (a *AuthService) submitChallenge(challenge AuthSubmitChallengePayload) (*Au
 	payload.Add("client_id", challenge.ClientID)
 	payload.Add("state", challenge.State)
 	payload.Add("grant_type", challenge.GrantType)
-	payload.Add("redirectURL", challenge.Domain)
+	payload.Add("domain", challenge.Domain)
 	payload.Add("signature", challenge.Signature)
 
 	payloadBytes := []byte(payload.Encode())
@@ -234,7 +234,7 @@ func (a *AuthService) submitChallenge(challenge AuthSubmitChallengePayload) (*Au
 
 type AuthRequestChallengePayload struct {
 	ClientID     string `json:"client_id"`
-	Domain       string `json:"redirectURL"`
+	Domain       string `json:"domain"`
 	Scope        string `json:"scope"`
 	ResponseType string `json:"response_type"`
 	Address      string `json:"address"`
@@ -247,7 +247,7 @@ type AuthChallenge struct {
 
 type AuthSubmitChallengePayload struct {
 	ClientID  string `json:"client_id"`
-	Domain    string `json:"redirectURL"`
+	Domain    string `json:"domain"`
 	GrantType string `json:"grant_type"`
 	State     string `json:"state"`
 	Signature string `json:"signature"`
