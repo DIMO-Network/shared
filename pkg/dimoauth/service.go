@@ -148,7 +148,7 @@ func (a *AuthService) getChallenge() (*AuthChallenge, error) {
 
 	payload := url.Values{}
 	payload.Add("client_id", a.clientID.String())
-	payload.Add("redirect_uri", a.redirectURL.String())
+	payload.Add("domain", a.redirectURL.String())
 	payload.Add("scope", "openid email")
 	payload.Add("response_type", "code")
 	payload.Add("address", a.clientID.String())
