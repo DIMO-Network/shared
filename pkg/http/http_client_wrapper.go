@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"golang.org/x/time/rate"
@@ -43,6 +44,7 @@ func BuildResponseError(statusCode int, err error) error {
 	return ResponseError{StatusCode: statusCode, error: err}
 }
 
+// NewClientWrapper instantiates a new http client wrapper. by default there is no retry option.
 func NewClientWrapper(baseURL, torProxyURL string, timeout time.Duration, headers map[string]string, addJSONHeaders bool, opts ...ClientWrapperOption) (ClientWrapper, error) {
 	if headers == nil {
 		headers = map[string]string{}
@@ -87,9 +89,7 @@ type ClientWrapperOptions struct {
 	Limiter   *rate.Limiter
 }
 
-var defaultHTTPClientWrapperOptions = ClientWrapperOptions{
-	Retry: 5,
-}
+var defaultHTTPClientWrapperOptions = ClientWrapperOptions{}
 
 type ClientWrapperOption func(*ClientWrapperOptions)
 
@@ -191,7 +191,8 @@ func (h clientWrapper) ExecuteRequestWithAuth(path, method string, body []byte, 
 		req.Header.Set("Authorization", authHeader)
 	}
 
-	var res *http.Response
+	var successRes *http.Response
+	var lastErrorBody string
 
 	if h.limiter != nil {
 		// Wait for permission from limiter to proceed
@@ -202,37 +203,56 @@ func (h clientWrapper) ExecuteRequestWithAuth(path, method string, body []byte, 
 	}
 
 	err = retry.Do(func() error {
-		res, err = h.httpClient.Do(req)
+		res, err := h.httpClient.Do(req)
 		// handle error status codes
 		if err == nil && res != nil && res.StatusCode > 299 {
-			defer res.Body.Close() //nolint
-			body, err := io.ReadAll(res.Body)
-			if err != nil {
-				return errors.Wrapf(err, "error reading failed request body")
+			bodyBytes, readErr := io.ReadAll(res.Body)
+			res.Body.Close()
+			if readErr != nil {
+				return errors.Wrapf(readErr, "error reading failed request body")
 			}
-			errResp := BuildResponseError(res.StatusCode, errors.Errorf("received non success status code %d for url %s with body: %s", res.StatusCode, req.URL.String(), string(body)))
+			lastErrorBody = string(bodyBytes)
+			errResp := BuildResponseError(res.StatusCode, errors.Errorf("received non success status code %d for url %s with body: %s", res.StatusCode, req.URL.String(), lastErrorBody))
 			if code := res.StatusCode; 400 <= code && code < 500 {
 				// unrecoverable since probably bad payload or n
 				return retry.Unrecoverable(BuildResponseError(code, errResp))
 			}
 			return errResp
 		}
+		// Store successful response
+		if err == nil && res != nil {
+			successRes = res
+		}
 		return err
 	}, retry.Attempts(h.retry), retry.Delay(500*time.Millisecond), retry.MaxDelay(9*time.Second))
 
-	if res == nil {
+	if successRes == nil {
+		// All retries failed - reconstruct response with last error body for backward compatibility
+		if retryErrors, ok := err.(retry.Error); ok {
+			for _, e := range retryErrors {
+				if httpError, ok := e.(ResponseError); ok {
+					// Create a response object with the error body so callers can access StatusCode
+					reconstructedRes := &http.Response{
+						StatusCode: httpError.StatusCode,
+						Body:       io.NopCloser(strings.NewReader(lastErrorBody)),
+						Header:     make(http.Header),
+					}
+					return reconstructedRes, httpError
+				}
+			}
+		}
 		return nil, err
 	}
 
 	if retryErrors, ok := err.(retry.Error); ok {
 		for _, e := range retryErrors {
 			if httpError, ok := e.(ResponseError); ok {
-				return res, httpError
+				return successRes, httpError
 			}
 		}
 	}
 
-	return res, err
+	return successRes, err
 }
 
 type GraphQLRequest struct {
