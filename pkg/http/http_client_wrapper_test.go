@@ -163,7 +163,7 @@ func Test_clientWrapper_GraphQLQueryRaw_retriesAndSucceeds(t *testing.T) {
 
 	callCount := 0
 	httpmock.RegisterResponder(http.MethodPost, baseURL,
-		func(req *http.Request) (*http.Response, error) {
+		func(_ *http.Request) (*http.Response, error) {
 			callCount++
 			// Fail first 2 attempts with 500, succeed on 3rd
 			if callCount < 3 {
@@ -192,7 +192,7 @@ func Test_clientWrapper_ExecuteRequest_retriesAndReturnsValidResponse(t *testing
 
 	callCount := 0
 	httpmock.RegisterResponder(http.MethodGet, baseURL+path,
-		func(req *http.Request) (*http.Response, error) {
+		func(_ *http.Request) (*http.Response, error) {
 			callCount++
 			// Fail first 2 attempts with 503, succeed on 3rd
 			if callCount < 3 {
