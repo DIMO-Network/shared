@@ -127,6 +127,21 @@ func Test_clientWrapper_GraphQLQuery(t *testing.T) {
 	assert.Equal(t, 0, len(wrapper.Data.Vehicle.Privileges.Edges))
 }
 
+func Test_clientWrapper_GraphQLQueryRaw(t *testing.T) {
+	const baseURL = "http://graphql.test.com/query"
+	hcw, _ := NewClientWrapper(baseURL, "", 1, nil, true)
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+	query := `{ vehicle(tokenId: 172541) { id } }`
+	identityResponse := `{"data":{"vehicle":{"id":"V_kc4AAqH9"}}}`
+
+	httpmock.RegisterResponder(http.MethodPost, baseURL, httpmock.NewStringResponder(200, identityResponse))
+	body, err := hcw.GraphQLQueryRaw("", query)
+	require.NoError(t, err)
+
+	assert.JSONEq(t, identityResponse, string(body))
+}
+
 type Vehicle struct {
 	ID         string `json:"id"`
 	Owner      string `json:"owner"`

@@ -21,7 +21,8 @@ var ErrBadRequest = errors.New("bad request")
 type ClientWrapper interface {
 	ExecuteRequest(path, method string, body []byte) (*http.Response, error)
 	ExecuteRequestWithAuth(path, method string, body []byte, authHeader string) (*http.Response, error)
-	GraphQLQuery(authHeader, query string, result interface{}) error
+	GraphQLQuery(authHeader, query string, result any) error
+	GraphQLQueryRaw(authHeader, query string) ([]byte, error)
 }
 
 type clientWrapper struct {
@@ -124,34 +125,10 @@ func WithTransport(transport *http.Transport) ClientWrapperOption {
 //		}
 //
 // err := client.GraphQLQuery(query, &wrapper)
-func (h clientWrapper) GraphQLQuery(authHeader, query string, result interface{}) error {
-	// GraphQL request
-	requestPayload := GraphQLRequest{Query: query}
-	payloadBytes, err := json.Marshal(requestPayload)
+func (h clientWrapper) GraphQLQuery(authHeader, query string, result any) error {
+	bodyBytes, err := h.GraphQLQueryRaw(authHeader, query)
 	if err != nil {
 		return err
-	}
-
-	// POST request
-	res, err := h.ExecuteRequestWithAuth("", "POST", payloadBytes, authHeader)
-	if err != nil {
-		// not sure why we do this
-		if _, ok := err.(ResponseError); !ok {
-			return errors.Wrapf(err, "error calling identity api from url %s. request: %s", h.baseURL, string(payloadBytes))
-		}
-	}
-	defer res.Body.Close() // nolint
-
-	if res.StatusCode == 404 {
-		return ErrNotFound
-	}
-	if res.StatusCode == 400 {
-		return ErrBadRequest
-	}
-
-	bodyBytes, err := io.ReadAll(res.Body)
-	if err != nil {
-		return errors.Wrapf(err, "error reading response body from url %s", h.baseURL)
 	}
 
 	if err := json.Unmarshal(bodyBytes, result); err != nil {
@@ -159,6 +136,39 @@ func (h clientWrapper) GraphQLQuery(authHeader, query string, result interface{}
 	}
 
 	return nil
+}
+
+func (h clientWrapper) GraphQLQueryRaw(authHeader, query string) ([]byte, error) {
+	// GraphQL request
+	requestPayload := GraphQLRequest{Query: query}
+	payloadBytes, err := json.Marshal(requestPayload)
+	if err != nil {
+		return nil, err
+	}
+
+	// POST request
+	res, err := h.ExecuteRequestWithAuth("", "POST", payloadBytes, authHeader)
+	if err != nil {
+		// not sure why we do this
+		if _, ok := err.(ResponseError); !ok {
+			return nil, errors.Wrapf(err, "error calling identity api from url %s. request: %s", h.baseURL, string(payloadBytes))
+		}
+	}
+	defer res.Body.Close() // nolint
+
+	if res.StatusCode == 404 {
+		return nil, ErrNotFound
+	}
+	if res.StatusCode == 400 {
+		return nil, ErrBadRequest
+	}
+
+	bodyBytes, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, errors.Wrapf(err, "error reading response body from url %s", h.baseURL)
+	}
+
+	return bodyBytes, nil
 }
 
 func (h clientWrapper) ExecuteRequest(path, method string, body []byte) (*http.Response, error) {
