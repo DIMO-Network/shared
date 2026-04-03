@@ -18,6 +18,18 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// grpcClientCodes are gRPC status codes that indicate client errors or expected
+// conditions (e.g. not found, bad input) rather than server-side failures.
+// These are logged at warn level instead of error to reduce noise.
+var grpcClientCodes = map[codes.Code]bool{
+	codes.NotFound:          true,
+	codes.InvalidArgument:   true,
+	codes.AlreadyExists:     true,
+	codes.FailedPrecondition: true,
+	codes.Unauthenticated:   true,
+	codes.PermissionDenied:  true,
+}
+
 // GRPCMetricsAndLogMiddleware tracks error and success prom metrics for grpc, and also logs if there is an error
 func GRPCMetricsAndLogMiddleware(logger *zerolog.Logger) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
@@ -29,7 +41,11 @@ func GRPCMetricsAndLogMiddleware(logger *zerolog.Logger) grpc.UnaryServerInterce
 				appmetrics.GRPCResponseTime.With(prometheus.Labels{"method": info.FullMethod, "status": s.Code().String()}).Observe(time.Since(startTime).Seconds())
 				appmetrics.GRPCRequestCount.With(prometheus.Labels{"method": info.FullMethod, "status": s.Code().String()}).Inc()
 
-				logger.Err(err).Str("grpc_status_code", s.Code().String()).Str("grpc_method", info.FullMethod).Msg("grpc request error")
+				if grpcClientCodes[s.Code()] {
+					logger.Warn().Err(err).Str("grpc_status_code", s.Code().String()).Str("grpc_method", info.FullMethod).Msg("grpc request error")
+				} else {
+					logger.Err(err).Str("grpc_status_code", s.Code().String()).Str("grpc_method", info.FullMethod).Msg("grpc request error")
+				}
 			} else {
 				appmetrics.GRPCResponseTime.With(prometheus.Labels{"method": info.FullMethod, "status": "unknown"}).Observe(time.Since(startTime).Seconds())
 				appmetrics.GRPCRequestCount.With(prometheus.Labels{"method": info.FullMethod, "status": "unknown"}).Inc()
