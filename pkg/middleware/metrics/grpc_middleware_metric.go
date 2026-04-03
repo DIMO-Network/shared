@@ -18,11 +18,15 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// grpcClientCodes are gRPC status codes that indicate client errors or expected
-// conditions (e.g. not found, bad input) rather than server-side failures.
+// grpcSilentCodes are gRPC status codes that should not be logged at all.
+// NotFound is an expected response for queries with no data.
+var grpcSilentCodes = map[codes.Code]bool{
+	codes.NotFound: true,
+}
+
+// grpcClientCodes are gRPC status codes that indicate client errors.
 // These are logged at warn level instead of error to reduce noise.
 var grpcClientCodes = map[codes.Code]bool{
-	codes.NotFound:          true,
 	codes.InvalidArgument:   true,
 	codes.AlreadyExists:     true,
 	codes.FailedPrecondition: true,
@@ -41,10 +45,12 @@ func GRPCMetricsAndLogMiddleware(logger *zerolog.Logger) grpc.UnaryServerInterce
 				appmetrics.GRPCResponseTime.With(prometheus.Labels{"method": info.FullMethod, "status": s.Code().String()}).Observe(time.Since(startTime).Seconds())
 				appmetrics.GRPCRequestCount.With(prometheus.Labels{"method": info.FullMethod, "status": s.Code().String()}).Inc()
 
-				if grpcClientCodes[s.Code()] {
-					logger.Warn().Err(err).Str("grpc_status_code", s.Code().String()).Str("grpc_method", info.FullMethod).Msg("grpc request error")
-				} else {
-					logger.Err(err).Str("grpc_status_code", s.Code().String()).Str("grpc_method", info.FullMethod).Msg("grpc request error")
+				if !grpcSilentCodes[s.Code()] {
+					if grpcClientCodes[s.Code()] {
+						logger.Warn().Err(err).Str("grpc_status_code", s.Code().String()).Str("grpc_method", info.FullMethod).Msg("grpc request error")
+					} else {
+						logger.Err(err).Str("grpc_status_code", s.Code().String()).Str("grpc_method", info.FullMethod).Msg("grpc request error")
+					}
 				}
 			} else {
 				appmetrics.GRPCResponseTime.With(prometheus.Labels{"method": info.FullMethod, "status": "unknown"}).Observe(time.Since(startTime).Seconds())
