@@ -266,25 +266,49 @@ type TokenExchangeRequest struct {
 	TokenID            uint64 `json:"tokenId"`
 }
 
+// TokenExchangeRequestAsset token exchange request for an asset
+type TokenExchangeRequestAsset struct {
+	Asset       string   `json:"asset"`
+	Permissions []string `json:"permissions"`
+}
+
 type TokenExchangeResponse struct {
 	Token string `json:"token"`
 }
 
 // GetVehicleJWT exchanges a developer JWT for a vehicle-specific JWT token
 func (a *AuthService) GetVehicleJWT(devJWT string, privileges []int, tokenID uint64) (string, error) {
-	h := map[string]string{
-		"Content-Type":  "application/json",
-		"Authorization": "Bearer " + devJWT,
-	}
-	hcw, _ := shttp.NewClientWrapper(a.tokenExchangeURL.String(), "", 10*time.Second, h, false, shttp.WithRetry(3))
-
 	requestPayload := TokenExchangeRequest{
 		NFTContractAddress: a.nftContractAddress.String(),
 		Privileges:         privileges,
 		TokenID:            tokenID,
 	}
 
-	payloadBytes, err := json.Marshal(requestPayload)
+	return a.exchangeToken(devJWT, requestPayload)
+}
+
+// GetAssetJWT exchanges a developer JWT for an asset-specific JWT token based on DID. if permissions are not provided, it defaults to "privilege:GetRawData"
+// permissions must be one of https://github.com/DIMO-Network/token-exchange-api/blob/main/pkg/tokenclaims/permissions.go
+func (a *AuthService) GetAssetJWT(devJWT string, permissions []string, tokenDID string) (string, error) {
+	if len(permissions) == 0 {
+		permissions = []string{"privilege:GetRawData"}
+	}
+	requestPayload := TokenExchangeRequestAsset{
+		Permissions: permissions,
+		Asset:       tokenDID,
+	}
+
+	return a.exchangeToken(devJWT, requestPayload)
+}
+
+func (a *AuthService) exchangeToken(devJWT string, payload any) (string, error) {
+	h := map[string]string{
+		"Content-Type":  "application/json",
+		"Authorization": "Bearer " + devJWT,
+	}
+	hcw, _ := shttp.NewClientWrapper(a.tokenExchangeURL.String(), "", 10*time.Second, h, false, shttp.WithRetry(3))
+
+	payloadBytes, err := json.Marshal(payload)
 	if err != nil {
 		a.logger.Err(err).Msg("Failed to marshal token exchange request")
 		return "", err
