@@ -151,7 +151,7 @@ func (h clientWrapper) GraphQLQueryRaw(authHeader, query string) ([]byte, error)
 	if err != nil {
 		// not sure why we do this
 		if _, ok := err.(ResponseError); !ok {
-			return nil, errors.Wrapf(err, "error calling identity api from url %s. request: %s", h.baseURL, string(payloadBytes))
+			return nil, errors.Wrapf(err, "failed to call url %s. graphql request: %s", h.baseURL, string(payloadBytes))
 		}
 	}
 	defer res.Body.Close() // nolint
