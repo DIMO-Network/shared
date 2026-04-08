@@ -288,6 +288,7 @@ func (a *AuthService) GetVehicleJWT(devJWT string, privileges []int, tokenID uin
 }
 
 // GetAssetJWT exchanges a developer JWT for an asset-specific JWT token based on DID. if permissions are not provided, it defaults to "privilege:GetRawData"
+// permissions must be one of https://github.com/DIMO-Network/token-exchange-api/blob/main/pkg/tokenclaims/permissions.go
 func (a *AuthService) GetAssetJWT(devJWT string, permissions []string, tokenDID string) (string, error) {
 	if len(permissions) == 0 {
 		permissions = []string{"privilege:GetRawData"}
