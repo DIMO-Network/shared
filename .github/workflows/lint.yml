@@ -22,6 +22,10 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v7
         with:
-          version: latest
+          # Pinned: `latest` (v2.12.x) regressed — its bundled govet `inline`
+          # analyzer hard-errors on generic stdlib calls ("cannot inline: type
+          # parameter inference is not yet supported"), failing lint on every PR.
+          # v2.11.3 is verified clean against this module.
+          version: v2.11.3
           only-new-issues: false
           args: --modules-download-mode=readonly --timeout=5m
